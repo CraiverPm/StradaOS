@@ -1103,8 +1103,19 @@ public class Main extends Activity {
 
     interface NumCb { void on(float v); }
 
+    /**
+     * Campo de texto para las ventanas. La actividad usa un tema oscuro y las ventanas siguen el tema de StradaOS:
+     * en modo claro el texto y la pista salían blancos sobre fondo blanco (visto en la 2.13 de prueba).
+     */
+    private android.widget.EditText field() {
+        android.widget.EditText et = new android.widget.EditText(this);
+        et.setTextColor(LIGHT ? 0xFF1A1A1A : Color.WHITE);
+        et.setHintTextColor(LIGHT ? 0xFF7A808A : 0xFFA0A6B0);
+        return et;
+    }
+
     private void askNumber(String title, float def, final NumCb cb) {
-        final android.widget.EditText et = new android.widget.EditText(this);
+        final android.widget.EditText et = field();
         et.setSingleLine(true);
         et.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
         if (def >= 0) { et.setText(String.valueOf(Math.round(def))); et.setSelection(et.getText().length()); }
@@ -1542,7 +1553,7 @@ public class Main extends Activity {
     }
 
     private void renameDock(final int i, final Runnable after) {
-        final android.widget.EditText et = new android.widget.EditText(this);
+        final android.widget.EditText et = field();
         et.setSingleLine(true);
         et.setText(dockName(i));
         et.setSelection(et.getText().length());
@@ -2207,7 +2218,7 @@ public class Main extends Activity {
     }
 
     private void editText(final String key, String title, String def) {
-        final android.widget.EditText et = new android.widget.EditText(this);
+        final android.widget.EditText et = field();
         et.setSingleLine(true);
         et.setText(prefs.getString(key, def));
         et.setSelection(et.getText().length());
@@ -2360,7 +2371,7 @@ public class Main extends Activity {
     }
 
     private void ask(final String key, String title, String def, final Runnable next) {
-        final android.widget.EditText et = new android.widget.EditText(this);
+        final android.widget.EditText et = field();
         et.setSingleLine(true);
         et.setText(prefs.getString(key, def));
         et.setSelection(et.getText().length());
@@ -4143,7 +4154,7 @@ public class Main extends Activity {
         box.setOrientation(LinearLayout.VERTICAL);
         int pad = (int) (16 * s);
         box.setPadding(pad, pad / 2, pad, 0);
-        final android.widget.EditText q = new android.widget.EditText(this);
+        final android.widget.EditText q = field();
         q.setSingleLine(true);
         q.setHint(I18n.t("Buscar app"));
         box.addView(q, new LinearLayout.LayoutParams(-1, -2));
