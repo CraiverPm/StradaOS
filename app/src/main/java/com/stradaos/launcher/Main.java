@@ -440,7 +440,8 @@ public class Main extends Activity {
      * Solo en la versión de prueba (paquete .debug): permite que las pruebas automáticas abran cada pantalla
      * sin tocar coordenadas. adb shell am start -n com.stradaos.launcher.debug/com.stradaos.launcher.Main --es prueba VALOR
      * VALOR: saltar (omite el asistente), inicio, ajustes:N, boton:N (menú del botón N), elegir:N (lista de apps del botón N),
-     * cajon (todas las apps), musica (lista de música preferida), asistente, demo-barra (cambia los botones 3 y 4), idioma:es|en|pt|auto.
+     * cajon (todas las apps), musica (lista de música preferida), asistente, demo-barra (cambia los botones 3 y 4), idioma:es|en|pt|auto,
+     * ultimo-aceite / ultimo-alto / unidad-aceite (recordatorio de aceite), ocultas / ocultar-demo / ocultar-limpiar (apps ocultas).
      */
     private void testHook(Intent i) {
         if (i == null || !getPackageName().endsWith(".debug")) return;
@@ -458,6 +459,7 @@ public class Main extends Activity {
                 else if (v.startsWith("boton:")) dockMenu(Integer.parseInt(v.substring(6)), null);
                 else if (v.startsWith("elegir:")) pickDock(Integer.parseInt(v.substring(7)), null);
                 else if ("cajon".equals(v)) openDrawer();
+                else if ("ocultas".equals(v)) manageHidden(null);
                 else if ("musica".equals(v)) pickFor("music_app", "Música", null);
                 else if ("asistente".equals(v)) wizard();
                 else if (v.startsWith("idioma:")) setLanguage(v.substring(7));
@@ -474,6 +476,16 @@ public class Main extends Activity {
                     oilLater = false; rebuild(); oilAlert();
                 }
                 else if ("menu-aceite".equals(v)) oilMenu();
+                else if ("ultimo-aceite".equals(v)) askLast(null);
+                else if ("ultimo-alto".equals(v)) saveLast(odoKm() / 0.621371f, null);   // el caso del issue #7: el número en millas
+                else if ("unidad-aceite".equals(v)) { prefs.edit().putString("speed_unit", "auto").apply(); askOilUnit(new Runnable() { public void run() { } }); }
+                else if ("ocultar-demo".equals(v) && !apps.isEmpty()) {
+                    java.util.HashSet<String> hs = new java.util.HashSet<String>();
+                    hs.add(compKey(apps.get(0)));
+                    if (apps.size() > 1) hs.add(compKey(apps.get(1)));
+                    saveHidden(hs); closeDrawer(); openDrawer();
+                }
+                else if ("ocultar-limpiar".equals(v)) { prefs.edit().remove("hidden_apps").apply(); closeDrawer(); }
                 else if (v.startsWith("rumbo:")) {
                     prefs.edit().putBoolean("map_heading", "1".equals(v.substring(6))).apply(); LiveMapView.headingUp = "1".equals(v.substring(6)); rebuild();
                     h.postDelayed(new Runnable() { public void run() {
@@ -940,6 +952,7 @@ public class Main extends Activity {
         if (!oilOn()) { oilSetup(); return; }
         float left = oilNextKm() - odoKm();
         String head = I18n.t("Kilometraje estimado") + ": ≈ " + fmtDist(odoKm()) + "\n"
+            + I18n.t("Último cambio") + ": " + fmtDist(prefs.getFloat("oil_last_km", 0)) + "\n"
             + I18n.t("Próximo cambio") + ": " + fmtDist(oilNextKm())
             + "\n" + (Math.round(toUnit(left)) > 0 ? I18n.t("Faltan " + fmtDist(left)) : I18n.t("¡Ya toca!"));
         LinearLayout ht = new LinearLayout(this);
@@ -949,17 +962,18 @@ public class Main extends Activity {
         ht.addView(tv("Cambio de aceite", 19, TEXT, true));
         TextView hs = tv(head, 14, MUTED, false);
         hs.setSingleLine(false);
-        hs.setMaxLines(4);
+        hs.setMaxLines(5);
         hs.setLineSpacing(3 * s, 1f);
         hs.setPadding(0, (int) (6 * s), 0, 0);
         ht.addView(hs);
         new TB(this, dlg())
             .setCustomTitle(ht)
-            .setItems(new String[]{"Ya hice el cambio de aceite", "Corregir el kilometraje actual", "Cambiar cada cuánto se hace", "Desactivar el recordatorio"},
+            .setItems(new String[]{"Ya hice el cambio de aceite", "Corregir el kilometraje actual", "Corregir el último cambio", "Cambiar cada cuánto se hace", "Desactivar el recordatorio"},
                 new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) {
                     if (w == 0) oilDone();
                     else if (w == 1) askOdo(null);
-                    else if (w == 2) askInterval(null);
+                    else if (w == 2) askLast(null);
+                    else if (w == 3) askInterval(null);
                     else { prefs.edit().putBoolean("oil_on", false).apply(); updateOilBadge(); if (settingsView != null) showSettings(1); }
                 }})
             .setNegativeButton("Cerrar", null)
@@ -972,19 +986,66 @@ public class Main extends Activity {
             .setTitle("Recordatorio de cambio de aceite")
             .setMessage("StradaOS no puede leer el kilometraje del tablero del carro. Escríbelo una vez y StradaOS le irá sumando lo que recorras con el GPS, para avisarte cuando toque el cambio.\n\nDe vez en cuando puedes corregirlo con el valor real del tablero.")
             .setPositiveButton("Empezar", new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) {
-                askOdo(new Runnable() { public void run() {
-                    askInterval(new Runnable() { public void run() {
-                        askNumber(I18n.t("¿A cuántos " + unit() + " fue el último cambio de aceite?"), toUnit(odoKm()), new NumCb() { public void on(float v) {
-                            prefs.edit().putFloat("oil_last_km", fromUnit(v)).putFloat("oil_snooze_km", 0).putBoolean("oil_on", true).apply();
-                            updateOilBadge();
-                            toast(I18n.t("Próximo cambio") + ": " + fmtDist(oilNextKm()));
-                            if (settingsView != null) showSettings(1);
+                askOilUnit(new Runnable() { public void run() {
+                    askOdo(new Runnable() { public void run() {
+                        askInterval(new Runnable() { public void run() {
+                            askLast(new Runnable() { public void run() {
+                                prefs.edit().putBoolean("oil_on", true).apply();
+                                updateOilBadge();
+                                toast(I18n.t("Próximo cambio") + ": " + fmtDist(oilNextKm()));
+                                if (settingsView != null) showSettings(1);
+                            }});
                         }});
                     }});
                 }});
             }})
             .setNegativeButton("Cancelar", null)
             .show();
+    }
+
+    /**
+     * Unidad del tablero. En automático se decide por el idioma del sistema y casi todas las pantallas chinas vienen en
+     * inglés de EE. UU. (= millas): por eso, antes de pedir números, se pregunta una vez y queda fija (issue #7).
+     */
+    private void askOilUnit(final Runnable next) {
+        if (!"auto".equals(prefs.getString("speed_unit", "auto"))) { next.run(); return; }
+        new TB(this, dlg())
+            .setTitle("¿Tu tablero marca kilómetros o millas?")
+            .setItems(new String[]{"Kilómetros (km)", "Millas (mi)"}, new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) {
+                prefs.edit().putString("speed_unit", w == 1 ? "mph" : "kmh").apply();
+                next.run();
+            }})
+            .setNegativeButton("Cancelar", null)
+            .show();
+    }
+
+    /** Kilometraje del último cambio de aceite, sin tocar el kilometraje actual. Avisa si queda por encima del actual. */
+    private void askLast(final Runnable next) {
+        float def = prefs.contains("oil_last_km") ? toUnit(prefs.getFloat("oil_last_km", 0)) : toUnit(odoKm());
+        askNumber(I18n.t("¿A cuántos " + unit() + " fue el último cambio de aceite?"), def, new NumCb() { public void on(float v) {
+            saveLast(fromUnit(v), next);
+        }});
+    }
+
+    private void saveLast(final float km, final Runnable next) {
+        final Runnable save = new Runnable() { public void run() {
+            prefs.edit().putFloat("oil_last_km", km).putFloat("oil_snooze_km", 0).apply();
+            updateOilBadge();
+            if (next != null) next.run();
+            else {
+                toast(I18n.t("Próximo cambio") + ": " + fmtDist(oilNextKm()));
+                if (settingsView != null) showSettings(1);
+            }
+        }};
+        // Más de 100 km por encima del kilometraje actual: casi seguro es un error de unidad o de dígitos.
+        if (prefs.contains("odo_base_km") && km > odoKm() + 100) {
+            new TB(Main.this, dlg())
+                .setTitle("Revisa el último cambio")
+                .setMessage(I18n.t("El último cambio (" + fmtDist(km) + ") queda por encima del kilometraje actual (" + fmtDist(odoKm()) + "). ¿Lo escribiste en otra unidad?"))
+                .setPositiveButton("Corregir", new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) { askLast(next); } })
+                .setNegativeButton("Guardar igual", new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) { save.run(); } })
+                .show();
+        } else save.run();
     }
 
     private void askOdo(final Runnable next) {
@@ -2848,6 +2909,7 @@ public class Main extends Activity {
         if (oilOn()) {
             row(o, "Kilometraje actual", "Estimado con el GPS. Corrígelo con el del tablero cuando quieras", "≈ " + fmtDist(odoKm()), new Runnable() { public void run() { askOdo(null); } });
             row(o, "Cada cuánto", null, fmtDist(prefs.getFloat("oil_interval_km", 5000)), new Runnable() { public void run() { askInterval(null); } });
+            row(o, "Último cambio", "Kilometraje del tablero cuando se hizo", fmtDist(prefs.getFloat("oil_last_km", 0)), new Runnable() { public void run() { askLast(null); } });
             row(o, "Próximo cambio", null, fmtDist(oilNextKm()), new Runnable() { public void run() { oilMenu(); } });
             row(o, "Ya hice el cambio de aceite", null, null, new Runnable() { public void run() { oilDone(); } });
         }
@@ -2939,6 +3001,10 @@ public class Main extends Activity {
         LinearLayout pf = section(body, "Apps preferidas");
         row(pf, "Música", "Se abre al tocar el reproductor", autoLabel("music_app", MUSIC_PKGS, "Toca para elegir"), new Runnable() { public void run() { pickFor("music_app", "Música"); } });
         row(pf, "Navegación", "Se abre con el botón del mapa", autoLabel("nav_app", NAV_PKGS, "Toca para elegir"), new Runnable() { public void run() { pickFor("nav_app", "Navegación"); } });
+        LinearLayout dw = section(body, "Cajón de apps");
+        int nh = hiddenApps().size();
+        row(dw, "Apps ocultas", "No se ven en el cajón, pero siguen instaladas y se pueden poner en los botones", nh == 0 ? I18n.t("Ninguna") : String.valueOf(nh),
+            new Runnable() { public void run() { manageHidden(new Runnable() { public void run() { if (settingsView != null) showSettings(4); } }); } });
         LinearLayout fa = section(body, "Apps de cada función");
         String[][] items = {{"radio", "Radio"}, {"bt", "Bluetooth"}, {"cam", "Cámara"}, {"web", "Navegador web"}, {"files", "Archivos"}};
         for (final String[] it : items) {
@@ -3896,15 +3962,37 @@ public class Main extends Activity {
         tlp.topMargin = (int) (20 * s);
         drawer.addView(title, tlp);
 
+        // Apps ocultas (issue #6): no se muestran aquí, pero siguen instaladas y se pueden elegir para los botones.
+        final java.util.HashSet<String> hidden = hiddenApps();
+        final List<ResolveInfo> shown = new ArrayList<ResolveInfo>();
+        for (ResolveInfo r : apps) if (!hidden.contains(compKey(r))) shown.add(r);
+        int nHidden = apps.size() - shown.size();
+
+        LinearLayout bar = new LinearLayout(this);
+        bar.setOrientation(LinearLayout.HORIZONTAL);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        if (nHidden > 0) {
+            TextView hid = tv(I18n.t("Ocultas: " + nHidden), 15, SOFT, false);
+            hid.setGravity(Gravity.CENTER);
+            hid.setBackground(round(BTN, 18));
+            hid.setPadding((int) (16 * s), (int) (8 * s), (int) (16 * s), (int) (8 * s));
+            LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(-2, -2);
+            hlp.rightMargin = (int) (10 * s);
+            bar.addView(hid, hlp);
+            hid.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) { manageHidden(new Runnable() { public void run() { closeDrawer(); openDrawer(); } }); }
+            });
+        }
         TextView close = tv("Cerrar  ✕", 15, SOFT, false);
         close.setGravity(Gravity.CENTER);
         close.setBackground(round(BTN, 18));
         close.setPadding((int) (16 * s), (int) (8 * s), (int) (16 * s), (int) (8 * s));
+        bar.addView(close, new LinearLayout.LayoutParams(-2, -2));
         FrameLayout.LayoutParams clp = new FrameLayout.LayoutParams(-2, -2);
         clp.gravity = Gravity.TOP | Gravity.RIGHT;
         clp.rightMargin = (int) (24 * s);
         clp.topMargin = (int) (16 * s);
-        drawer.addView(close, clp);
+        drawer.addView(bar, clp);
         close.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { closeDrawer(); }
         });
@@ -3915,8 +4003,8 @@ public class Main extends Activity {
         grid.setVerticalSpacing((int) (18 * s));
         grid.setSelector(new ColorDrawable(Color.TRANSPARENT));
         grid.setAdapter(new BaseAdapter() {
-            public int getCount() { return apps.size(); }
-            public Object getItem(int p) { return apps.get(p); }
+            public int getCount() { return shown.size(); }
+            public Object getItem(int p) { return shown.get(p); }
             public long getItemId(int p) { return p; }
             public View getView(int p, View cv, ViewGroup parent) {
                 LinearLayout cell;
@@ -3938,7 +4026,7 @@ public class Main extends Activity {
                     im = (ImageView) cell.getChildAt(0);
                     lb = (TextView) cell.getChildAt(1);
                 }
-                ResolveInfo r = apps.get(p);
+                ResolveInfo r = shown.get(p);
                 Drawable d = r.loadIcon(pm);
                 im.setImageDrawable(d);
                 lb.setText(r.loadLabel(pm));
@@ -3947,7 +4035,35 @@ public class Main extends Activity {
         });
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, int p, long id) {
-                launch(apps.get(p));
+                launch(shown.get(p));
+            }
+        });
+        // Dejar presionada una app: ocultarla del cajón o abrir su información en Android.
+        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> a, View v, int p, long id) {
+                final ResolveInfo r = shown.get(p);
+                new TB(Main.this, dlg())
+                    .setTitle(String.valueOf(r.loadLabel(pm)))
+                    .setItems(new String[]{"Ocultar del cajón", "Información de la app"}, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface d, int w) {
+                            if (w == 0) {
+                                java.util.HashSet<String> h = hiddenApps();
+                                h.add(compKey(r));
+                                saveHidden(h);
+                                toast("Oculta. Para volver a verla: Ajustes → Accesos y apps → Apps ocultas");
+                                closeDrawer();
+                                openDrawer();
+                            } else {
+                                try {
+                                    startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.parse("package:" + r.activityInfo.packageName)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                } catch (Throwable e) { toast("No se pudo abrir el ajuste"); }
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+                return true;
             }
         });
         FrameLayout.LayoutParams glp = new FrameLayout.LayoutParams(-1, -1);
@@ -3957,6 +4073,112 @@ public class Main extends Activity {
         drawer.addView(grid, glp);
 
         root.addView(drawer, new FrameLayout.LayoutParams(-1, -1));
+    }
+
+    // ── apps ocultas del cajón ──
+
+    /** Clave de una app del cajón: paquete/actividad (una app puede tener varios íconos). */
+    private static String compKey(ResolveInfo r) { return r.activityInfo.packageName + "/" + r.activityInfo.name; }
+
+    private java.util.HashSet<String> hiddenApps() {
+        java.util.HashSet<String> out = new java.util.HashSet<String>();
+        for (String k : prefs.getString("hidden_apps", "").split("\n")) if (k.length() > 0) out.add(k);
+        return out;
+    }
+
+    private void saveHidden(java.util.Set<String> set) {
+        StringBuilder b = new StringBuilder();
+        for (String k : set) { if (b.length() > 0) b.append('\n'); b.append(k); }
+        prefs.edit().putString("hidden_apps", b.toString()).apply();
+    }
+
+    /** Lista de todas las apps con casillas y buscador para elegir cuáles se ocultan del cajón. */
+    private void manageHidden(final Runnable after) {
+        loadApps();
+        final PackageManager pm = getPackageManager();
+        final java.util.HashSet<String> sel = hiddenApps();
+        final HashMap<ResolveInfo, String> labels = new HashMap<ResolveInfo, String>();
+        for (ResolveInfo r : apps) labels.put(r, String.valueOf(r.loadLabel(pm)));
+        // primero las que ya están ocultas, luego el resto (ya vienen en orden alfabético)
+        final List<ResolveInfo> all = new ArrayList<ResolveInfo>();
+        for (ResolveInfo r : apps) if (sel.contains(compKey(r))) all.add(r);
+        for (ResolveInfo r : apps) if (!sel.contains(compKey(r))) all.add(r);
+        final List<ResolveInfo> view = new ArrayList<ResolveInfo>(all);
+        final HashMap<String, Drawable> icons = new HashMap<String, Drawable>();
+        final int fg = LIGHT ? 0xFF1A1A1A : Color.WHITE;
+
+        final BaseAdapter ad = new BaseAdapter() {
+            public int getCount() { return view.size(); }
+            public Object getItem(int p) { return view.get(p); }
+            public long getItemId(int p) { return p; }
+            public View getView(int p, View cv, ViewGroup parent) {
+                ResolveInfo r = view.get(p);
+                String k = compKey(r);
+                LinearLayout row = new LinearLayout(Main.this);
+                row.setGravity(Gravity.CENTER_VERTICAL);
+                row.setPadding((int) (8 * s), (int) (8 * s), (int) (8 * s), (int) (8 * s));
+                Drawable d = icons.get(k);
+                if (d == null) { try { d = r.loadIcon(pm); } catch (Throwable e) { d = null; } if (d != null) icons.put(k, d); }
+                ImageView iv = new ImageView(Main.this);
+                iv.setImageDrawable(d);
+                iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                row.addView(iv, new LinearLayout.LayoutParams((int) (34 * s), (int) (34 * s)));
+                TextView t = new TextView(Main.this);
+                t.setText(labels.get(r));
+                t.setTextColor(fg);
+                t.setTextSize(TypedValue.COMPLEX_UNIT_PX, 17 * s);
+                t.setSingleLine(true);
+                t.setPadding((int) (14 * s), 0, (int) (8 * s), 0);
+                row.addView(t, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                android.widget.CheckBox cb = new android.widget.CheckBox(Main.this);
+                cb.setChecked(sel.contains(k));
+                cb.setClickable(false);
+                cb.setFocusable(false);
+                row.addView(cb, new LinearLayout.LayoutParams(-2, -2));
+                return row;
+            }
+        };
+
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) (16 * s);
+        box.setPadding(pad, pad / 2, pad, 0);
+        final android.widget.EditText q = new android.widget.EditText(this);
+        q.setSingleLine(true);
+        q.setHint(I18n.t("Buscar app"));
+        box.addView(q, new LinearLayout.LayoutParams(-1, -2));
+        android.widget.ListView lv = new android.widget.ListView(this);
+        lv.setAdapter(ad);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> a, View v, int p, long id) {
+                String k = compKey(view.get(p));
+                if (!sel.remove(k)) sel.add(k);
+                ad.notifyDataSetChanged();
+            }
+        });
+        box.addView(lv, new LinearLayout.LayoutParams(-1, (int) (250 * s)));
+        q.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence c, int a, int b, int d) { }
+            public void onTextChanged(CharSequence c, int a, int b, int d) { }
+            public void afterTextChanged(android.text.Editable e) {
+                String f = e.toString().trim().toLowerCase(I18n.loc);
+                view.clear();
+                for (ResolveInfo r : all) if (f.length() == 0 || labels.get(r).toLowerCase(I18n.loc).contains(f)) view.add(r);
+                ad.notifyDataSetChanged();
+            }
+        });
+
+        new TB(this, dlg())
+            .setTitle("Apps ocultas en el cajón")
+            .setView(box)
+            .setPositiveButton("Guardar", new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) {
+                // conserva las ocultas que ya no están instaladas (si se reinstalan, siguen ocultas)
+                saveHidden(sel);
+                toast(sel.isEmpty() ? I18n.t("Se muestran todas las apps") : I18n.t("Apps ocultas: " + sel.size()));
+                if (after != null) after.run();
+            }})
+            .setNegativeButton("Cancelar", null)
+            .show();
     }
 
     private void closeDrawer() {

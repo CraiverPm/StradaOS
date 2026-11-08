@@ -455,3 +455,25 @@ El mapa apunta	O mapa aponta
 Según tu dirección: gira con el carro mientras te mueves	Conforme sua direção: gira com o carro enquanto você se move
 Norte arriba	Norte para cima
 Según tu dirección	Sua direção
+# 2.13: aceite (último cambio, unidad) y apps ocultas del cajón
+Último cambio	Última troca
+Corregir el último cambio	Corrigir a última troca
+¿Tu tablero marca kilómetros o millas?	Seu painel marca quilômetros ou milhas?
+Kilómetros (km)	Quilômetros (km)
+Millas (mi)	Milhas (mi)
+Revisa el último cambio	Confira a última troca
+El último cambio ({}) queda por encima del kilometraje actual ({}). ¿Lo escribiste en otra unidad?	A última troca ({}) ficou acima da quilometragem atual ({}). Você digitou em outra unidade?
+Corregir	Corrigir
+Guardar igual	Salvar mesmo assim
+Kilometraje del tablero cuando se hizo	Quilometragem do painel quando foi feita
+Ocultas: {}	Ocultos: {}
+Ocultar del cajón	Ocultar da gaveta
+Información de la app	Informações do app
+Oculta. Para volver a verla: Ajustes → Accesos y apps → Apps ocultas	Oculto. Para ver de novo: Ajustes → Atalhos e apps → Apps ocultos
+Cajón de apps	Gaveta de apps
+Apps ocultas	Apps ocultos
+No se ven en el cajón, pero siguen instaladas y se pueden poner en los botones	Não aparecem na gaveta, mas continuam instalados e podem ir nos botões
+Buscar app	Buscar app
+Apps ocultas en el cajón	Apps ocultos na gaveta
+Se muestran todas las apps	Todos os apps são mostrados
+Apps ocultas: {}	Apps ocultos: {}

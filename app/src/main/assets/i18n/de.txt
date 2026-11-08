@@ -455,3 +455,25 @@ El mapa apunta	Karte zeigt
 Según tu dirección: gira con el carro mientras te mueves	Fahrtrichtung: dreht sich beim Fahren mit dem Auto
 Norte arriba	Norden oben
 Según tu dirección	Fahrtrichtung
+# 2.13: aceite (último cambio, unidad) y apps ocultas del cajón
+Último cambio	Letzter Wechsel
+Corregir el último cambio	Letzten Wechsel korrigieren
+¿Tu tablero marca kilómetros o millas?	Zeigt dein Tacho Kilometer oder Meilen?
+Kilómetros (km)	Kilometer (km)
+Millas (mi)	Meilen (mi)
+Revisa el último cambio	Letzten Wechsel prüfen
+El último cambio ({}) queda por encima del kilometraje actual ({}). ¿Lo escribiste en otra unidad?	Der letzte Wechsel ({}) liegt über dem aktuellen Kilometerstand ({}). Hast du ihn in einer anderen Einheit eingegeben?
+Corregir	Korrigieren
+Guardar igual	Trotzdem speichern
+Kilometraje del tablero cuando se hizo	Kilometerstand beim Wechsel
+Ocultas: {}	Ausgeblendet: {}
+Ocultar del cajón	In der App-Liste ausblenden
+Información de la app	App-Info
+Oculta. Para volver a verla: Ajustes → Accesos y apps → Apps ocultas	Ausgeblendet. Wieder anzeigen: Einstellungen → Verknüpfungen & Apps → Ausgeblendete Apps
+Cajón de apps	App-Liste
+Apps ocultas	Ausgeblendete Apps
+No se ven en el cajón, pero siguen instaladas y se pueden poner en los botones	Nicht in der App-Liste, aber weiter installiert und für die Tasten wählbar
+Buscar app	App suchen
+Apps ocultas en el cajón	In der App-Liste ausgeblendet
+Se muestran todas las apps	Alle Apps werden angezeigt
+Apps ocultas: {}	Ausgeblendete Apps: {}

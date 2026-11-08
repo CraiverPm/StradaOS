@@ -455,3 +455,25 @@ El mapa apunta	La mappa punta
 Según tu dirección: gira con el carro mientras te mueves	Direzione di marcia: ruota con l'auto mentre ti muovi
 Norte arriba	Nord in alto
 Según tu dirección	Direzione di marcia
+# 2.13: aceite (último cambio, unidad) y apps ocultas del cajón
+Último cambio	Ultimo cambio
+Corregir el último cambio	Correggi l'ultimo cambio
+¿Tu tablero marca kilómetros o millas?	Il tuo cruscotto segna chilometri o miglia?
+Kilómetros (km)	Chilometri (km)
+Millas (mi)	Miglia (mi)
+Revisa el último cambio	Controlla l'ultimo cambio
+El último cambio ({}) queda por encima del kilometraje actual ({}). ¿Lo escribiste en otra unidad?	L'ultimo cambio ({}) è superiore al chilometraggio attuale ({}). L'hai scritto in un'altra unità?
+Corregir	Correggi
+Guardar igual	Salva comunque
+Kilometraje del tablero cuando se hizo	Chilometraggio del cruscotto quando è stato fatto
+Ocultas: {}	Nascoste: {}
+Ocultar del cajón	Nascondi dal cassetto
+Información de la app	Informazioni sull'app
+Oculta. Para volver a verla: Ajustes → Accesos y apps → Apps ocultas	Nascosta. Per rivederla: Impostazioni → Collegamenti e app → App nascoste
+Cajón de apps	Cassetto delle app
+Apps ocultas	App nascoste
+No se ven en el cajón, pero siguen instaladas y se pueden poner en los botones	Non compaiono nel cassetto, ma restano installate e si possono mettere nei pulsanti
+Buscar app	Cerca app
+Apps ocultas en el cajón	App nascoste nel cassetto
+Se muestran todas las apps	Tutte le app sono visibili
+Apps ocultas: {}	App nascoste: {}

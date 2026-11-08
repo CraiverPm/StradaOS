@@ -100,6 +100,18 @@ go aviso-aceite 8; shot 34-aceite-aviso
 back
 go unidad:mph 8;   shot 35-aceite-mph
 go unidad:auto 6
+go ultimo-aceite 4; shot 38-aceite-ultimo
+back
+go ultimo-alto 4;  shot 39-aceite-revisar
+back
+go unidad-aceite 4; shot 40-aceite-unidad
+back
+go unidad:auto 4
+# apps ocultas del cajón
+go ocultar-demo 8; shot 41-cajon-con-ocultas
+go ocultas 5;      shot 42-apps-ocultas
+back
+go ocultar-limpiar 3
 # mapa según la dirección
 go rumbo:1 10;     shot 36-mapa-rumbo
 go ajustes:5;      shot 37-ajustes-orientacion

@@ -455,3 +455,25 @@ El mapa apunta	Map points
 Según tu dirección: gira con el carro mientras te mueves	Direction of travel: turns with the car while you drive
 Norte arriba	North up
 Según tu dirección	Direction of travel
+# 2.13: aceite (último cambio, unidad) y apps ocultas del cajón
+Último cambio	Last change
+Corregir el último cambio	Correct the last change
+¿Tu tablero marca kilómetros o millas?	Does your dashboard show kilometers or miles?
+Kilómetros (km)	Kilometers (km)
+Millas (mi)	Miles (mi)
+Revisa el último cambio	Check the last change
+El último cambio ({}) queda por encima del kilometraje actual ({}). ¿Lo escribiste en otra unidad?	The last change ({}) is higher than the current odometer ({}). Did you type it in a different unit?
+Corregir	Correct
+Guardar igual	Save anyway
+Kilometraje del tablero cuando se hizo	Dashboard odometer when it was done
+Ocultas: {}	Hidden: {}
+Ocultar del cajón	Hide from the drawer
+Información de la app	App info
+Oculta. Para volver a verla: Ajustes → Accesos y apps → Apps ocultas	Hidden. To show it again: Settings → Shortcuts & apps → Hidden apps
+Cajón de apps	App drawer
+Apps ocultas	Hidden apps
+No se ven en el cajón, pero siguen instaladas y se pueden poner en los botones	Not shown in the drawer, but still installed and available for the buttons
+Buscar app	Search apps
+Apps ocultas en el cajón	Apps hidden from the drawer
+Se muestran todas las apps	All apps are shown
+Apps ocultas: {}	Hidden apps: {}
