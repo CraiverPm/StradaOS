@@ -1,0 +1,1 @@
+Hide apps from the drawer (they stay installed and can go on the buttons), correct the mileage of the last oil change, choose km or miles when setting it up, and a warning if the last change is above the current odometer.

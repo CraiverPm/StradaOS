@@ -1,0 +1,1 @@
+Oculta apps del cajón (siguen instaladas y se pueden poner en los botones), corrige el kilometraje del último cambio de aceite, elige km o millas al configurarlo y aviso si el último cambio queda por encima del actual.
