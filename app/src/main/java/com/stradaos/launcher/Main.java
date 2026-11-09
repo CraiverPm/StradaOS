@@ -1515,7 +1515,8 @@ public class Main extends Activity {
         placeWrap(card, tv("AUDIO", 11, MUTED, true), 18, 14);
         sourceTv = tv("", 11, RED, true);
         sourceTv.setGravity(Gravity.RIGHT);
-        place(card, sourceTv, audW - 168, 14, 150, 16);
+        sourceTv.setSingleLine(true);
+        place(card, sourceTv, 70, 14, audW - 88, 18);   // ancho de sobra: en Android 11 «BLUETOOTH» salía cortado
         playerArt = new PlayerArt(this, s, asset("ic/music_note.png"));
         // Tarjeta alta (barra lateral): diseño vertical que llena el alto en vez de dejar espacio vacío (Andrés, Picanto)
         tallPlayer = cardH - 380 >= 60;
