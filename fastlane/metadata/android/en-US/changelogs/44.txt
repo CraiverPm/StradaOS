@@ -1,0 +1,1 @@
+Swipe the player to change songs, bigger buttons, ▶ opens your music app, offline map fixed, uninstall from the drawer, options to leave StradaOS, and Malay language.
