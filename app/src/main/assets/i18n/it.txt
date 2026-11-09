@@ -477,3 +477,5 @@ Buscar app	Cerca app
 Apps ocultas en el cajón	App nascoste nel cassetto
 Se muestran todas las apps	Tutte le app sono visibili
 Apps ocultas: {}	App nascoste: {}
+# 2.14: desinstalar desde el cajón
+Desinstalar	Disinstalla

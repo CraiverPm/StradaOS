@@ -477,3 +477,5 @@ Buscar app	Buscar app
 Apps ocultas en el cajón	Apps ocultos na gaveta
 Se muestran todas las apps	Todos os apps são mostrados
 Apps ocultas: {}	Apps ocultos: {}
+# 2.14: desinstalar desde el cajón
+Desinstalar	Desinstalar

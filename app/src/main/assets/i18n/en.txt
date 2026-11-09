@@ -477,3 +477,5 @@ Buscar app	Search apps
 Apps ocultas en el cajón	Apps hidden from the drawer
 Se muestran todas las apps	All apps are shown
 Apps ocultas: {}	Hidden apps: {}
+# 2.14: desinstalar desde el cajón
+Desinstalar	Uninstall

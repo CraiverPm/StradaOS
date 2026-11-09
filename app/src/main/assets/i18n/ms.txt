@@ -455,3 +455,27 @@ El mapa apunta	Peta menghala
 Según tu dirección: gira con el carro mientras te mueves	Ikut arah anda: berpusing dengan kereta semasa bergerak
 Norte arriba	Utara di atas
 Según tu dirección	Ikut arah anda
+# 2.13: aceite y apps ocultas (traducidas por el mantenedor; revisión bienvenida)
+Último cambio	Pertukaran terakhir
+Corregir el último cambio	Betulkan pertukaran terakhir
+¿Tu tablero marca kilómetros o millas?	Adakah papan pemuka anda menunjukkan kilometer atau batu?
+Kilómetros (km)	Kilometer (km)
+Millas (mi)	Batu (mi)
+Revisa el último cambio	Semak pertukaran terakhir
+El último cambio ({}) queda por encima del kilometraje actual ({}). ¿Lo escribiste en otra unidad?	Pertukaran terakhir ({}) melebihi odometer semasa ({}). Adakah anda menaipnya dalam unit lain?
+Corregir	Betulkan
+Guardar igual	Simpan juga
+Kilometraje del tablero cuando se hizo	Bacaan odometer semasa ia dibuat
+Ocultas: {}	Tersembunyi: {}
+Ocultar del cajón	Sembunyikan dari laci
+Información de la app	Maklumat aplikasi
+Oculta. Para volver a verla: Ajustes → Accesos y apps → Apps ocultas	Disembunyikan. Untuk melihatnya semula: Tetapan → Pintasan & aplikasi → Aplikasi tersembunyi
+Cajón de apps	Laci aplikasi
+Apps ocultas	Aplikasi tersembunyi
+No se ven en el cajón, pero siguen instaladas y se pueden poner en los botones	Tidak dipaparkan dalam laci, tetapi masih dipasang dan boleh diletakkan pada butang
+Buscar app	Cari aplikasi
+Apps ocultas en el cajón	Aplikasi yang disembunyikan dari laci
+Se muestran todas las apps	Semua aplikasi dipaparkan
+Apps ocultas: {}	Aplikasi tersembunyi: {}
+# 2.14: desinstalar desde el cajón
+Desinstalar	Nyahpasang

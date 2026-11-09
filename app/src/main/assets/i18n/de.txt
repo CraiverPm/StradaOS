@@ -477,3 +477,5 @@ Buscar app	App suchen
 Apps ocultas en el cajón	In der App-Liste ausgeblendet
 Se muestran todas las apps	Alle Apps werden angezeigt
 Apps ocultas: {}	Ausgeblendete Apps: {}
+# 2.14: desinstalar desde el cajón
+Desinstalar	Deinstallieren
