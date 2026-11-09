@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { api: 30, arch: x86 }   # Android 11, como la pantalla del issue #9
+          - { api: 30, arch: x86_64 }   # Android 11, como la pantalla del issue #9
           - { api: 19, arch: x86 }   # Android 4.4
     steps:
       - uses: actions/checkout@v4
