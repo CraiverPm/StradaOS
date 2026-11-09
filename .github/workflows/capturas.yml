@@ -26,7 +26,8 @@ jobs:
           api-level: 30
           arch: x86_64
           target: default
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 2048x1200
+          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 1024x600
           emulator-boot-timeout: 900
           script: bash .github/scripts/capturas.sh
       - name: Subir a la rama «capturas»
