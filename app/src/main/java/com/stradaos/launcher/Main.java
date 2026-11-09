@@ -482,7 +482,21 @@ public class Main extends Activity {
                     // canción de ejemplo con duración y posición, para ver la línea de tiempo en las capturas
                     curTitle = "Canción de prueba"; curArtist = "StradaOS"; curSource = "Bluetooth";
                     durMs = 215000; posBaseMs = 68000; posBaseAt = SystemClock.elapsedRealtime(); posKnown = true; playingState = false;
+                    // carátula de ejemplo (degradado con una nota), sin portadas reales
+                    int az = 400;
+                    Bitmap art = Bitmap.createBitmap(az, az, Bitmap.Config.ARGB_8888);
+                    android.graphics.Canvas cv = new android.graphics.Canvas(art);
+                    android.graphics.Paint gp = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+                    gp.setShader(new android.graphics.LinearGradient(0, 0, az, az, 0xFFFF5A36, 0xFFB0124A, android.graphics.Shader.TileMode.CLAMP));
+                    cv.drawRect(0, 0, az, az, gp);
+                    Bitmap note = asset("ic/music_note.png");
+                    if (note != null) cv.drawBitmap(note, null, new android.graphics.RectF(az * 0.3f, az * 0.3f, az * 0.7f, az * 0.7f), null);
+                    curArt = art;
                     renderTrack();
+                }
+                else if ("tema:claro".equals(v) || "tema:oscuro".equals(v)) {
+                    prefs.edit().putString("theme", "tema:claro".equals(v) ? "light" : "dark").apply();
+                    applyTheme(); applyAccent(); rebuild();
                 }
                 else if (v.startsWith("diseno:")) {
                     // diseno:izq|der|sinauto|conauto|normal|compacta|lateral|base  (base = como viene)
