@@ -73,6 +73,7 @@ go diseno:sinauto 6;  shot 44-diseno-sin-vehiculo
 go diseno:compacta 6; shot 45-diseno-compacta
 go diseno:plegar 6;   shot 46-diseno-aa-plegado
 go diseno:lateral 6;  shot 47-diseno-lateral
+go pista-demo 3;     shot 53-lateral-pista
 go ajustes:2 5;      shot 51-lateral-ajustes
 back
 go cajon 6;          shot 52-lateral-cajon

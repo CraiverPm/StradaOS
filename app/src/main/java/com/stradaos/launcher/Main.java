@@ -112,6 +112,11 @@ public class Main extends Activity {
     /** Columnas: x de la tarjeta del vehículo, del mapa y del reproductor, y anchos del mapa y del reproductor. */
     private float carX = 16, mapX = 328, mapW = 420, audX = 760, audW = 248;
     private TextView topSpeedTv, topOilTv;
+    /** Reproductor vertical (tarjeta alta, p. ej. con la barra lateral): línea de tiempo con barra y tiempos a los lados. */
+    private boolean tallPlayer;
+    private TextView timeDurTv;
+    private View progBg, progFill;
+    private float progW;
     /** Escala de 1024x600 para Ajustes, el cajón y sus ventanas: con la barra lateral el inicio se agranda, pero
      *  esas pantallas deben conservar su tamaño (en un S23 con barra lateral Ajustes quedaba cortado arriba). */
     private float uiS = 1f;
@@ -476,6 +481,12 @@ public class Main extends Activity {
                 else if ("cajon".equals(v)) openDrawer();
                 else if ("ocultas".equals(v)) manageHidden(null);
                 else if ("salir-fabrica".equals(v)) openFactoryLauncher();
+                else if ("pista-demo".equals(v)) {
+                    // canción de ejemplo con duración y posición, para ver la línea de tiempo en las capturas
+                    curTitle = "Canción de prueba"; curArtist = "StradaOS"; curSource = "Bluetooth";
+                    durMs = 215000; posBaseMs = 68000; posBaseAt = SystemClock.elapsedRealtime(); posKnown = true; playingState = false;
+                    renderTrack();
+                }
                 else if (v.startsWith("diseno:")) {
                     // diseno:izq|der|sinauto|conauto|normal|compacta|lateral|base  (base = como viene)
                     String d = v.substring(7);
@@ -1506,6 +1517,51 @@ public class Main extends Activity {
         sourceTv.setGravity(Gravity.RIGHT);
         place(card, sourceTv, audW - 168, 14, 150, 16);
         playerArt = new PlayerArt(this, s, asset("ic/music_note.png"));
+        // Tarjeta alta (barra lateral): diseño vertical que llena el alto en vez de dejar espacio vacío (Andrés, Picanto)
+        tallPlayer = cardH - 380 >= 60;
+        timeDurTv = null; progBg = null; progFill = null;
+        final View prev, play, next;
+        if (tallPlayer) {
+            boolean big = audW >= 290;
+            float bs = big ? 66 : 60, ps = big ? 86 : 76, gap = big ? 12 : 10;
+            float yb = cardH - 22 - ps;                 // botones abajo
+            float yt = yb - 16 - 18;                    // tiempos
+            float ybar = yt - 8 - 4;                    // barra de la línea de tiempo
+            float ya = ybar - 16 - 20;                  // artista
+            float yti = ya - 28;                        // canción
+            float area = yti - 10 - 38;
+            float A = Math.min(audW - 56, area);
+            place(card, playerArt, (audW - A) / 2, 38 + (area - A) / 2, A, A);
+            trackTv = tv("Nada sonando", 19, TEXT, true);
+            trackTv.setGravity(Gravity.CENTER_HORIZONTAL);
+            trackTv.setSingleLine(true);
+            trackTv.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            place(card, trackTv, 18, yti, audW - 36, 26);
+            artistTv = tv("Radio, Bluetooth o USB", 14, MUTED, false);
+            artistTv.setGravity(Gravity.CENTER_HORIZONTAL);
+            artistTv.setSingleLine(true);
+            artistTv.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            place(card, artistTv, 18, ya, audW - 36, 20);
+            progW = audW - 56;
+            progBg = new View(this);
+            progBg.setBackground(round(BTN, 2));
+            place(card, progBg, 28, ybar, progW, 4);
+            progFill = new View(this);
+            progFill.setBackground(round(RED, 2));
+            place(card, progFill, 28, ybar, 0, 4);
+            timePosTv = tv("", 12, MUTED, false);
+            place(card, timePosTv, 28, yt, 90, 18);
+            timeDurTv = tv("", 12, MUTED, false);
+            timeDurTv.setGravity(Gravity.RIGHT);
+            place(card, timeDurTv, audW - 28 - 90, yt, 90, 18);
+            prev = circleIcon("skip_previous", bs, bs / 2, BTN);
+            play = circleIcon("play_arrow", ps, ps * 0.47f, RED);
+            next = circleIcon("skip_next", bs, bs / 2, BTN);
+            float x0 = (audW - (bs * 2 + ps + gap * 2)) / 2;
+            place(card, prev, x0, yb + (ps - bs) / 2, bs, bs);
+            place(card, play, x0 + bs + gap, yb, ps, ps);
+            place(card, next, x0 + bs + gap + ps + gap, yb + (ps - bs) / 2, bs, bs);
+        } else {
         place(card, playerArt, 34 + dx, 34 + dy, 180, 180);
         trackTv = tv("Nada sonando", 17, TEXT, true);
         trackTv.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -1517,13 +1573,14 @@ public class Main extends Activity {
         timePosTv.setGravity(Gravity.CENTER_HORIZONTAL);
         place(card, timePosTv, 14, 274 + dy, audW - 28, 18);
         // botones más grandes (antes 52/64): se tocan mejor con el carro en marcha
-        View prev = circleIcon("skip_previous", 60, 30, BTN);
-        View play = circleIcon("play_arrow", 74, 36, RED);
-        playIc = (ImageView) ((FrameLayout) play).getChildAt(0);
-        View next = circleIcon("skip_next", 60, 30, BTN);
+        prev = circleIcon("skip_previous", 60, 30, BTN);
+        play = circleIcon("play_arrow", 74, 36, RED);
+        next = circleIcon("skip_next", 60, 30, BTN);
         place(card, prev, 20 + dx, 300 + dy, 60, 60);
         place(card, play, 87 + dx, 293 + dy, 74, 74);
         place(card, next, 168 + dx, 300 + dy, 60, 60);
+        }
+        playIc = (ImageView) ((FrameLayout) play).getChildAt(0);
         final View.OnClickListener goPrev = mediaClick(KeyEvent.KEYCODE_MEDIA_PREVIOUS), goNext = mediaClick(KeyEvent.KEYCODE_MEDIA_NEXT);
         prev.setOnClickListener(goPrev);
         play.setOnClickListener(mediaClick(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
@@ -2350,6 +2407,7 @@ public class Main extends Activity {
             artistTv.setText(I18n.t("Radio, Bluetooth o USB"));
             sourceTv.setText("");
             timePosTv.setText("");
+            setTimeline(-1, 0);
             playerArt.setArt(null);
             playerArt.setProgress(-1);
         } else {
@@ -2373,13 +2431,30 @@ public class Main extends Activity {
         if (durMs > 0 && posKnown) {
             long p = currentPos();
             playerArt.setProgress(p / (float) durMs);
-            timePosTv.setText(fmt(p) + "  /  " + fmt(durMs));
+            if (tallPlayer) setTimeline(p, durMs); else timePosTv.setText(fmt(p) + "  /  " + fmt(durMs));
         } else if (durMs > 0) {
             playerArt.setProgress(-1);
-            timePosTv.setText(fmt(durMs));
+            if (tallPlayer) setTimeline(-1, durMs); else timePosTv.setText(fmt(durMs));
         } else {
             playerArt.setProgress(-1);
             timePosTv.setText("");
+            setTimeline(-1, 0);
+        }
+    }
+
+    /** Línea de tiempo del reproductor vertical: pos < 0 = posición desconocida, dur <= 0 = sin duración (se oculta). */
+    private void setTimeline(long pos, long dur) {
+        if (!tallPlayer || progBg == null) return;
+        boolean show = dur > 0;
+        progBg.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        progFill.setVisibility(show && pos >= 0 ? View.VISIBLE : View.INVISIBLE);
+        timePosTv.setText(show && pos >= 0 ? fmt(pos) : "");
+        timeDurTv.setText(show ? fmt(dur) : "");
+        if (show && pos >= 0) {
+            float f = Math.max(0f, Math.min(1f, pos / (float) dur));
+            ViewGroup.LayoutParams lp = progFill.getLayoutParams();
+            int w = Math.max((int) (4 * s), (int) (progW * s * f));
+            if (lp.width != w) { lp.width = w; progFill.setLayoutParams(lp); }
         }
     }
 
