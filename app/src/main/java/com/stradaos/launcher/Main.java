@@ -442,7 +442,8 @@ public class Main extends Activity {
      * sin tocar coordenadas. adb shell am start -n com.stradaos.launcher.debug/com.stradaos.launcher.Main --es prueba VALOR
      * VALOR: saltar (omite el asistente), inicio, ajustes:N, boton:N (menú del botón N), elegir:N (lista de apps del botón N),
      * cajon (todas las apps), musica (lista de música preferida), asistente, demo-barra (cambia los botones 3 y 4), idioma:es|en|pt|auto,
-     * ultimo-aceite / ultimo-alto / unidad-aceite (recordatorio de aceite), ocultas / ocultar-demo / ocultar-limpiar (apps ocultas).
+     * ultimo-aceite / ultimo-alto / unidad-aceite (recordatorio de aceite), ocultas / ocultar-demo / ocultar-limpiar (apps ocultas),
+     * salir-fabrica (abre el launcher de fábrica), desactivar (apaga StradaOS; solo lo usa salida.yml).
      */
     private void testHook(Intent i) {
         if (i == null || !getPackageName().endsWith(".debug")) return;
@@ -461,6 +462,8 @@ public class Main extends Activity {
                 else if (v.startsWith("elegir:")) pickDock(Integer.parseInt(v.substring(7)), null);
                 else if ("cajon".equals(v)) openDrawer();
                 else if ("ocultas".equals(v)) manageHidden(null);
+                else if ("salir-fabrica".equals(v)) openFactoryLauncher();
+                else if ("desactivar".equals(v) && !otherHomes().isEmpty()) disableSelf(otherHomes().get(0));   // solo instalador.yml
                 else if ("musica".equals(v)) pickFor("music_app", "Música", null);
                 else if ("asistente".equals(v)) wizard();
                 else if (v.startsWith("idioma:")) setLanguage(v.substring(7));
@@ -3183,6 +3186,12 @@ public class Main extends Activity {
         toggle(hm, "Abrir StradaOS al encender", "Para pantallas que siempre arrancan en su menú de fábrica (Android 4 a 9)", prefs.getBoolean("boot_open", false), new IntCb() { public void on(int i) {
             prefs.edit().putBoolean("boot_open", i == 1).apply(); showSettings(7);
         }});
+        // Salidas (issue #9): una pantalla Android 11 quedó atrapada en StradaOS tras elegirlo como launcher desde su
+        // modo fábrica (toda app, incluso la ventana de desinstalar, se abría y volvía a StradaOS).
+        LinearLayout ex = section(body, "Salir de StradaOS");
+        row(ex, "Abrir el launcher de fábrica", "Sale de StradaOS sin desinstalarlo", null, new Runnable() { public void run() { openFactoryLauncher(); } });
+        row(ex, "Desactivar StradaOS", "Si la pantalla quedó atrapada en StradaOS: se apaga solo, sin ventanas de Android", null, new Runnable() { public void run() { confirmDisableSelf(); } });
+        row(ex, "Desinstalar StradaOS", "Android pide confirmar", null, new Runnable() { public void run() { uninstallSelf(); } });
         if (getPackageName().endsWith(".debug")) {
             LinearLayout sm = section(body, "Versión de prueba");
             segmented(sm, "Simular pantalla", "Para probar otros tamaños en una tablet o celular", new String[]{"Real", "1024×600", "1280×720", "1920×720", "2000×1200"},
@@ -3681,6 +3690,80 @@ public class Main extends Activity {
     static final int REQ_HOME = 77;
     private boolean homeAsked, homeFixing;
 
+    /** Otras pantallas de inicio instaladas (el launcher de fábrica), sin StradaOS ni la de emergencia de Ajustes. */
+    private List<ResolveInfo> otherHomes() {
+        List<ResolveInfo> out = new ArrayList<ResolveInfo>();
+        try {
+            Intent i = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
+            for (ResolveInfo r : getPackageManager().queryIntentActivities(i, 0)) {
+                String p = r.activityInfo.packageName, n = r.activityInfo.name;
+                if (getPackageName().equals(p) || p.startsWith("com.stradaos.") || n.endsWith("FallbackHome")
+                        || "com.android.provision".equals(p) || r.priority < 0) continue;
+                out.add(r);
+            }
+        } catch (Throwable ignored) { }
+        return out;
+    }
+
+    /** Abre el launcher de fábrica y deja de ser la elegida «Siempre» (si hay varias, pregunta cuál). */
+    private void openFactoryLauncher() {
+        final List<ResolveInfo> homes = otherHomes();
+        if (homes.isEmpty()) { toast("No encontré otra pantalla de inicio en este equipo"); return; }
+        if (homes.size() == 1) { goHome(homes.get(0)); return; }
+        PackageManager pm = getPackageManager();
+        String[] names = new String[homes.size()];
+        for (int k = 0; k < names.length; k++) names[k] = String.valueOf(homes.get(k).loadLabel(pm));
+        new TB(this, dlg()).setTitle("¿Cuál es el launcher de fábrica?")
+            .setItems(names, new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) { goHome(homes.get(w)); } })
+            .setNegativeButton("Cancelar", null).show();
+    }
+
+    private void goHome(ResolveInfo r) {
+        try { getPackageManager().clearPackagePreferredActivities(getPackageName()); } catch (Throwable ignored) { }
+        try {
+            startActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+                .setComponent(new ComponentName(r.activityInfo.packageName, r.activityInfo.name))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED));
+        } catch (Throwable e) { toast("No se pudo abrir"); }
+    }
+
+    private void confirmDisableSelf() {
+        final List<ResolveInfo> homes = otherHomes();
+        if (homes.isEmpty()) {
+            // sin otra pantalla de inicio, desactivar dejaría el equipo sin inicio
+            toast("No encontré otra pantalla de inicio: StradaOS no se puede desactivar en este equipo");
+            return;
+        }
+        new TB(this, dlg())
+            .setTitle("¿Desactivar StradaOS?")
+            .setMessage("StradaOS deja de ser la pantalla de inicio, ya no se abre al encender y vuelve el launcher de fábrica. No pide confirmaciones de Android, así que sirve aunque la pantalla haya quedado atrapada.\n\nPara volver a usarlo después: desinstálalo desde los ajustes de la pantalla e instálalo de nuevo.")
+            .setPositiveButton("Desactivar", new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) { disableSelf(homes.get(0)); } })
+            .setNegativeButton("Cancelar", null)
+            .show();
+    }
+
+    /**
+     * Apaga StradaOS sin ventanas del sistema: desactiva sus componentes (una app puede hacerlo con los suyos sin
+     * permisos) para que Android y el firmware ya no puedan abrirlo, borra la elección «Siempre» y abre el de fábrica.
+     */
+    private void disableSelf(ResolveInfo home) {
+        PackageManager pm = getPackageManager();
+        try { pm.clearPackagePreferredActivities(getPackageName()); } catch (Throwable ignored) { }
+        goHome(home);
+        for (Class<?> c : new Class<?>[]{BootReceiver.class, FakeHome.class, Main.class}) {
+            try {
+                pm.setComponentEnabledSetting(new ComponentName(this, c), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            } catch (Throwable ignored) { }
+        }
+        h.postDelayed(new Runnable() { public void run() { finish(); } }, 800);
+    }
+
+    private void uninstallSelf() {
+        try {
+            startActivity(new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + getPackageName())).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        } catch (Throwable e) { toast("No se pudo abrir el ajuste"); }
+    }
+
     /** true si StradaOS es la app que abre Android al encender y al tocar Inicio. */
     private boolean isDefaultHome() {
         try {
@@ -3738,7 +3821,7 @@ public class Main extends Activity {
     private void homeHelp() {
         new TB(this, dlg())
             .setTitle("Fijar StradaOS a mano")
-            .setMessage("Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. En algunas marcas está en los ajustes de fábrica como «Launcher», «Interfaz» o «UI».\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.")
+            .setMessage("Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. Con Android 10 o más nuevo, no lo elijas desde el modo fábrica de la pantalla («Launcher», «Interfaz» o «UI»): en algunas marcas eso deja las demás apps sin poder abrirse. En Android 4 a 9 sí puedes usar esa opción.\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.")
             .setPositiveButton("Entendido", null)
             .show();
     }

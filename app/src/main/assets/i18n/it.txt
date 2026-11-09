@@ -397,7 +397,7 @@ No volver a preguntar	Non chiedere più
 Elige StradaOS y toca «Siempre»	Scegli StradaOS e tocca «Sempre»
 Listo: StradaOS es tu pantalla de inicio	Fatto: StradaOS è la tua schermata home
 Fijar StradaOS a mano	Imposta StradaOS a mano
-Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. En algunas marcas está en los ajustes de fábrica como «Launcher», «Interfaz» o «UI».\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Alcuni schermi non mostrano l'elenco da cui scegliere. Prova così:\n\n1. Tocca il pulsante Home (la casetta) dello schermo. Se chiede quale app usare, scegli StradaOS → Sempre.\n2. Se non chiede: nelle impostazioni dello schermo cerca App → App predefinite → App Home e scegli StradaOS.\n3. Su alcune marche si trova nelle impostazioni di fabbrica come «Launcher», «Interfaccia» o «UI».\n\nSe il tuo schermo torna sempre al menu di fabbrica all'accensione, attiva «Apri StradaOS all'accensione» in Impostazioni → Sistema.
+Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. Con Android 10 o más nuevo, no lo elijas desde el modo fábrica de la pantalla («Launcher», «Interfaz» o «UI»): en algunas marcas eso deja las demás apps sin poder abrirse. En Android 4 a 9 sí puedes usar esa opción.\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Alcuni schermi non mostrano l'elenco da cui scegliere. Prova così:\n\n1. Tocca il pulsante Home (la casetta) dello schermo. Se chiede quale app usare, scegli StradaOS → Sempre.\n2. Se non chiede: nelle impostazioni dello schermo cerca App → App predefinite → App Home e scegli StradaOS.\n3. Con Android 10 o più recente, non sceglierlo dalla modalità di fabbrica dello schermo («Launcher», «Interfaccia» o «UI»): su alcune marche le altre app non si aprono più. Con Android da 4 a 9 puoi usare quell'opzione.\n\nSe il tuo schermo torna sempre al menu di fabbrica all'accensione, attiva «Apri StradaOS all'accensione» in Impostazioni → Sistema.
 Pantalla de inicio	Schermata home
 La que aparece al encender y al tocar Inicio	Quella che appare all'accensione e toccando Home
 StradaOS ✓	StradaOS ✓
@@ -479,3 +479,18 @@ Se muestran todas las apps	Tutte le app sono visibili
 Apps ocultas: {}	App nascoste: {}
 # 2.14: desinstalar desde el cajón
 Desinstalar	Disinstalla
+# 2.14: salir de StradaOS (issue #9)
+Salir de StradaOS	Esci da StradaOS
+Abrir el launcher de fábrica	Apri il launcher di fabbrica
+Sale de StradaOS sin desinstalarlo	Esce da StradaOS senza disinstallarla
+Desactivar StradaOS	Disattiva StradaOS
+Si la pantalla quedó atrapada en StradaOS: se apaga solo, sin ventanas de Android	Se lo schermo è rimasto bloccato su StradaOS: si spegne da sola, senza finestre di Android
+Desinstalar StradaOS	Disinstalla StradaOS
+Android pide confirmar	Android chiede conferma
+No encontré otra pantalla de inicio en este equipo	Non ho trovato un'altra schermata home su questo dispositivo
+¿Cuál es el launcher de fábrica?	Qual è il launcher di fabbrica?
+No se pudo abrir	Impossibile aprire
+No encontré otra pantalla de inicio: StradaOS no se puede desactivar en este equipo	Non ho trovato un'altra schermata home: StradaOS non si può disattivare su questo dispositivo
+¿Desactivar StradaOS?	Disattivare StradaOS?
+StradaOS deja de ser la pantalla de inicio, ya no se abre al encender y vuelve el launcher de fábrica. No pide confirmaciones de Android, así que sirve aunque la pantalla haya quedado atrapada.\n\nPara volver a usarlo después: desinstálalo desde los ajustes de la pantalla e instálalo de nuevo.	StradaOS smette di essere la schermata home, non si apre più all'accensione e torna il launcher di fabbrica. Non chiede conferme ad Android, quindi funziona anche se lo schermo è rimasto bloccato.\n\nPer usarla di nuovo: disinstallala dalle impostazioni dello schermo e reinstallala.
+Desactivar	Disattiva

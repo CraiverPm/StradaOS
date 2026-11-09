@@ -397,7 +397,7 @@ No volver a preguntar	Don't ask again
 Elige StradaOS y toca «Siempre»	Choose StradaOS and tap “Always”
 Listo: StradaOS es tu pantalla de inicio	Done: StradaOS is your home screen
 Fijar StradaOS a mano	Set StradaOS manually
-Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. En algunas marcas está en los ajustes de fábrica como «Launcher», «Interfaz» o «UI».\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Some screens don't show the list to choose from. Try this:\n\n1. Tap the screen's Home button (the house). If it asks which app to use, choose StradaOS → Always.\n2. If it doesn't ask: in the screen's settings look for Apps → Default apps → Home app and choose StradaOS.\n3. On some brands it's in the factory settings as “Launcher”, “Interface” or “UI”.\n\nIf your screen always goes back to its factory menu when it starts, turn on “Open StradaOS at startup” in Settings → System.
+Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. Con Android 10 o más nuevo, no lo elijas desde el modo fábrica de la pantalla («Launcher», «Interfaz» o «UI»): en algunas marcas eso deja las demás apps sin poder abrirse. En Android 4 a 9 sí puedes usar esa opción.\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Some screens don't show the list to choose from. Try this:\n\n1. Tap the screen's Home button (the house). If it asks which app to use, choose StradaOS → Always.\n2. If it doesn't ask: in the screen's settings look for Apps → Default apps → Home app and choose StradaOS.\n3. On Android 10 or newer, don't choose it from the screen's factory mode (“Launcher”, “Interface” or “UI”): on some brands that leaves other apps unable to open. On Android 4 to 9 you can use that option.\n\nIf your screen always goes back to its factory menu when it starts, turn on “Open StradaOS at startup” in Settings → System.
 Pantalla de inicio	Home screen
 La que aparece al encender y al tocar Inicio	The one that shows at startup and when you tap Home
 StradaOS ✓	StradaOS ✓
@@ -479,3 +479,18 @@ Se muestran todas las apps	All apps are shown
 Apps ocultas: {}	Hidden apps: {}
 # 2.14: desinstalar desde el cajón
 Desinstalar	Uninstall
+# 2.14: salir de StradaOS (issue #9)
+Salir de StradaOS	Leave StradaOS
+Abrir el launcher de fábrica	Open the factory launcher
+Sale de StradaOS sin desinstalarlo	Leaves StradaOS without uninstalling it
+Desactivar StradaOS	Disable StradaOS
+Si la pantalla quedó atrapada en StradaOS: se apaga solo, sin ventanas de Android	If the screen got stuck on StradaOS: it turns itself off, with no Android pop-ups
+Desinstalar StradaOS	Uninstall StradaOS
+Android pide confirmar	Android asks for confirmation
+No encontré otra pantalla de inicio en este equipo	I couldn't find another home screen on this device
+¿Cuál es el launcher de fábrica?	Which one is the factory launcher?
+No se pudo abrir	Couldn't open it
+No encontré otra pantalla de inicio: StradaOS no se puede desactivar en este equipo	I couldn't find another home screen: StradaOS can't be disabled on this device
+¿Desactivar StradaOS?	Disable StradaOS?
+StradaOS deja de ser la pantalla de inicio, ya no se abre al encender y vuelve el launcher de fábrica. No pide confirmaciones de Android, así que sirve aunque la pantalla haya quedado atrapada.\n\nPara volver a usarlo después: desinstálalo desde los ajustes de la pantalla e instálalo de nuevo.	StradaOS stops being the home screen, no longer opens at startup and the factory launcher comes back. It doesn't need Android confirmations, so it works even if the screen got stuck.\n\nTo use it again later: uninstall it from the screen's settings and install it again.
+Desactivar	Disable

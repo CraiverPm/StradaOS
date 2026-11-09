@@ -397,7 +397,7 @@ No volver a preguntar	Jangan tanya lagi
 Elige StradaOS y toca «Siempre»	Pilih StradaOS dan ketik «Sentiasa»
 Listo: StradaOS es tu pantalla de inicio	Siap: StradaOS ialah skrin utama anda
 Fijar StradaOS a mano	Tetapkan StradaOS manual
-Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. En algunas marcas está en los ajustes de fábrica como «Launcher», «Interfaz» o «UI».\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Sesetengah skrin tidak menunjukkan senarai pilihan. Cuba begini:\n\n1. Ketik butang Utama (rumah) skrin. Jika ditanya aplikasi mana, pilih StradaOS → Sentiasa.\n2. Jika tidak ditanya: dalam tetapan skrin cari Aplikasi → Aplikasi lalai → Skrin utama (atau «Aplikasi utama») dan pilih StradaOS.\n3. Pada sesetengah jenama ia dalam tetapan kilang sebagai «Launcher», «Antara muka» atau «UI».\n\nJika skrin anda sentiasa kembali ke menu kilang semasa dihidupkan, hidupkan «Buka StradaOS semasa dihidupkan» dalam Tetapan → Sistem.
+Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. Con Android 10 o más nuevo, no lo elijas desde el modo fábrica de la pantalla («Launcher», «Interfaz» o «UI»): en algunas marcas eso deja las demás apps sin poder abrirse. En Android 4 a 9 sí puedes usar esa opción.\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Sesetengah skrin tidak menunjukkan senarai pilihan. Cuba begini:\n\n1. Ketik butang Utama (rumah) skrin. Jika ditanya aplikasi mana, pilih StradaOS → Sentiasa.\n2. Jika tidak ditanya: dalam tetapan skrin cari Aplikasi → Aplikasi lalai → Skrin utama (atau «Aplikasi utama») dan pilih StradaOS.\n3. Pada Android 10 atau lebih baharu, jangan pilihnya dari mod kilang skrin («Launcher», «Antara muka» atau «UI»): pada sesetengah jenama, aplikasi lain tidak dapat dibuka. Pada Android 4 hingga 9 anda boleh guna pilihan itu.\n\nJika skrin anda sentiasa kembali ke menu kilang semasa dihidupkan, hidupkan «Buka StradaOS semasa dihidupkan» dalam Tetapan → Sistem.
 Pantalla de inicio	Skrin utama
 La que aparece al encender y al tocar Inicio	Yang muncul semasa dihidupkan dan bila ketik Utama
 StradaOS ✓	StradaOS ✓
@@ -479,3 +479,18 @@ Se muestran todas las apps	Semua aplikasi dipaparkan
 Apps ocultas: {}	Aplikasi tersembunyi: {}
 # 2.14: desinstalar desde el cajón
 Desinstalar	Nyahpasang
+# 2.14: salir de StradaOS (issue #9)
+Salir de StradaOS	Keluar dari StradaOS
+Abrir el launcher de fábrica	Buka pelancar kilang
+Sale de StradaOS sin desinstalarlo	Keluar dari StradaOS tanpa menyahpasangnya
+Desactivar StradaOS	Nyahaktifkan StradaOS
+Si la pantalla quedó atrapada en StradaOS: se apaga solo, sin ventanas de Android	Jika skrin tersekat pada StradaOS: ia mematikan dirinya sendiri, tanpa tetingkap Android
+Desinstalar StradaOS	Nyahpasang StradaOS
+Android pide confirmar	Android meminta pengesahan
+No encontré otra pantalla de inicio en este equipo	Tiada skrin utama lain ditemui pada peranti ini
+¿Cuál es el launcher de fábrica?	Yang mana pelancar kilang?
+No se pudo abrir	Tidak dapat dibuka
+No encontré otra pantalla de inicio: StradaOS no se puede desactivar en este equipo	Tiada skrin utama lain ditemui: StradaOS tidak boleh dinyahaktifkan pada peranti ini
+¿Desactivar StradaOS?	Nyahaktifkan StradaOS?
+StradaOS deja de ser la pantalla de inicio, ya no se abre al encender y vuelve el launcher de fábrica. No pide confirmaciones de Android, así que sirve aunque la pantalla haya quedado atrapada.\n\nPara volver a usarlo después: desinstálalo desde los ajustes de la pantalla e instálalo de nuevo.	StradaOS tidak lagi menjadi skrin utama, tidak dibuka semasa dihidupkan dan pelancar kilang kembali. Ia tidak memerlukan pengesahan Android, jadi ia berfungsi walaupun skrin tersekat.\n\nUntuk menggunakannya semula: nyahpasang dari tetapan skrin dan pasang semula.
+Desactivar	Nyahaktifkan

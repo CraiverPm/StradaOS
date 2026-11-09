@@ -397,7 +397,7 @@ No volver a preguntar	Nicht mehr fragen
 Elige StradaOS y toca «Siempre»	Wähle StradaOS und tippe auf „Immer“
 Listo: StradaOS es tu pantalla de inicio	Fertig: StradaOS ist dein Startbildschirm
 Fijar StradaOS a mano	StradaOS manuell festlegen
-Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. En algunas marcas está en los ajustes de fábrica como «Launcher», «Interfaz» o «UI».\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Manche Bildschirme zeigen keine Auswahlliste. Versuch es so:\n\n1. Tippe auf die Home-Taste (das Häuschen) des Bildschirms. Wenn gefragt wird, welche App verwendet werden soll, wähle StradaOS → Immer.\n2. Wenn nicht gefragt wird: Suche in den Einstellungen des Bildschirms Apps → Standard-Apps → Startbildschirm-App und wähle StradaOS.\n3. Bei manchen Marken steht es in den Werkseinstellungen als „Launcher“, „Oberfläche“ oder „UI“.\n\nWenn dein Bildschirm beim Einschalten immer ins Werksmenü zurückkehrt, aktiviere „StradaOS beim Einschalten öffnen“ unter Einstellungen → System.
+Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. Con Android 10 o más nuevo, no lo elijas desde el modo fábrica de la pantalla («Launcher», «Interfaz» o «UI»): en algunas marcas eso deja las demás apps sin poder abrirse. En Android 4 a 9 sí puedes usar esa opción.\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Manche Bildschirme zeigen keine Auswahlliste. Versuch es so:\n\n1. Tippe auf die Home-Taste (das Häuschen) des Bildschirms. Wenn gefragt wird, welche App verwendet werden soll, wähle StradaOS → Immer.\n2. Wenn nicht gefragt wird: Suche in den Einstellungen des Bildschirms Apps → Standard-Apps → Startbildschirm-App und wähle StradaOS.\n3. Ab Android 10 nicht über den Werksmodus des Bildschirms wählen („Launcher“, „Oberfläche“ oder „UI“): bei manchen Marken lassen sich dann andere Apps nicht mehr öffnen. Unter Android 4 bis 9 kannst du diese Option nutzen.\n\nWenn dein Bildschirm beim Einschalten immer ins Werksmenü zurückkehrt, aktiviere „StradaOS beim Einschalten öffnen“ unter Einstellungen → System.
 Pantalla de inicio	Startbildschirm
 La que aparece al encender y al tocar Inicio	Der, der beim Einschalten und beim Tippen auf Home erscheint
 StradaOS ✓	StradaOS ✓
@@ -479,3 +479,18 @@ Se muestran todas las apps	Alle Apps werden angezeigt
 Apps ocultas: {}	Ausgeblendete Apps: {}
 # 2.14: desinstalar desde el cajón
 Desinstalar	Deinstallieren
+# 2.14: salir de StradaOS (issue #9)
+Salir de StradaOS	StradaOS verlassen
+Abrir el launcher de fábrica	Werks-Launcher öffnen
+Sale de StradaOS sin desinstalarlo	Verlässt StradaOS, ohne es zu deinstallieren
+Desactivar StradaOS	StradaOS deaktivieren
+Si la pantalla quedó atrapada en StradaOS: se apaga solo, sin ventanas de Android	Falls der Bildschirm in StradaOS feststeckt: schaltet sich selbst ab, ohne Android-Fenster
+Desinstalar StradaOS	StradaOS deinstallieren
+Android pide confirmar	Android fragt nach einer Bestätigung
+No encontré otra pantalla de inicio en este equipo	Kein anderer Startbildschirm auf diesem Gerät gefunden
+¿Cuál es el launcher de fábrica?	Welcher ist der Werks-Launcher?
+No se pudo abrir	Konnte nicht geöffnet werden
+No encontré otra pantalla de inicio: StradaOS no se puede desactivar en este equipo	Kein anderer Startbildschirm gefunden: StradaOS kann auf diesem Gerät nicht deaktiviert werden
+¿Desactivar StradaOS?	StradaOS deaktivieren?
+StradaOS deja de ser la pantalla de inicio, ya no se abre al encender y vuelve el launcher de fábrica. No pide confirmaciones de Android, así que sirve aunque la pantalla haya quedado atrapada.\n\nPara volver a usarlo después: desinstálalo desde los ajustes de la pantalla e instálalo de nuevo.	StradaOS ist dann nicht mehr der Startbildschirm, öffnet sich nicht mehr beim Einschalten und der Werks-Launcher kehrt zurück. Es braucht keine Android-Bestätigungen und funktioniert daher auch, wenn der Bildschirm feststeckt.\n\nUm es später wieder zu nutzen: in den Einstellungen des Bildschirms deinstallieren und neu installieren.
+Desactivar	Deaktivieren
