@@ -494,3 +494,16 @@ No encontré otra pantalla de inicio: StradaOS no se puede desactivar en este eq
 ¿Desactivar StradaOS?	StradaOS deaktivieren?
 StradaOS deja de ser la pantalla de inicio, ya no se abre al encender y vuelve el launcher de fábrica. No pide confirmaciones de Android, así que sirve aunque la pantalla haya quedado atrapada.\n\nPara volver a usarlo después: desinstálalo desde los ajustes de la pantalla e instálalo de nuevo.	StradaOS ist dann nicht mehr der Startbildschirm, öffnet sich nicht mehr beim Einschalten und der Werks-Launcher kehrt zurück. Es braucht keine Android-Bestätigungen und funktioniert daher auch, wenn der Bildschirm feststeckt.\n\nUm es später wieder zu nutzen: in den Einstellungen des Bildschirms deinstallieren und neu installieren.
 Desactivar	Deaktivieren
+# 2.15: diseño del inicio
+Diseño del inicio	Startbildschirm-Layout
+Reproductor de música	Musikplayer
+Ponlo del lado del conductor para tenerlo a la mano	Auf die Fahrerseite, damit er griffbereit ist
+Derecha	Rechts
+Izquierda	Links
+Tarjeta del vehículo	Fahrzeugkarte
+Si la ocultas, la velocidad pasa arriba y el mapa y el reproductor ganan espacio	Wenn du sie ausblendest, wandert die Geschwindigkeit nach oben und Karte und Player bekommen mehr Platz
+Barra de botones	Tastenleiste
+Lateral: los botones van al costado y todo se ve más grande en pantallas bajas como 1280×480	Seitlich: die Tasten wandern zur Seite und alles wirkt auf niedrigen Bildschirmen wie 1280×480 größer
+Normal	Normal
+Compacta	Kompakt
+Lateral	Seitlich

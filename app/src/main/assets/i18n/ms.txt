@@ -494,3 +494,16 @@ No encontré otra pantalla de inicio: StradaOS no se puede desactivar en este eq
 ¿Desactivar StradaOS?	Nyahaktifkan StradaOS?
 StradaOS deja de ser la pantalla de inicio, ya no se abre al encender y vuelve el launcher de fábrica. No pide confirmaciones de Android, así que sirve aunque la pantalla haya quedado atrapada.\n\nPara volver a usarlo después: desinstálalo desde los ajustes de la pantalla e instálalo de nuevo.	StradaOS tidak lagi menjadi skrin utama, tidak dibuka semasa dihidupkan dan pelancar kilang kembali. Ia tidak memerlukan pengesahan Android, jadi ia berfungsi walaupun skrin tersekat.\n\nUntuk menggunakannya semula: nyahpasang dari tetapan skrin dan pasang semula.
 Desactivar	Nyahaktifkan
+# 2.15: diseño del inicio
+Diseño del inicio	Reka letak skrin utama
+Reproductor de música	Pemain muzik
+Ponlo del lado del conductor para tenerlo a la mano	Letakkannya di sebelah pemandu supaya mudah dicapai
+Derecha	Kanan
+Izquierda	Kiri
+Tarjeta del vehículo	Kad kenderaan
+Si la ocultas, la velocidad pasa arriba y el mapa y el reproductor ganan espacio	Jika disembunyikan, kelajuan dipaparkan di atas dan peta serta pemain mendapat lebih ruang
+Barra de botones	Bar butang
+Lateral: los botones van al costado y todo se ve más grande en pantallas bajas como 1280×480	Sisi: butang dialihkan ke tepi dan semuanya kelihatan lebih besar pada skrin rendah seperti 1280×480
+Normal	Biasa
+Compacta	Padat
+Lateral	Sisi

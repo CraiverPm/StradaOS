@@ -103,8 +103,17 @@ public class Main extends Activity {
     private int builtW, builtH;
     /** Ancho extra (en unidades de 1024x600) en pantallas más anchas. */
     private float ex;
-    static final int[] SIM_W = {0, 1024, 1280, 1920, 2000};
-    static final int[] SIM_H = {0, 600, 720, 720, 1200};
+    // ── diseño del inicio (Bloque 2) ──
+    /** Ancho de la barra lateral de botones (modo «Lateral»). */
+    static final float RAIL = 96;
+    private boolean sideDock, compactDock, playerLeft, showCar;
+    /** x donde empieza el área de tarjetas (con la barra lateral a la izquierda), alto de las tarjetas y arriba del dock. */
+    private float ox, cardH = 380, dockTop = 456;
+    /** Columnas: x de la tarjeta del vehículo, del mapa y del reproductor, y anchos del mapa y del reproductor. */
+    private float carX = 16, mapX = 328, mapW = 420, audX = 760, audW = 248;
+    private TextView topSpeedTv;
+    static final int[] SIM_W = {0, 1024, 1280, 1920, 2000, 1280};
+    static final int[] SIM_H = {0, 600, 720, 720, 1200, 480};
 
     private TextView weatherTv, weatherCityTv;
     private ImageView weatherIc;
@@ -443,7 +452,8 @@ public class Main extends Activity {
      * VALOR: saltar (omite el asistente), inicio, ajustes:N, boton:N (menú del botón N), elegir:N (lista de apps del botón N),
      * cajon (todas las apps), musica (lista de música preferida), asistente, demo-barra (cambia los botones 3 y 4), idioma:es|en|pt|auto,
      * ultimo-aceite / ultimo-alto / unidad-aceite (recordatorio de aceite), ocultas / ocultar-demo / ocultar-limpiar (apps ocultas),
-     * salir-fabrica (abre el launcher de fábrica), desactivar (apaga StradaOS; solo lo usa salida.yml).
+     * salir-fabrica (abre el launcher de fábrica), desactivar (apaga StradaOS; solo lo usa salida.yml),
+     * diseno:izq|der|sinauto|conauto|normal|compacta|lateral|plegar|base (diseño del inicio), sim:5 (1280x480).
      */
     private void testHook(Intent i) {
         if (i == null || !getPackageName().endsWith(".debug")) return;
@@ -463,6 +473,21 @@ public class Main extends Activity {
                 else if ("cajon".equals(v)) openDrawer();
                 else if ("ocultas".equals(v)) manageHidden(null);
                 else if ("salir-fabrica".equals(v)) openFactoryLauncher();
+                else if (v.startsWith("diseno:")) {
+                    // diseno:izq|der|sinauto|conauto|normal|compacta|lateral|base  (base = como viene)
+                    String d = v.substring(7);
+                    SharedPreferences.Editor e = prefs.edit();
+                    if ("izq".equals(d)) e.putString("player_side", "left");
+                    else if ("der".equals(d)) e.putString("player_side", "right");
+                    else if ("sinauto".equals(d)) e.putBoolean("show_car", false);
+                    else if ("conauto".equals(d)) e.putBoolean("show_car", true);
+                    else if ("normal".equals(d) || "compacta".equals(d) || "lateral".equals(d))
+                        e.putString("dock_mode", "lateral".equals(d) ? "side" : "compacta".equals(d) ? "compact" : "normal");
+                    else if ("plegar".equals(d)) e.putBoolean("aa_panel_open", false);
+                    else if ("base".equals(d)) e.remove("player_side").remove("show_car").remove("dock_mode").remove("aa_panel_open");
+                    e.apply();
+                    rebuild();
+                }
                 else if ("desactivar".equals(v) && !otherHomes().isEmpty()) disableSelf(otherHomes().get(0));   // solo instalador.yml
                 else if ("musica".equals(v)) pickFor("music_app", "Música", null);
                 else if ("asistente".equals(v)) wizard();
@@ -683,23 +708,38 @@ public class Main extends Activity {
             root.setPadding(0, 0, 0, 0);
             root.setBackgroundColor(BG);
         }
-        s = Math.min(W / 1024f, H / 600f);
-        // pantallas más anchas que 1024x600 (p. ej. 12,3" 1920x720): el mapa del centro se queda con el espacio extra
-        ex = Math.max(0f, W / s - 1024f);
+        // Diseño del inicio (Ajustes → Apariencia → Diseño del inicio)
+        String dm = prefs.getString("dock_mode", "normal");
+        sideDock = "side".equals(dm);
+        compactDock = "compact".equals(dm);
+        playerLeft = "left".equals(prefs.getString("player_side", "right"));
+        showCar = prefs.getBoolean("show_car", true);
+        // Lienzo virtual: 1024x600. Con la barra lateral los botones salen de abajo y el lienzo queda más bajo
+        // (1128x460): en pantallas bajas y anchas como 1280x480 todo se ve ~30 % más grande.
+        float dw = 1024 + (sideDock ? RAIL + 8 : 0), dh = sideDock ? 460 : 600;
+        s = Math.min(W / dw, H / dh);
+        // pantallas más anchas que el lienzo (p. ej. 12,3" 1920x720): el mapa del centro se queda con el espacio extra
+        ex = Math.max(0f, W / s - dw);
         if (ex < 24) ex = 0;
+        ox = sideDock && playerLeft ? RAIL + 8 : 0;   // la barra lateral va del lado del reproductor (el del conductor)
+        dockTop = sideDock ? dh : compactDock ? 500 : 456;
+        cardH = (sideDock ? 456 : dockTop) - 12 - 64;
+        layoutColumns();
         getWindow().setBackgroundDrawable(new ColorDrawable(sim > 0 ? Color.BLACK : BG));
         board = new FrameLayout(this);
-        FrameLayout.LayoutParams blp = new FrameLayout.LayoutParams((int) ((1024 + ex) * s), (int) (600 * s));
+        FrameLayout.LayoutParams blp = new FrameLayout.LayoutParams((int) ((dw + ex) * s), (int) (dh * s));
         blp.gravity = Gravity.CENTER;
         root.addView(board, blp);
 
-        // franja del dock a todo el ancho (aunque la pantalla no sea 1024x600)
-        View dockBg = new View(this);
-        dockBg.setBackgroundColor(DOCK);
-        FrameLayout.LayoutParams dlp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                (int) (H - ((H - 600 * s) / 2 + 456 * s)) + 1);
-        dlp.gravity = Gravity.BOTTOM;
-        root.addView(dockBg, 0, dlp);
+        if (!sideDock) {
+            // franja del dock a todo el ancho (aunque la pantalla no sea 1024x600)
+            View dockBg = new View(this);
+            dockBg.setBackgroundColor(DOCK);
+            FrameLayout.LayoutParams dlp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    (int) (H - ((H - dh * s) / 2 + dockTop * s)) + 1);
+            dlp.gravity = Gravity.BOTTOM;
+            root.addView(dockBg, 0, dlp);
+        }
 
         buildTop();
         buildCarCard();
@@ -715,6 +755,23 @@ public class Main extends Activity {
         if (settingsCat >= 0) showSettings(settingsCat);
     }
 
+    /**
+     * Columnas del inicio: tarjeta del vehículo (300), mapa (lo que sobra) y reproductor (248; 300 si no hay tarjeta
+     * del vehículo). «Reproductor a la izquierda» las intercambia para dejarlo del lado del conductor.
+     */
+    private void layoutColumns() {
+        float content = 1024 + ex;
+        audW = showCar ? 248 : 300;
+        float carW = showCar ? 300 : 0;
+        float leftW = playerLeft ? audW : carW, rightW = playerLeft ? carW : audW;
+        float x0 = ox + 16;
+        mapX = x0 + (leftW > 0 ? leftW + 12 : 0);
+        mapW = content - 32 - leftW - rightW - (leftW > 0 ? 12 : 0) - (rightW > 0 ? 12 : 0);
+        float rightX = mapX + mapW + 12;
+        carX = playerLeft ? rightX : x0;
+        audX = playerLeft ? x0 : rightX;
+    }
+
     private void buildTop() {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -724,7 +781,14 @@ public class Main extends Activity {
         dateTv.setPadding((int) (12 * s), 0, 0, 0);
         row.addView(timeTv);
         row.addView(dateTv);
-        placeWrap(board, row, 24, 10);
+        topSpeedTv = null;
+        if (!showCar) {
+            // sin tarjeta del vehículo, la velocidad se muestra aquí
+            topSpeedTv = tv("", 15, TEXT, true);
+            topSpeedTv.setPadding((int) (16 * s), 0, 0, 0);
+            row.addView(topSpeedTv);
+        }
+        placeWrap(board, row, ox + 24, 10);
 
         LinearLayout right = new LinearLayout(this);
         right.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
@@ -746,9 +810,9 @@ public class Main extends Activity {
         greetTv = tv("", 15, SOFT, false);
         greetTv.setPadding((int) (14 * s), 0, 0, 0);
         right.addView(greetTv);
-        place(board, right, 400 + ex, 14, 552, 32);
+        place(board, right, ox + 400 + ex, 14, 552, 32);
         View gear = circleIcon("settings", 40, 22, CIRCLE);
-        place(board, gear, 964 + ex, 12, 40, 40);
+        place(board, gear, ox + 964 + ex, 12, 40, 40);
         gear.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { openSettings(); }
         });
@@ -758,7 +822,8 @@ public class Main extends Activity {
     }
 
     private void buildCarCard() {
-        FrameLayout card = card(16, 64, 300, 380, CARD);
+        final FrameLayout card = card(carX, 64, 300, cardH, CARD);
+        final float dy = cardH - 380;   // barra de abajo compacta: la foto crece y la velocidad baja
         carTv = tv(prefs.getString("car_name", "Mi vehículo"), 20, TEXT, true);
         place(card, carTv, 20, 16, 260, 26);
         TextView chip = tv(prefs.getString("car_tag", ""), 11, Color.WHITE, true);
@@ -773,7 +838,7 @@ public class Main extends Activity {
             ImageView car = new ImageView(this);
             car.setImageBitmap(photo);
             car.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            place(card, car, 18, 78, 264, 160);
+            place(card, car, 18, 78, 264, 160 + dy);
             car.setOnLongClickListener(new View.OnLongClickListener() {
                 public boolean onLongClick(View v) { photoMenu(); return true; }
             });
@@ -788,7 +853,7 @@ public class Main extends Activity {
             TextView t = tv("Toca para poner la foto de tu vehículo", 12, MUTED, false);
             t.setPadding(0, (int) (6 * s), 0, 0);
             ph.addView(t);
-            place(card, ph, 18, 82, 264, 152);
+            place(card, ph, 18, 82, 264, 152 + dy);
             ph.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) { pickPhoto(); }
             });
@@ -796,7 +861,7 @@ public class Main extends Activity {
 
         FrameLayout box = new FrameLayout(this);
         box.setBackground(round(INNER, 16));
-        place(card, box, 12, 250, 276, 118);
+        place(card, box, 12, 250 + dy, 276, 118);
 
         LinearLayout lbl = new LinearLayout(this);
         lbl.setGravity(Gravity.CENTER_VERTICAL);
@@ -828,6 +893,8 @@ public class Main extends Activity {
         sv.addView(kmh);
         placeWrap(box, sv, 16, 34);
         buildOilBadge(box);
+        // Oculta: se arma igual (la velocidad y el aceite siguen actualizándose sin fallar) pero no se muestra.
+        if (!showCar) board.removeView(card);
         setGps(false, 0);
     }
 
@@ -1143,7 +1210,7 @@ public class Main extends Activity {
 
     private void buildAaCard() {
         FrameLayout card = new FrameLayout(this);
-        place(board, card, 328, 64, 420 + ex, 380);
+        place(board, card, mapX, 64, mapW, cardH);
         // fondo decorativo mientras no hay GPS; encima, el mapa en vivo
         card.addView(new MapView(this, s, 20 * s), new FrameLayout.LayoutParams(-1, -1));
         if (!prefs.getBoolean("map_live", true)) { liveMap = null; seedLastLocation(); buildAaCardRest(card); return; }
@@ -1178,12 +1245,13 @@ public class Main extends Activity {
             public void onClick(View v) { fixGps(); }
         });
 
-        FrameLayout panel = new FrameLayout(this);
+        final float panelY = cardH - 96, panelW = mapW - 24;
+        final FrameLayout panel = new FrameLayout(this);
         panel.setBackground(round((CARD & 0x00FFFFFF) | 0xEB000000, 16));
-        place(card, panel, 12, 284, 396 + ex, 84);
+        place(card, panel, 12, panelY, panelW, 84);
 
-        View navBtn = circleIcon("map", 52, 26, (CARD & 0x00FFFFFF) | 0xEB000000);
-        place(card, navBtn, 356 + ex, 220, 52, 52);
+        final View navBtn = circleIcon("map", 52, 26, (CARD & 0x00FFFFFF) | 0xEB000000);
+        place(card, navBtn, mapW - 64, panelY - 64, 52, 52);
         navBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { openNavApp(); }
         });
@@ -1191,13 +1259,68 @@ public class Main extends Activity {
             public boolean onLongClick(View v) { pickFor("nav_app", "Navegación"); return true; }
         });
 
+        float btnW = (panelW - 28) / 2;
         View aa = projButton("navigation", "Android Auto", RED, true);
         aaBtnTv = (TextView) aa.getTag();
-        place(panel, aa, 10, 10, 184 + ex / 2, 64);
+        place(panel, aa, 10, 10, btnW, 64);
         View cp = projButton("phone_iphone", "CarPlay", BTN, false);
         cpSubTv = (TextView) cp.getTag();
-        place(panel, cp, 202 + ex / 2, 10, 184 + ex / 2, 64);
+        place(panel, cp, 18 + btnW, 10, btnW, 64);
         aaSubTv = aaBtnTv;
+
+        // Android Auto / CarPlay plegables: una flechita los esconde para ver todo el mapa (Druids07, idea de Andrés).
+        // Tocar o deslizar la flechita hacia arriba los muestra; hacia abajo (o deslizar los botones) los esconde.
+        final FrameLayout handle = new FrameLayout(this);
+        handle.setBackground(round((CARD & 0x00FFFFFF) | 0xEB000000, 11));
+        final ImageView chev = icon("chevron_right", 18);
+        FrameLayout.LayoutParams clp = new FrameLayout.LayoutParams((int) (18 * s), (int) (18 * s));
+        clp.gravity = Gravity.CENTER;
+        handle.addView(chev, clp);
+        place(card, handle, (mapW - 64) / 2, panelY - 28, 64, 24);
+        final float shift = 96 * s;
+        final View[] moving = {panel, navBtn, handle};
+        final boolean open0 = prefs.getBoolean("aa_panel_open", true);
+        for (View v : moving) v.setTranslationY(open0 ? 0 : shift);
+        chev.setRotation(open0 ? 90 : -90);
+        final Runnable[] setOpen = new Runnable[2];   // [0] mostrar, [1] esconder
+        for (int k = 0; k < 2; k++) {
+            final boolean show = k == 0;
+            setOpen[k] = new Runnable() { public void run() {
+                prefs.edit().putBoolean("aa_panel_open", show).apply();
+                for (View v : moving) v.animate().translationY(show ? 0 : shift).setDuration(220);
+                chev.animate().rotation(show ? 90 : -90).setDuration(220);
+            }};
+        }
+        handle.setOnTouchListener(new View.OnTouchListener() {
+            float y0;
+            public boolean onTouch(View v, MotionEvent e) {
+                if (e.getActionMasked() == MotionEvent.ACTION_DOWN) { y0 = e.getRawY(); return true; }
+                if (e.getActionMasked() != MotionEvent.ACTION_UP) return true;
+                float d = e.getRawY() - y0;
+                boolean isOpen = prefs.getBoolean("aa_panel_open", true);
+                if (d < -12 * s) setOpen[0].run();
+                else if (d > 12 * s) setOpen[1].run();
+                else setOpen[isOpen ? 1 : 0].run();
+                return true;
+            }
+        });
+        View.OnTouchListener swipeDown = new View.OnTouchListener() {
+            float x0, y0;
+            public boolean onTouch(View v, MotionEvent e) {
+                if (e.getActionMasked() == MotionEvent.ACTION_DOWN) { x0 = e.getRawX(); y0 = e.getRawY(); return false; }
+                if (e.getActionMasked() != MotionEvent.ACTION_UP) return false;
+                float dx = e.getRawX() - x0, d = e.getRawY() - y0;
+                if (d < 30 * s || d < 2 * Math.abs(dx)) return false;
+                MotionEvent c = MotionEvent.obtain(e);
+                c.setAction(MotionEvent.ACTION_CANCEL);
+                v.onTouchEvent(c);   // que no abra Android Auto/CarPlay
+                c.recycle();
+                setOpen[1].run();
+                return true;
+            }
+        };
+        aa.setOnTouchListener(swipeDown);
+        cp.setOnTouchListener(swipeDown);
 
         aa.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { openAndroidAuto(); }
@@ -1341,30 +1464,32 @@ public class Main extends Activity {
     }
 
     private void buildAudioCard() {
-        FrameLayout card = card(760 + ex, 64, 248, 380, CARD);
+        final FrameLayout card = card(audX, 64, audW, cardH, CARD);
+        // contenido centrado: la tarjeta es más ancha sin la del vehículo y más alta con la barra compacta
+        final float dx = (audW - 248) / 2, dy = (cardH - 380) / 2;
         placeWrap(card, tv("AUDIO", 11, MUTED, true), 18, 14);
         sourceTv = tv("", 11, RED, true);
         sourceTv.setGravity(Gravity.RIGHT);
-        place(card, sourceTv, 80, 14, 150, 16);
+        place(card, sourceTv, audW - 168, 14, 150, 16);
         playerArt = new PlayerArt(this, s, asset("ic/music_note.png"));
-        place(card, playerArt, 34, 34, 180, 180);
+        place(card, playerArt, 34 + dx, 34 + dy, 180, 180);
         trackTv = tv("Nada sonando", 17, TEXT, true);
         trackTv.setGravity(Gravity.CENTER_HORIZONTAL);
-        place(card, trackTv, 14, 222, 220, 24);
+        place(card, trackTv, 14, 222 + dy, audW - 28, 24);
         artistTv = tv("Radio, Bluetooth o USB", 13, MUTED, false);
         artistTv.setGravity(Gravity.CENTER_HORIZONTAL);
-        place(card, artistTv, 14, 250, 220, 20);
+        place(card, artistTv, 14, 250 + dy, audW - 28, 20);
         timePosTv = tv("", 12, MUTED, false);
         timePosTv.setGravity(Gravity.CENTER_HORIZONTAL);
-        place(card, timePosTv, 14, 274, 220, 18);
+        place(card, timePosTv, 14, 274 + dy, audW - 28, 18);
         // botones más grandes (antes 52/64): se tocan mejor con el carro en marcha
         View prev = circleIcon("skip_previous", 60, 30, BTN);
         View play = circleIcon("play_arrow", 74, 36, RED);
         playIc = (ImageView) ((FrameLayout) play).getChildAt(0);
         View next = circleIcon("skip_next", 60, 30, BTN);
-        place(card, prev, 20, 300, 60, 60);
-        place(card, play, 87, 293, 74, 74);
-        place(card, next, 168, 300, 60, 60);
+        place(card, prev, 20 + dx, 300 + dy, 60, 60);
+        place(card, play, 87 + dx, 293 + dy, 74, 74);
+        place(card, next, 168 + dx, 300 + dy, 60, 60);
         final View.OnClickListener goPrev = mediaClick(KeyEvent.KEYCODE_MEDIA_PREVIOUS), goNext = mediaClick(KeyEvent.KEYCODE_MEDIA_NEXT);
         prev.setOnClickListener(goPrev);
         play.setOnClickListener(mediaClick(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
@@ -1467,6 +1592,15 @@ public class Main extends Activity {
     }
 
     private void buildDock() {
+        // tamaños según la barra: normal (como siempre), compacta (menos alta) o lateral (botones al costado)
+        final float cs = sideDock ? 40 : compactDock ? 52 : 64;          // círculo
+        final float lblSize = sideDock ? 10 : compactDock ? 12 : 13, lblPad = sideDock ? 2 : compactDock ? 4 : 8;
+        final float railX = playerLeft ? 16 : 1016 + ex, step = (460 - 24) / 7f;
+        if (sideDock) {
+            View rail = new View(this);
+            rail.setBackground(round(DOCK, 20));
+            place(board, rail, railX, 12, RAIL, 436);
+        }
         for (int i = 0; i < 7; i++) {
             final int idx = i;
             String t = dockTarget(i);
@@ -1483,19 +1617,23 @@ public class Main extends Activity {
                 ImageView iv = new ImageView(this);
                 iv.setImageDrawable(appIc);
                 iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) (44 * s), (int) (44 * s));
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) (cs * 0.69f * s), (int) (cs * 0.69f * s));
                 lp.gravity = Gravity.CENTER;
                 f.addView(iv, lp);
-                b.addView(f, new LinearLayout.LayoutParams((int) (64 * s), (int) (64 * s)));
+                b.addView(f, new LinearLayout.LayoutParams((int) (cs * s), (int) (cs * s)));
             } else {
                 String id = t.startsWith("fn:") ? t.substring(3) : DOCK_DEFAULT[i];
-                b.addView(circleIcon(dockFn(id)[2], 64, 28, CIRCLE), new LinearLayout.LayoutParams((int) (64 * s), (int) (64 * s)));
+                b.addView(circleIcon(dockFn(id)[2], cs, cs * 0.44f, CIRCLE), new LinearLayout.LayoutParams((int) (cs * s), (int) (cs * s)));
             }
-            TextView l = tv(dockName(i), 13, SOFT, false);
+            TextView l = tv(dockName(i), lblSize, SOFT, false);
             l.setGravity(Gravity.CENTER_HORIZONTAL);
-            l.setPadding(0, (int) (8 * s), 0, 0);
+            l.setSingleLine(true);
+            l.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            l.setPadding(0, (int) (lblPad * s), 0, 0);
             b.addView(l, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            place(board, b, 38 + (138 + ex / 6) * i, 474, 120, 110);
+            if (sideDock) { b.setGravity(Gravity.CENTER); place(board, b, railX, 12 + step * i, RAIL, step); }
+            else if (compactDock) place(board, b, 38 + (138 + ex / 6) * i, dockTop + 9, 120, 86);
+            else place(board, b, 38 + (138 + ex / 6) * i, 474, 120, 110);
             b.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) { runDock(idx); }
             });
@@ -1848,6 +1986,7 @@ public class Main extends Activity {
         if (!ok) lastFix = 0;
         float v = useMph() ? kmh * 0.621371f : kmh;
         speedTv.setText(ok ? String.valueOf(Math.round(kmh < 2 ? 0 : v)) : "--");
+        if (topSpeedTv != null) topSpeedTv.setText(ok ? Math.round(kmh < 2 ? 0 : v) + " " + (useMph() ? "mph" : "km/h") : "");
         int gs = ok ? 0 : gpsState();
         gpsTv.setText(ok ? "GPS" : I18n.t(gs == 1 ? "Sin permiso" : gs == 2 ? "GPS apagado" : "Buscando GPS"));
         gpsDot.setBackground(round(ok ? 0xFF3DDC84 : MUTED, 4));
@@ -3006,6 +3145,19 @@ public class Main extends Activity {
                 prefs.edit().putString("theme", i == 1 ? "light" : i == 2 ? "auto" : "dark").apply();
                 applyTheme(); applyAccent(); rebuild();
             }});
+        // Diseño del inicio (Bloque 2: comentarios de Reddit — Druids07, chiripiscuis, bouff1053, iitsFxcuu)
+        LinearLayout lay = section(body, "Diseño del inicio");
+        segmented(lay, "Reproductor de música", "Ponlo del lado del conductor para tenerlo a la mano", new String[]{"Derecha", "Izquierda"},
+            playerLeft ? 1 : 0, new IntCb() { public void on(int i) {
+                prefs.edit().putString("player_side", i == 1 ? "left" : "right").apply(); rebuild();
+            }});
+        toggle(lay, "Tarjeta del vehículo", "Si la ocultas, la velocidad pasa arriba y el mapa y el reproductor ganan espacio", showCar, new IntCb() { public void on(int i) {
+            prefs.edit().putBoolean("show_car", i == 1).apply(); rebuild();
+        }});
+        segmented(lay, "Barra de botones", "Lateral: los botones van al costado y todo se ve más grande en pantallas bajas como 1280×480", new String[]{"Normal", "Compacta", "Lateral"},
+            sideDock ? 2 : compactDock ? 1 : 0, new IntCb() { public void on(int i) {
+                prefs.edit().putString("dock_mode", i == 2 ? "side" : i == 1 ? "compact" : "normal").apply(); rebuild();
+            }});
         LinearLayout a = section(body, "Color de acento");
         LinearLayout r = rowBase(a, "Color", "Botones, anillo del reproductor, ruta y etiquetas");
         LinearLayout dots = new LinearLayout(this);
@@ -3188,13 +3340,13 @@ public class Main extends Activity {
         }});
         // Salidas (issue #9): una pantalla Android 11 quedó atrapada en StradaOS tras elegirlo como launcher desde su
         // modo fábrica (toda app, incluso la ventana de desinstalar, se abría y volvía a StradaOS).
-        LinearLayout ex = section(body, "Salir de StradaOS");
-        row(ex, "Abrir el launcher de fábrica", "Sale de StradaOS sin desinstalarlo", null, new Runnable() { public void run() { openFactoryLauncher(); } });
-        row(ex, "Desactivar StradaOS", "Si la pantalla quedó atrapada en StradaOS: se apaga solo, sin ventanas de Android", null, new Runnable() { public void run() { confirmDisableSelf(); } });
-        row(ex, "Desinstalar StradaOS", "Android pide confirmar", null, new Runnable() { public void run() { uninstallSelf(); } });
+        LinearLayout out = section(body, "Salir de StradaOS");
+        row(out, "Abrir el launcher de fábrica", "Sale de StradaOS sin desinstalarlo", null, new Runnable() { public void run() { openFactoryLauncher(); } });
+        row(out, "Desactivar StradaOS", "Si la pantalla quedó atrapada en StradaOS: se apaga solo, sin ventanas de Android", null, new Runnable() { public void run() { confirmDisableSelf(); } });
+        row(out, "Desinstalar StradaOS", "Android pide confirmar", null, new Runnable() { public void run() { uninstallSelf(); } });
         if (getPackageName().endsWith(".debug")) {
             LinearLayout sm = section(body, "Versión de prueba");
-            segmented(sm, "Simular pantalla", "Para probar otros tamaños en una tablet o celular", new String[]{"Real", "1024×600", "1280×720", "1920×720", "2000×1200"},
+            segmented(sm, "Simular pantalla", "Para probar otros tamaños en una tablet o celular", new String[]{"Real", "1024×600", "1280×720", "1920×720", "2000×1200", "1280×480"},
                 prefs.getInt("sim_screen", 0), new IntCb() { public void on(int i) {
                     prefs.edit().putInt("sim_screen", i).apply(); rebuild(); showSettings(7);
                 }});
