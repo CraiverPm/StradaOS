@@ -108,7 +108,7 @@ public class Main extends Activity {
     static final float RAIL = 96;
     private boolean sideDock, compactDock, playerLeft, showCar;
     /** x donde empieza el área de tarjetas (con la barra lateral a la izquierda), alto de las tarjetas y arriba del dock. */
-    private float ox, cardH = 380, dockTop = 456;
+    private float ox, cardH = 380, dockTop = 456, boardH = 600;
     /** Columnas: x de la tarjeta del vehículo, del mapa y del reproductor, y anchos del mapa y del reproductor. */
     private float carX = 16, mapX = 328, mapW = 420, audX = 760, audW = 248;
     private TextView topSpeedTv;
@@ -721,9 +721,13 @@ public class Main extends Activity {
         // pantallas más anchas que el lienzo (p. ej. 12,3" 1920x720): el mapa del centro se queda con el espacio extra
         ex = Math.max(0f, W / s - dw);
         if (ex < 24) ex = 0;
+        // con la barra lateral en pantallas que no son tan bajas (p. ej. 1024x600) las tarjetas crecen hasta llenar
+        // el alto, en vez de dejar franjas vacías arriba y abajo
+        if (sideDock && H / s > dh + 1) dh = H / s;
+        boardH = dh;
         ox = sideDock && playerLeft ? RAIL + 8 : 0;   // la barra lateral va del lado del reproductor (el del conductor)
         dockTop = sideDock ? dh : compactDock ? 500 : 456;
-        cardH = (sideDock ? 456 : dockTop) - 12 - 64;
+        cardH = sideDock ? dh - 80 : dockTop - 76;
         layoutColumns();
         getWindow().setBackgroundDrawable(new ColorDrawable(sim > 0 ? Color.BLACK : BG));
         board = new FrameLayout(this);
@@ -1595,11 +1599,11 @@ public class Main extends Activity {
         // tamaños según la barra: normal (como siempre), compacta (menos alta) o lateral (botones al costado)
         final float cs = sideDock ? 40 : compactDock ? 52 : 64;          // círculo
         final float lblSize = sideDock ? 10 : compactDock ? 12 : 13, lblPad = sideDock ? 2 : compactDock ? 4 : 8;
-        final float railX = playerLeft ? 16 : 1016 + ex, step = (460 - 24) / 7f;
+        final float railX = playerLeft ? 16 : 1016 + ex, step = (boardH - 24) / 7f;
         if (sideDock) {
             View rail = new View(this);
             rail.setBackground(round(DOCK, 20));
-            place(board, rail, railX, 12, RAIL, 436);
+            place(board, rail, railX, 12, RAIL, boardH - 24);
         }
         for (int i = 0; i < 7; i++) {
             final int idx = i;
