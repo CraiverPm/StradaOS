@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acc_desc">Membolehkan StradaOS memaparkan kulit album dan trek Android Auto dengan membaca notifikasi Open Headunit. Ia tidak membaca apa-apa lagi.</string>
+    <string name="acc_label">Kulit album Android Auto</string>
+</resources>

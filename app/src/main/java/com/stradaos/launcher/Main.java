@@ -2279,7 +2279,7 @@ public class Main extends Activity {
         }
     }
 
-    /** Cambia el idioma («auto», «es», «en», «pt») y reconstruye la pantalla. */
+    /** Cambia el idioma («auto», «es», «en», «pt», «it», «de», «ms») y reconstruye la pantalla. */
     private void setLanguage(String code) {
         prefs.edit().putString("lang", code).apply();
         I18n.set(this, "auto".equals(code) ? I18n.system() : code);
@@ -2290,7 +2290,7 @@ public class Main extends Activity {
     private void wizard() {
         int sel = Math.max(0, java.util.Arrays.asList(I18n.CODES).indexOf(I18n.lang));
         wizardDlg = new android.app.AlertDialog.Builder(this, dlg())
-            .setTitle("Idioma · Language · Lingua · Sprache")
+            .setTitle("Idioma · Language · Lingua · Sprache · Bahasa")
             .setSingleChoiceItems(I18n.NAMES, sel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface d, int w) {
                     d.dismiss();

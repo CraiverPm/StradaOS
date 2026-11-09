@@ -1,0 +1,457 @@
+# StradaOS · terjemahan ms. Format: español	terjemahan. Lihat I18n.java.
+Radio	Radio
+Cámara	Kamera
+Archivos	Fail
+Ajustes	Tetapan
+Música	Muzik
+Navegación	Navigasi
+Navegador	Pelayar
+Navegador web	Pelayar web
+Equipo	Unit utama
+Elige primero la app de música Bluetooth	Pilih dahulu aplikasi muzik Bluetooth
+Música Bluetooth	Muzik Bluetooth
+No se pudo abrir la app	Tidak dapat membuka aplikasi
+Mi app	Aplikasi saya
+Mi vehículo	Kenderaan saya
+Toca para poner la foto de tu vehículo	Ketik untuk letak gambar kenderaan anda
+Velocidad	Kelajuan
+Diagnóstico del mapa	Diagnostik peta
+Buscando GPS…	Mencari GPS…
+Buscando GPS	Mencari GPS
+En vivo · sin internet	Langsung · tanpa internet
+Última posición · sin internet	Lokasi terakhir · tanpa internet
+Mapa en vivo	Peta langsung
+Última posición conocida	Lokasi terakhir diketahui
+Nada sonando	Tiada sedang dimainkan
+Radio, Bluetooth o USB	Radio, Bluetooth atau USB
+Internet desde la pantalla	Internet dari skrin
+No se pudo abrir «{}». Déjalo presionado para elegir otra app.	Tidak dapat membuka «{}». Tekan lama untuk pilih aplikasi lain.
+Botón {} · {}	Butang {} · {}
+Cambiar app o función	Tukar aplikasi atau fungsi
+Cambiar el nombre	Tukar nama
+Restablecer ({})	Tetapkan semula ({})
+Botón restablecido	Butang ditetapkan semula
+Cerrar	Tutup
+Cerrar  ✕	Tutup  ✕
+★  Funciones de StradaOS (Música, Navegación, Android Auto…)	★  Fungsi StradaOS (Muzik, Navigasi, Android Auto…)
+¿Qué abre el botón {}?	Apakah yang dibuka butang {}?
+Función del botón {}	Fungsi butang {}
+Nombre del botón {} (vacío = el de la app)	Nama butang {} (kosong = nama aplikasi)
+Guardar	Simpan
+Cancelar	Batal
+Guardado: {}	Disimpan: {}
+Elige tu app de música	Pilih aplikasi muzik anda
+Elige tu app de navegación	Pilih aplikasi navigasi anda
+Automático · {}	Automatik · {}
+{}\n    → {}	{}\n    → {}
+Buenos días	Selamat pagi
+Buenas tardes	Selamat petang
+Buenas noches	Selamat malam
+Diagnóstico del reproductor	Diagnostik pemain
+Accesibilidad	Kebolehcapaian
+Activa «Carátula de Android Auto» (StradaOS)	Hidupkan «Kulit album Android Auto» (StradaOS)
+No se pudo abrir Accesibilidad	Tidak dapat membuka Kebolehcapaian
+Activa «Pista actual de AA» en Open Headunit	Hidupkan «Trek semasa AA» dalam Open Headunit
+«Ninguna aplic. funciona con este accesorio USB»	«Tiada aplikasi berfungsi dengan aksesori USB ini»
+Ese aviso lo causa una app de espejo de fábrica (EasyConnection/CarbitLink) que toma el USB antes que la app que elegiste.\n\n1. Desconecta el celular.\n2. Ajustes → Aplicaciones → EasyConnection → «Borrar datos».\n3. Apaga y enciende el carro.\n4. En Open Headunit → USB, si tu celular aparece como «Ignorado», tócalo para permitirlo.	Notis itu berpunca daripada aplikasi cerminan kilang (EasyConnection/CarbitLink) yang mengambil USB sebelum aplikasi pilihan anda.\n\n1. Cabut telefon.\n2. Tetapan → Aplikasi → EasyConnection → «Padam data».\n3. Matikan dan hidupkan semula kereta.\n4. Dalam Open Headunit → USB, jika telefon anda tertera sebagai «Diabaikan», ketik untuk benarkan.
+Abrir EasyConnection	Buka EasyConnection
+No hay apps de espejo instaladas	Tiada aplikasi cerminan dipasang
+Exportando… puede tardar un minuto	Mengeksport… mungkin ambil masa seminit
+Diagnóstico listo	Diagnostik siap
+Se guardó en:\n{}\n\nCopia la carpeta StradaDiag a una memoria USB y adjúntala en un «issue» del repositorio de StradaOS en GitHub.	Disimpan di:\n{}\n\nSalin folder StradaDiag ke pemacu USB dan lampirkannya dalam «issue» repositori StradaOS di GitHub.
+12 horas	12 jam
+24 horas	24 jam
+Automático	Automatik
+Automática	Automatik
+Auto	Auto
+12 horas (a.m./p.m.)	12 jam (a.m./p.m.)
+Formato de hora	Format masa
+Se aplicará al reiniciar StradaOS	Berkesan selepas StradaOS dimulakan semula
+Rojo	Merah
+Naranja	Oren
+Amarillo	Kuning
+Verde	Hijau
+Turquesa	Firuz
+Azul	Biru
+Morado	Ungu
+Rosa	Merah jambu
+Plata	Perak
+Bienvenido a StradaOS	Selamat datang ke StradaOS
+Vamos a dejar el launcher a tu gusto: tu nombre, tu vehículo, el color y la foto. Toma menos de un minuto y lo puedes cambiar después en el engranaje ⚙.	Mari sesuaikan pelancar ikut citarasa anda: nama, kenderaan, warna dan gambar anda. Kurang dari seminit dan boleh ditukar kemudian dengan gear ⚙.
+Empezar	Mula
+¿Cómo te llamas?	Siapa nama anda?
+Nombre del vehículo (ej.: Mazda 2, Spark GT)	Nama kenderaan (cth.: Mazda 2, Spark GT)
+Etiqueta corta (versión o placa). Déjalo vacío si no quieres	Label pendek (varian atau plat). Biarkan kosong jika tidak mahu
+Después	Kemudian
+No encontrada	Tidak dijumpai
+¿Qué app abre cada botón?	Aplikasi apa yang dibuka setiap butang?
+Están bien	Dah elok
+Siguiente	Seterusnya
+Color de acento	Warna aksen
+Elegir otra foto	Pilih gambar lain
+Quitar la foto	Buang gambar
+Elegir foto	Pilih gambar
+Foto del vehículo	Gambar kenderaan
+¿De dónde sacamos la foto?	Dari mana ambil gambar?
+Consejo: usa una foto del carro de lado o de frente con fondo liso (blanco, gris o cielo). El fondo se quita solo.	Petua: guna gambar kereta dari sisi atau depan dengan latar polos (putih, kelabu atau langit). Latar akan dibuang sendiri.
+Memoria / USB	Storan / USB
+Galería	Galeri
+Elige la foto	Pilih gambar
+Buscando fotos…	Mencari gambar…
+No encontré fotos (.jpg/.png). Cópialas a la memoria USB o a Download.	Tiada gambar dijumpai (.jpg/.png). Salin ke pemacu USB atau ke Download.
+Quitando el fondo…	Membuang latar…
+No se pudo abrir la imagen	Tidak dapat membuka imej
+No se pudo abrir la imagen: {}	Tidak dapat membuka imej: {}
+La foto ya trae fondo transparente	Gambar sudah berlatar lutsinar
+No se detectó un fondo liso (se usará tal cual)	Tiada latar polos dikesan (akan digunakan seadanya)
+Vista previa · nivel {} de 4	Pratonton · tahap {} daripada 4
+Vista previa · nivel {} de 4 (también quita el reflejo del piso)	Pratonton · tahap {} daripada 4 (turut buang pantulan lantai)
+Usar esta	Guna ini
+Foto guardada	Gambar disimpan
+No se pudo guardar la foto	Tidak dapat menyimpan gambar
+Quitar más fondo	Buang lagi latar
+Quitando más fondo…	Membuang lagi latar…
+No es una imagen válida	Bukan imej yang sah
+App elegida	Aplikasi dipilih
+CarPlay necesita un chip de autenticación de Apple dentro del equipo, así que no se puede activar solo con una app.\n\n• Si tu pantalla trae CarPlay integrado, deja presionado este botón y elige su app (ZLink, CarLink, TLink…).\n• Si no, puedes usar un adaptador CarPlay USB para pantallas Android (tipo Carlinkit/AutoKit): instala su app y este botón la abrirá.	CarPlay memerlukan cip pengesahan Apple dalam unit utama, jadi ia tidak boleh dihidupkan dengan aplikasi sahaja.\n\n• Jika skrin anda ada CarPlay terbina dalam, tekan lama butang ini dan pilih aplikasinya (ZLink, CarLink, TLink…).\n• Jika tidak, anda boleh guna penyesuai CarPlay USB untuk skrin Android (jenis Carlinkit/AutoKit): pasang aplikasinya dan butang ini akan membukanya.
+Entendido	Faham
+Elegir app	Pilih aplikasi
+Volver al inicio	Kembali ke utama
+Tu vehículo	Kenderaan anda
+Apariencia	Penampilan
+Conexión	Sambungan
+Accesos y apps	Pintasan & aplikasi
+Mapa y clima	Peta & cuaca
+Sistema	Sistem
+Acerca de	Perihal
+Datos	Butiran
+Tu nombre	Nama anda
+Aparece en el saludo de la pantalla de inicio	Dipaparkan dalam ucapan skrin utama
+Nombre del vehículo	Nama kenderaan
+Etiqueta	Label
+Versión o placa. Déjala vacía para ocultarla	Varian atau plat. Biarkan kosong untuk sembunyikan
+Etiqueta (vacío para ocultarla)	Label (kosong untuk sembunyikan)
+Foto	Gambar
+Se recorta y se le quita el fondo automáticamente	Dipotong dan latarnya dibuang automatik
+Configurada	Ditetapkan
+Sin foto	Tiada gambar
+Idioma	Bahasa
+Automático: el del sistema	Automatik: ikut sistem
+Tema	Tema
+Modo	Mod
+Automático: claro de 6 a.m. a 6 p.m.	Automatik: cerah 6 pagi hingga 6 petang
+Oscuro	Gelap
+Claro	Cerah
+Color	Warna
+Botones, anillo del reproductor, ruta y etiquetas	Butang, gelang pemain, laluan dan label
+Reloj	Jam
+Celular	Telefon
+Cómo conectar el celular	Cara sambung telefon
+La app que se abre al conectar por USB	Aplikasi yang dibuka bila disambung melalui USB
+Preguntar	Tanya
+App de Android Auto	Aplikasi Android Auto
+Botón naranja de la tarjeta central	Butang oren pada kad tengah
+App de CarPlay	Aplikasi CarPlay
+Requiere pantalla con CarPlay o un adaptador	Perlu skrin dengan CarPlay atau penyesuai
+Ninguna	Tiada
+Ninguno	Tiada
+Ayuda	Bantuan
+El celular dice «Ninguna aplic. funciona…»	Telefon memaparkan «Tiada aplikasi berfungsi…»
+Cómo evitar que EasyConnection tome el USB	Cara elak EasyConnection mengambil USB
+Barra inferior (déjalos presionados en el inicio para cambiarlos)	Bar bawah (tekan lama di utama untuk tukar)
+App: {}	Aplikasi: {}
+Función: {}	Fungsi: {}
+Apps preferidas	Aplikasi pilihan
+Se abre al tocar el reproductor	Dibuka bila ketik pemain
+Toca para elegir	Ketik untuk pilih
+Se abre con el botón del mapa	Dibuka dengan butang peta
+Apps de cada función	Aplikasi setiap fungsi
+La app que hace sonar el Bluetooth (se usa para pasar el sonido)	Aplikasi yang membunyikan Bluetooth (digunakan untuk alih bunyi)
+Revisar todos los botones	Semak semua butang
+Lista rápida de qué abre cada uno, como en el asistente	Senarai ringkas apa yang dibuka setiap satu, seperti dalam wizard
+Restablecer	Tetapkan semula
+Restablecer accesos	Tetapkan semula pintasan
+La barra vuelve a lo de siempre y se buscan las apps de fábrica	Bar kembali seperti biasa dan aplikasi kilang dicari semula
+Accesos restablecidos	Pintasan ditetapkan semula
+Clima	Cuaca
+Mostrar el clima	Tunjuk cuaca
+Arriba, junto al saludo (necesita internet)	Di atas, sebelah ucapan (perlu internet)
+Unidad	Unit
+Ciudad	Bandar
+Vacío = automática por GPS	Kosong = automatik melalui GPS
+{} (GPS)	{} (GPS)
+Ciudad (vacío = automática por GPS)	Bandar (kosong = automatik melalui GPS)
+App de navegación preferida	Aplikasi navigasi pilihan
+Se abre con el botón del mapa (Waze, Maps, OsmAnd…)	Dibuka dengan butang peta (Waze, Maps, OsmAnd…)
+Mapa	Peta
+Brillo del mapa	Kecerahan peta
+Solo en modo oscuro	Mod gelap sahaja
+Bajo	Rendah
+Medio	Sederhana
+Alto	Tinggi
+Fuentes probadas y errores	Sumber dicuba dan ralat
+Mapa no disponible	Peta tidak tersedia
+Fuente del mapa (avanzado)	Sumber peta (lanjutan)
+URL propia con {z}/{x}/{y}	URL sendiri dengan {z}/{x}/{y}
+Personalizada	Tersuai
+URL de teselas {z}/{x}/{y} (vacío = automático)	URL jubin {z}/{x}/{y} (kosong = automatik)
+© colaboradores de OpenStreetMap	© Penyumbang OpenStreetMap
+App de música	Aplikasi muzik
+App de música preferida	Aplikasi muzik pilihan
+Se abre al tocar el reproductor del inicio	Dibuka bila ketik pemain di utama
+Pista en reproducción	Sedang dimainkan
+Carátula de Android Auto	Kulit album Android Auto
+Lee la notificación de Open Headunit (accesibilidad)	Membaca notifikasi Open Headunit (kebolehcapaian)
+Activada	Hidup
+Desactivada	Mati
+Activado	Hidup
+Desactivado	Mati
+Música de cualquier app	Muzik dari mana-mana aplikasi
+Android 5+: acceso a notificaciones	Android 5+: akses notifikasi
+No se pudo abrir el ajuste	Tidak dapat membuka tetapan
+Fuente activa, lector de notificaciones y Bluetooth	Sumber aktif, pembaca notifikasi dan Bluetooth
+Audio Bluetooth	Audio Bluetooth
+Volver al Bluetooth al desconectar Android Auto	Kembali ke Bluetooth bila Android Auto diputuskan
+Al quitar el cable, abre un instante la app de música Bluetooth para que el sonido siga por Bluetooth	Bila kabel dicabut, buka sekejap aplikasi muzik Bluetooth supaya bunyi terus melalui Bluetooth
+Escuchar el Bluetooth	Dengar Bluetooth
+En esta pantalla, toca ▶ en el inicio: StradaOS pasa el sonido a Bluetooth (por ejemplo, si venías de la radio)	Pada skrin ini, ketik ▶ di utama: StradaOS mengalih bunyi ke Bluetooth (contohnya, jika sebelum ini dari radio)
+Pasar a Bluetooth al dar play en el celular (en prueba)	Alih ke Bluetooth bila tekan main di telefon (percubaan)
+Abre un instante «Audio Bluetooth» y vuelve. En algunas pantallas no detecta el play del celular	Buka sekejap «Audio Bluetooth» dan kembali. Sesetengah skrin tidak mengesan main dari telefon
+Probar ahora	Cuba sekarang
+Abre «Audio Bluetooth» un instante y vuelve al inicio	Buka «Audio Bluetooth» sekejap dan kembali ke utama
+Abrir la app de música Bluetooth al conectar el celular	Buka aplikasi muzik Bluetooth bila telefon disambung
+Para pantallas que solo dejan sonar el Bluetooth con su app abierta: la abre un momento y vuelve al inicio	Untuk skrin yang hanya membunyikan Bluetooth dengan aplikasinya dibuka: bukanya sekejap dan kembali ke utama
+App de música Bluetooth	Aplikasi muzik Bluetooth
+La que hace sonar el Bluetooth en esta pantalla	Yang membunyikan Bluetooth pada skrin ini
+Tiempo antes de volver al inicio	Masa sebelum kembali ke utama
+Súbelo si el audio se corta al volver	Naikkannya jika audio terputus semasa kembali
+Abre la app de música Bluetooth y vuelve al inicio	Buka aplikasi muzik Bluetooth dan kembali ke utama
+Avanzado	Lanjutan
+Avisos extra de música	Siaran muzik tambahan
+Nombres de avisos (broadcast) de otros equipos	Nama siaran (broadcast) unit utama lain
+Configurados	Ditetapkan
+Acciones de aviso extra (separadas por coma)	Tindakan siaran tambahan (dipisahkan koma)
+Ajustes del equipo	Tetapan unit utama
+Los ajustes de la pantalla (los de la marca si los tiene)	Tetapan skrin (yang berjenama jika ada)
+Asistente de configuración inicial	Wizard persediaan awal
+Nombre, vehículo, color y foto	Nama, kenderaan, warna dan gambar
+Compatibilidad	Keserasian
+Qué funciona en esta pantalla	Apa yang berfungsi pada skrin ini
+Cada función, desde qué Android sirve y su estado aquí	Setiap fungsi, dari Android mana ia disokong dan statusnya di sini
+Soporte	Sokongan
+Exportar diagnóstico	Eksport diagnostik
+Guarda información de las apps de audio en la memoria interna	Simpan maklumat aplikasi audio ke storan dalaman
+Esta pantalla:	Skrin ini:
+Ojo: la pantalla dice Android {}, pero por dentro es {}.	Perhatian: skrin menyatakan Android {}, tetapi sebenarnya {}.
+Requiere:	Memerlukan:
+Aquí:	Di sini:
+Inicio, mapa, clima, velocímetro	Utama, peta, cuaca, meter kelajuan
+Pista y carátula por Bluetooth	Trek dan kulit album melalui Bluetooth
+app Bluetooth de fábrica detectada	aplikasi Bluetooth kilang dikesan
+depende de la marca	bergantung pada jenama
+Botón ▶ del inicio pasa el sonido a Bluetooth	Butang ▶ di utama mengalih bunyi ke Bluetooth
+Pantallas Clinkway / Autochips	Skrin Clinkway / Autochips
+funciona aunque vengas de la radio	berfungsi walaupun dari radio
+en otras marcas: «Abrir la app de música Bluetooth al conectar»	pada jenama lain: «Buka aplikasi muzik Bluetooth semasa menyambung»
+activado	hidup
+activada	hidup
+desactivado; en algunas pantallas no detecta el play del celular	mati; sesetengah skrin tidak mengesan main dari telefon
+Carátula de Android Auto (Open Headunit)	Kulit album Android Auto (Open Headunit)
+Android 4.1+ · accesibilidad	Android 4.1+ · kebolehcapaian
+falta activar la accesibilidad	kebolehcapaian belum dihidupkan
+Música de cualquier app (Spotify, YouTube…)	Muzik dari mana-mana aplikasi (Spotify, YouTube…)
+falta dar acceso a notificaciones	akses notifikasi belum diberikan
+no disponible en {}	tidak tersedia pada {}
+Android Auto con Open Headunit	Android Auto dengan Open Headunit
+Android 4.1+ · cable USB	Android 4.1+ · kabel USB
+Open Headunit instalado	Open Headunit dipasang
+falta instalar Open Headunit	Open Headunit belum dipasang
+Android Auto / CarPlay de la pantalla	Android Auto / CarPlay skrin
+Si la pantalla lo trae	Jika skrin menyokongnya
+no detectado	tidak dikesan
+Pantalla con CarPlay o adaptador USB	Skrin dengan CarPlay atau penyesuai USB
+Mapa con internet seguro (TLS 1.2)	Peta dengan internet selamat (TLS 1.2)
+Android 4.1+ (StradaOS lo activa)	Android 4.1+ (StradaOS mengaktifkannya)
+en Android 4.x solo algunos servidores de mapas responden	pada Android 4.x hanya sesetengah pelayan peta bertindak balas
+Instalar actualizaciones desde la app	Pasang kemas kini dari aplikasi
+pide permiso «Instalar apps desconocidas»	minta kebenaran «Pasang aplikasi tidak dikenali»
+No hay fallos registrados	Tiada kegagalan direkodkan
+Registro de fallos	Log kegagalan
+Borrar	Padam
+Registro borrado	Log dipadam
+Gratis y de código abierto. Una nueva vida para las pantallas Android del carro.	Percuma dan sumber terbuka. Hayat baharu untuk skrin Android kereta.
+Versión	Versi
+Android de la pantalla	Android skrin
+Real: {} · ver qué funciona aquí	Sebenar: {} · lihat apa yang berfungsi di sini
+Cierres inesperados o bloqueos de StradaOS en esta pantalla	Gantung atau sekat StradaOS yang tidak dijangka pada skrin ini
+Sin fallos	Tiada kegagalan
+Ver	Lihat
+Actualizaciones	Kemas kini
+Instalado desde {}	Dipasang dari {}
+Las actualizaciones llegan por esa app	Kemas kini tiba melalui aplikasi itu
+Avisar también de versiones en GitHub	Maklumkan juga versi di GitHub
+Comprobar actualizaciones automáticamente	Semak kemas kini automatik
+Opcional: las descargas de GitHub no pasan por la revisión de la tienda	Pilihan: muat turun GitHub tidak melalui semakan kedai
+Al abrir StradaOS con internet, una vez al día	Bila StradaOS dibuka dengan internet, sekali sehari
+Actualizaciones desde GitHub	Kemas kini dari GitHub
+Instalaste StradaOS desde {}. Si activas esto, StradaOS revisará una vez al día las versiones publicadas en github.com/{} y te ofrecerá descargarlas desde ahí.\n\nEsas descargas no pasan por la revisión de la tienda. Puede que GitHub tenga una versión un poco antes que la tienda.	Anda memasang StradaOS dari {}. Jika dihidupkan, StradaOS akan menyemak versi yang diterbitkan di github.com/{} sekali sehari dan menawarkan muat turun dari sana.\n\nMuat turun itu tidak melalui semakan kedai. GitHub mungkin ada versi sedikit lebih awal daripada kedai.
+Activar	Hidupkan
+Canal de actualizaciones	Saluran kemas kini
+Buscar actualizaciones	Cari kemas kini
+Aún no se ha comprobado	Belum disemak
+Última comprobación: {}	Semakan terakhir: {}
+Comunidad	Komuniti
+Dar una estrella en GitHub	Beri bintang di GitHub
+Ayuda a que más personas encuentren StradaOS	Bantu lebih ramai temui StradaOS
+Dar una estrella ⭐	Beri bintang ⭐
+Abre el repositorio y toca «Star». ¡Gracias!	Buka repositori dan ketik «Star». Terima kasih!
+Donar	Derma
+Si StradaOS revivió tu pantalla, invítame un café	Jika StradaOS menghidupkan semula skrin anda, belanja saya kopi
+Apoya el proyecto ☕	Sokong projek ☕
+StradaOS es gratis. Las donaciones ayudan a mantenerlo y a probarlo en más pantallas.	StradaOS adalah percuma. Derma membantu mengekalkannya dan mengujinya pada lebih banyak skrin.
+Reportar un problema o sugerir algo	Laporkan masalah atau beri cadangan
+Crea un «issue» en GitHub (adjunta el diagnóstico)	Cipta «issue» di GitHub (lampirkan diagnostik)
+Reportar un problema	Laporkan masalah
+Cuenta tu modelo de pantalla y su versión de Android. Puedes adjuntar la carpeta StradaDiag (Sistema → Exportar diagnóstico).	Nyatakan model skrin dan versi Android anda. Anda boleh lampirkan folder StradaDiag (Sistem → Eksport diagnostik).
+Código fuente	Kod sumber
+Licencia GPL-3.0	Lesen GPL-3.0
+Créditos y licencias	Kredit & lesen
+Licencia	Lesen
+Mapas	Peta
+© colaboradores de OpenStreetMap, OpenTopoMap, Esri	© Penyumbang OpenStreetMap, OpenTopoMap, Esri
+Open Headunit (GPL-3.0) · Android Auto es marca de Google	Open Headunit (GPL-3.0) · Android Auto ialah tanda dagangan Google
+Códigos QR	Kod QR
+Íconos	Ikon
+Certificados raíz	Sijil punca
+Buscando actualizaciones…	Mencari kemas kini…
+No se pudo comprobar	Tidak dapat menyemak
+Esta pantalla no logró conectarse con GitHub ({}). Puedes revisar las versiones desde tu celular:	Skrin ini tidak dapat menyambung ke GitHub ({}). Anda boleh semak versi dari telefon anda:
+Tienes la última versión ({})	Anda ada versi terkini ({})
+Fuentes consultadas:\n{}	Sumber disemak:\n{}
+cifrado no compatible	enkripsi tidak serasi
+sin internet	tanpa internet
+sin internet / DNS	tanpa internet / DNS
+tiempo agotado	masa tamat
+error de red	ralat rangkaian
+tu tienda de apps	kedai aplikasi anda
+Tienes la {} · nueva: {}	Anda ada {} · baharu: {}
+Mejoras y correcciones.	Penambahbaikan dan pembetulan.
+Nueva versión de StradaOS	Versi baharu StradaOS
+Tienes la {} · en GitHub: {}\nActualiza desde {} cuando llegue. Descargar de GitHub omite la revisión de la tienda.	Anda ada {} · di GitHub: {}\nKemas kini dari {} bila tiba. Muat turun dari GitHub melangkau semakan kedai.
+Ver en GitHub	Lihat di GitHub
+Descarga desde GitHub:	Muat turun dari GitHub:
+Descargar e instalar	Muat turun dan pasang
+Descarga la nueva versión desde:	Muat turun versi baharu dari:
+Omitir esta versión	Langkau versi ini
+Más tarde	Kemudian
+Descargando StradaOS {}…	Memuat turun StradaOS {}…
+Descárgala desde tu celular	Muat turun dari telefon anda
+Esta pantalla no pudo descargar el archivo. Escanea el código, descarga el APK y pásalo por USB.	Skrin ini tidak dapat memuat turun fail. Imbas kod, muat turun APK dan pindahkan melalui USB.
+¿Disfrutando StradaOS?	Menikmati StradaOS?
+Si te gusta usar StradaOS, dale una estrella en GitHub. Y si revivió tu pantalla, considera invitarme un café ☕	Jika anda suka menggunakan StradaOS, beri bintang di GitHub. Dan jika ia menghidupkan semula skrin anda, pertimbangkan untuk belanja saya kopi ☕
+Dar una estrella	Beri bintang
+StradaOS es gratis. Las donaciones ayudan a mantenerlo.	StradaOS adalah percuma. Derma membantu mengekalkannya.
+Escanéalo con la cámara de tu celular o entra a:	Imbas dengan kamera telefon anda atau pergi ke:
+Abrir aquí	Buka di sini
+No hay navegador disponible	Tiada pelayar tersedia
+Open Headunit · USB	Open Headunit · USB
+Toca para instalar	Ketik untuk pasang
+Pantalla o adaptador	Skrin atau penyesuai
+Elige la app de ajustes de tu pantalla	Pilih aplikasi tetapan skrin anda
+No se pudieron abrir los ajustes	Tidak dapat membuka tetapan
+No encontré la app de {}. Elígela de la lista.	Aplikasi {} tidak dijumpai. Pilih dari senarai.
+↺  Automático (por defecto)	↺  Automatik (lalai)
+¿Qué app abre «{}»?	Apakah aplikasi yang membuka «{}»?
+Restablecido	Ditetapkan semula
+Esta pantalla no trae Android Auto integrado.\n\nInstala la app gratuita «Open Headunit» (github.com/andreknieriem/headunit-revived): copia su APK en la memoria USB o en Download y vuelve a tocar el botón. Luego conecta el celular por cable USB.	Skrin ini tiada Android Auto terbina dalam.\n\nPasang aplikasi percuma «Open Headunit» (github.com/andreknieriem/headunit-revived): salin APK-nya ke pemacu USB atau ke Download dan ketik butang semula. Kemudian sambung telefon dengan kabel USB.
+Android Auto por cable USB (necesita la app Android Auto en el celular)	Android Auto melalui kabel USB (perlu aplikasi Android Auto di telefon)
+Espejo de pantalla (necesita la app CarbitLink en el celular)	Cerminan skrin (perlu aplikasi CarbitLink di telefon)
+Android Auto / CarPlay integrados en la pantalla	Android Auto / CarPlay terbina dalam skrin
+Otra app…	Aplikasi lain…
+¿Cómo quieres conectar tu celular?	Bagaimana anda mahu sambung telefon anda?
+Conexión: {}. Cámbiala dejando presionado el botón.	Sambungan: {}. Tukarnya dengan menekan lama butang.
+el navegador	pelayar
+«{}» necesita un Android más nuevo que el de esta pantalla. Abro el navegador de fábrica.	«{}» memerlukan Android lebih baharu daripada skrin ini. Membuka pelayar kilang.
+No encontré un navegador. Déjalo presionado para elegir uno.	Tiada pelayar dijumpai. Tekan lama untuk pilih satu.
+Permite «Instalar apps desconocidas» para StradaOS y vuelve a tocar.	Benarkan «Pasang aplikasi tidak dikenali» untuk StradaOS dan ketik semula.
+Activa «Orígenes desconocidos» y vuelve a tocar.	Hidupkan «Sumber tidak dikenali» dan ketik semula.
+No se pudo preparar {}	Tidak dapat menyediakan {}
+No se pudo abrir el instalador para {}	Tidak dapat membuka pemasang untuk {}
+Aplicaciones  ·  Android {} (API {})	Aplikasi · Android {} (API {})
+Despejado	Cerah
+Parcialmente nublado	Sebahagian mendung
+Nublado	Mendung
+Niebla	Kabus
+Llovizna	Renyai
+Lluvia	Hujan
+Nieve	Salji
+Tormenta	Ribut
+Mapa en vivo apagado	Peta langsung dimatikan
+Rendimiento	Prestasi
+Apágalo si la pantalla va lenta: queda un mapa de adorno y el velocímetro sigue funcionando	Matikannya jika skrin perlahan: peta hiasan kekal dan meter kelajuan terus berfungsi
+StradaOS aún no es tu pantalla de inicio	StradaOS belum menjadi skrin utama anda
+Por eso al encender el carro o al tocar Inicio aparece el menú de fábrica.\n\nToca «Fijar ahora», elige StradaOS y luego «Siempre».	Sebab itu menu kilang muncul bila kereta dihidupkan atau bila ketik Utama.\n\nKetik «Tetapkan sekarang», pilih StradaOS kemudian «Sentiasa».
+Fijar ahora	Tetapkan sekarang
+Ahora no	Bukan sekarang
+No volver a preguntar	Jangan tanya lagi
+Elige StradaOS y toca «Siempre»	Pilih StradaOS dan ketik «Sentiasa»
+Listo: StradaOS es tu pantalla de inicio	Siap: StradaOS ialah skrin utama anda
+Fijar StradaOS a mano	Tetapkan StradaOS manual
+Algunas pantallas no muestran la lista para elegir. Prueba así:\n\n1. Toca el botón Inicio (la casita) de la pantalla. Si pregunta qué app usar, elige StradaOS → Siempre.\n2. Si no pregunta: en los ajustes de la pantalla busca Aplicaciones → Aplicaciones predeterminadas → Pantalla de inicio (o «App de inicio») y elige StradaOS.\n3. En algunas marcas está en los ajustes de fábrica como «Launcher», «Interfaz» o «UI».\n\nSi tu pantalla siempre vuelve a su menú de fábrica al encender, activa «Abrir StradaOS al encender» en Ajustes → Sistema.	Sesetengah skrin tidak menunjukkan senarai pilihan. Cuba begini:\n\n1. Ketik butang Utama (rumah) skrin. Jika ditanya aplikasi mana, pilih StradaOS → Sentiasa.\n2. Jika tidak ditanya: dalam tetapan skrin cari Aplikasi → Aplikasi lalai → Skrin utama (atau «Aplikasi utama») dan pilih StradaOS.\n3. Pada sesetengah jenama ia dalam tetapan kilang sebagai «Launcher», «Antara muka» atau «UI».\n\nJika skrin anda sentiasa kembali ke menu kilang semasa dihidupkan, hidupkan «Buka StradaOS semasa dihidupkan» dalam Tetapan → Sistem.
+Pantalla de inicio	Skrin utama
+La que aparece al encender y al tocar Inicio	Yang muncul semasa dihidupkan dan bila ketik Utama
+StradaOS ✓	StradaOS ✓
+Otra · toca para cambiar	Lain · ketik untuk tukar
+Abrir StradaOS al encender	Buka StradaOS semasa dihidupkan
+Para pantallas que siempre arrancan en su menú de fábrica (Android 4 a 9)	Untuk skrin yang sentiasa bermula pada menu kilang (Android 4 hingga 9)
+¿La música Bluetooth se corta o no aparece?	Muzik Bluetooth terputus atau tidak muncul?
+Qué hacer en cada caso	Apa nak buat setiap keadaan
+• Se corta al salir de la app Bluetooth: sal con el botón Inicio (la casita), no con Atrás. Atrás cierra la app de fábrica y con ella la música.\n\n• No suena hasta abrir la app Bluetooth: activa «Abrir la app de música Bluetooth al conectar el celular» (aquí mismo). Abre la app un instante y vuelve al inicio.\n\n• La canción no aparece en el inicio (Android 5 o más nuevo): activa «Música de cualquier app» arriba y dale acceso a notificaciones a StradaOS.\n\n• Revisa en Ajustes → Accesos y apps que «Música Bluetooth» sea la app Bluetooth de tu pantalla.	• Terputus bila keluar dari aplikasi Bluetooth: keluar dengan butang Utama (rumah), bukan Kembali. Kembali menutup aplikasi kilang dan muzik bersamanya.\n\n• Tidak berbunyi sehingga aplikasi Bluetooth dibuka: hidupkan «Buka aplikasi muzik Bluetooth bila telefon disambung» (di sini). Buka aplikasi sekejap dan kembali ke utama.\n\n• Lagu tidak muncul di utama (Android 5 atau lebih baharu): hidupkan «Muzik dari mana-mana aplikasi» di atas dan beri StradaOS akses notifikasi.\n\n• Semak dalam Tetapan → Pintasan & aplikasi bahawa «Muzik Bluetooth» ialah aplikasi Bluetooth skrin anda.
+Sin permiso	Tiada kebenaran
+GPS apagado	GPS dimatikan
+Unidades	Unit
+Automático: mph en EE. UU. y Reino Unido	Automatik: mph di AS dan UK
+Permisos → Ubicación → Permitir	Kebenaran → Lokasi → Benarkan
+Activa la ubicación para StradaOS en los ajustes de la pantalla	Hidupkan lokasi untuk StradaOS dalam tetapan skrin
+Activa la ubicación (GPS)	Hidupkan lokasi (GPS)
+Activa la ubicación (GPS) en los ajustes de la pantalla	Hidupkan lokasi (GPS) dalam tetapan skrin
+Sin permiso de ubicación · toca aquí	Tiada kebenaran lokasi · ketik di sini
+Ubicación apagada · toca aquí	Lokasi dimatikan · ketik di sini
+Sin señal GPS · toca aquí	Tiada isyarat GPS · ketik di sini
+Versión de prueba	Versi ujian
+Simular pantalla	Simulasi skrin
+Para probar otros tamaños en una tablet o celular	Untuk cuba saiz lain pada tablet atau telefon
+Real	Sebenar
+Aceite	Minyak
+Configurar	Persediaan
+¡Cambiar!	Tukar!
+Kilometraje estimado	Odometer anggaran
+Próximo cambio	Pertukaran seterusnya
+Faltan {}	Tinggal {}
+¡Ya toca!	Dah sampai masa!
+Cambio de aceite	Tukar minyak
+Ya hice el cambio de aceite	Saya dah tukar minyak
+Corregir el kilometraje actual	Betulkan odometer semasa
+Cambiar cada cuánto se hace	Tukar kekerapan selang
+Desactivar el recordatorio	Matikan peringatan
+Recordatorio de cambio de aceite	Peringatan tukar minyak
+StradaOS no puede leer el kilometraje del tablero del carro. Escríbelo una vez y StradaOS le irá sumando lo que recorras con el GPS, para avisarte cuando toque el cambio.\n\nDe vez en cuando puedes corregirlo con el valor real del tablero.	StradaOS tidak dapat membaca odometer papan pemuka kereta. Tulis sekali dan StradaOS akan menambah jarak perjalanan anda dengan GPS, untuk mengingatkan bila tiba masa tukar.\n\nSekali-sekala anda boleh betulkannya dengan bacaan sebenar papan pemuka.
+¿A cuántos {} fue el último cambio de aceite?	Berapa {} odometer semasa tukar minyak terakhir?
+Kilometraje actual del tablero	Odometer semasa papan pemuka
+¿Cada cuántos {} cambias el aceite?	Setiap berapa {} anda tukar minyak?
+Escribe un número válido	Tulis nombor yang sah
+Kilometraje del tablero al hacer el cambio	Odometer papan pemuka semasa tukar
+Es hora del cambio de aceite	Masa untuk tukar minyak
+El kilometraje estimado es ≈ {} y ya toca el cambio de aceite (cada {}).	Odometer anggaran ialah ≈ {} dan sudah tiba masa tukar minyak (setiap {}).
+¿Ya lo hiciste?	Dah buat?
+Ya lo hice	Dah buat
+Aún no	Belum lagi
+Se muestra al lado de la velocidad y avisa cuando toca	Dipaparkan sebelah kelajuan dan memberi amaran bila tiba masa
+Kilometraje actual	Odometer semasa
+Estimado con el GPS. Corrígelo con el del tablero cuando quieras	Dianggar dengan GPS. Betulkannya dengan papan pemuka bila-bila masa
+Cada cuánto	Setiap berapa
+Orientación del mapa	Orientasi peta
+El mapa apunta	Peta menghala
+Según tu dirección: gira con el carro mientras te mueves	Ikut arah anda: berpusing dengan kereta semasa bergerak
+Norte arriba	Utara di atas
+Según tu dirección	Ikut arah anda
