@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** Pista en reproducción en Android 5+: cualquier app de música, Android Auto/CarPlay nativos, Bluetooth del sistema. */
@@ -21,6 +22,10 @@ public class MediaWatcher {
     private final Handler ui = new Handler(Looper.getMainLooper());
     private MediaSessionManager msm;
     private MediaController current;
+    /** Todas las sesiones activas, cada una con su escucha: si otra app empieza a sonar (p. ej. un video que
+     *  se puso en segundo plano), el reproductor pasa a ella aunque la lista de sesiones no haya cambiado. */
+    private final List<MediaController> all = new ArrayList<MediaController>();
+    private final List<MediaController.Callback> allCb = new ArrayList<MediaController.Callback>();
 
     public MediaWatcher(Context c, NowPlaying.Listener l) {
         ctx = c.getApplicationContext();
@@ -47,6 +52,42 @@ public class MediaWatcher {
         try { if (msm != null) msm.removeOnActiveSessionsChangedListener(sessions); } catch (Throwable ignored) { }
         if (current != null) try { current.unregisterCallback(cb); } catch (Throwable ignored) { }
         current = null;
+        watchAll(null);
+    }
+
+    private static boolean playing(MediaController m) {
+        try {
+            PlaybackState st = m.getPlaybackState();
+            return st != null && (st.getState() == PlaybackState.STATE_PLAYING || st.getState() == PlaybackState.STATE_BUFFERING);
+        } catch (Throwable e) { return false; }
+    }
+
+    /** Escucha el estado de todas las sesiones (no solo la que se muestra). */
+    private void watchAll(List<MediaController> list) {
+        for (int i = 0; i < all.size(); i++) try { all.get(i).unregisterCallback(allCb.get(i)); } catch (Throwable ignored) { }
+        all.clear();
+        allCb.clear();
+        if (list == null) return;
+        for (final MediaController m : list) {
+            MediaController.Callback c = new MediaController.Callback() {
+                public void onPlaybackStateChanged(PlaybackState st) {
+                    // otra app empezó a sonar y la que se muestra no: pasar a la que suena
+                    if (st != null && st.getState() == PlaybackState.STATE_PLAYING
+                            && (current == null || (!current.getSessionToken().equals(m.getSessionToken()) && !playing(current)))) {
+                        switchTo(m);
+                    }
+                }
+            };
+            try { m.registerCallback(c, ui); all.add(m); allCb.add(c); } catch (Throwable ignored) { }
+        }
+    }
+
+    private void switchTo(MediaController best) {
+        if (current != null && best != null && current.getSessionToken().equals(best.getSessionToken())) { emit(); return; }
+        if (current != null) try { current.unregisterCallback(cb); } catch (Throwable ignored) { }
+        current = best;
+        if (current != null) current.registerCallback(cb, ui);
+        emit();
     }
 
     private final MediaSessionManager.OnActiveSessionsChangedListener sessions = new MediaSessionManager.OnActiveSessionsChangedListener() {
@@ -54,20 +95,20 @@ public class MediaWatcher {
     };
 
     private void pick(List<MediaController> list) {
+        watchAll(list);
         MediaController best = null;
         if (list != null) {
-            for (MediaController m : list) {
-                PlaybackState st = m.getPlaybackState();
-                if (st != null && st.getState() == PlaybackState.STATE_PLAYING) { best = m; break; }
-            }
+            for (MediaController m : list) if (playing(m)) { best = m; break; }
+            // nada suena: se mantiene la que se mostraba si sigue activa; si no, la primera de la lista
+            if (best == null && current != null)
+                for (MediaController m : list) if (m.getSessionToken().equals(current.getSessionToken())) { best = m; break; }
             if (best == null && !list.isEmpty()) best = list.get(0);
         }
-        if (current != null && best != null && current.getSessionToken().equals(best.getSessionToken())) { emit(); return; }
-        if (current != null) try { current.unregisterCallback(cb); } catch (Throwable ignored) { }
-        current = best;
-        if (current != null) current.registerCallback(cb, ui);
-        emit();
+        switchTo(best);
     }
+
+    /** true si hay una sesión activa de cualquier app (aunque esté en pausa). */
+    public boolean hasSession() { return current != null; }
 
     private final MediaController.Callback cb = new MediaController.Callback() {
         public void onMetadataChanged(MediaMetadata m) { emit(); }

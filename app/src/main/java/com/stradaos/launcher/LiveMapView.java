@@ -88,9 +88,32 @@ public class LiveMapView extends View {
         text.setTextSize(10 * s);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         Net.init(c);
-        String custom = c.getSharedPreferences("launcher", 0).getString("map_url", "").trim();
+        sp = c.getSharedPreferences("launcher", 0);
+        String custom = sp.getString("map_url", "").trim();
         URLS[0] = custom;
         if (custom.length() > 0) provider = 0;
+        else if (okCount == 0) {
+            // empezar por la fuente que funcionó la última vez: así, sin internet, se encuentra lo que ya está en caché
+            int saved = sp.getInt("map_provider", 0);
+            if (saved > 0 && saved < URLS.length) provider = saved;
+        }
+    }
+
+    private final android.content.SharedPreferences sp;
+
+    private File tileFile(int pv, int layer, int z, int x, int y) {
+        return new File(dir, pv + "_" + layer + "_" + z + "_" + x + "_" + y + (Main.LIGHT && pv == 5 ? "L" : "") + ".png");
+    }
+
+    /** Tesela guardada de cualquier fuente (sin internet vale cualquiera). Devuelve {bitmap, fuente} o null. */
+    private Object[] cachedAny(int z, int x, int y) {
+        for (int q = 1; q < URLS.length; q++) {
+            File g = tileFile(q, 0, z, x, y);
+            if (!g.exists()) continue;
+            Bitmap b = BitmapFactory.decodeFile(g.getAbsolutePath());
+            if (b != null) return new Object[]{b, q};
+        }
+        return null;
     }
 
     public boolean hasFix() { return !Double.isNaN(lat); }
@@ -286,9 +309,14 @@ public class LiveMapView extends View {
                     File f = new File(dir, k + (Main.LIGHT && Integer.parseInt(k.split("_")[0]) == 5 ? "L" : "") + ".png");
                     String[] p = k.split("_");
                     int pv = Integer.parseInt(p[0]), layer = Integer.parseInt(p[1]);
+                    int z = Integer.parseInt(p[2]), x = Integer.parseInt(p[3]), y = Integer.parseInt(p[4]);
                     if (f.exists()) b = BitmapFactory.decodeFile(f.getAbsolutePath());
+                    // sin internet: no esperar a que falle la descarga si ya hay una tesela guardada de otra fuente
+                    if (b == null && layer == 0 && offline()) {
+                        Object[] any = cachedAny(z, x, y);
+                        if (any != null) { b = (Bitmap) any[0]; pv = (Integer) any[1]; }
+                    }
                     if (b == null) {
-                        int z = Integer.parseInt(p[2]), x = Integer.parseInt(p[3]), y = Integer.parseInt(p[4]);
                         String tpl = layer == 1 ? LABELS[pv] : URLS[pv];
                         if (Main.LIGHT) tpl = tpl.replace("Dark_Gray", "Light_Gray");
                         String url = tpl.replace("{z}", String.valueOf(z)).replace("{x}", String.valueOf(x)).replace("{y}", String.valueOf(y));
@@ -298,7 +326,23 @@ public class LiveMapView extends View {
                         } catch (Throwable ex) {
                             lastError = "[" + NAMES[pv] + "] " + ex;
                             if (layer == 0) ERR[pv] = shortErr(ex);
-                            if (provider == pv && okCount == 0 && layer == 0) {
+                            // Sin internet (no resuelve el nombre) no es culpa de la fuente: no se cambia de fuente,
+                            // y si hay una tesela guardada de otra fuente se muestra esa.
+                            boolean noNet = ex instanceof java.net.UnknownHostException || ex instanceof java.net.ConnectException;
+                            if (layer == 0) {
+                                Object[] any = cachedAny(z, x, y);
+                                if (any != null) {
+                                    netErrors++;
+                                    final Bitmap ab = DARKEN[(Integer) any[1]] && !Main.LIGHT ? darken((Bitmap) any[0], bright) : (Bitmap) any[0];
+                                    final String fk0 = k;
+                                    ui.post(new Runnable() { public void run() {
+                                        synchronized (queue) { pending.remove(fk0); }
+                                        mem.put(fk0, ab); invalidate();
+                                    }});
+                                    continue;
+                                }
+                            }
+                            if (!noNet && provider == pv && okCount == 0 && layer == 0) {
                                 int nx = pv;
                                 do { nx = (nx + 1) % URLS.length; if (nx == 1) rounds++; } while (URLS[nx].length() == 0);
                                 provider = nx;
@@ -307,6 +351,7 @@ public class LiveMapView extends View {
                         }
                         okCount++;
                         if (layer == 0) ERR[pv] = "OK";
+                        if (layer == 0 && pv > 0 && sp.getInt("map_provider", 0) != pv) sp.edit().putInt("map_provider", pv).apply();
                         b = BitmapFactory.decodeByteArray(data, 0, data.length);
                         if (b != null) {
                             FileOutputStream os = new FileOutputStream(f);

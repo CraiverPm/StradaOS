@@ -43,6 +43,7 @@ jobs:
           - { api: 16, arch: x86 }
           - { api: 19, arch: x86 }
           - { api: 21, arch: x86 }
+          - { api: 23, arch: x86 }   # Android 6 real, como las pantallas AC8227L
           - { api: 24, arch: x86 }
           - { api: 28, arch: x86 }
           - { api: 30, arch: x86_64 }

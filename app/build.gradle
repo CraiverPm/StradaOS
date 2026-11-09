@@ -98,7 +98,8 @@ def compileLegacy = tasks.register('compileLegacyRc', JavaCompile) {
     options.compilerArgs += ['-Xlint:-options']
 }
 def legacyJar = tasks.register('legacyRcJar', Jar) {
-    from(compileLegacy) { exclude 'com/stradaos/launcher/RcCallback*' }
+    // solo las clases (antes también entraba previous-compilation-data.bin, el registro de compilación incremental de Gradle)
+    from(compileLegacy.flatMap { it.destinationDirectory }) { exclude 'com/stradaos/launcher/RcCallback*' }
     archiveFileName = 'stradaos-legacy-rc.jar'
     destinationDirectory = layout.buildDirectory.dir('intermediates/hiddenapi')
 }

@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -1353,16 +1354,38 @@ public class Main extends Activity {
         timePosTv = tv("", 12, MUTED, false);
         timePosTv.setGravity(Gravity.CENTER_HORIZONTAL);
         place(card, timePosTv, 14, 274, 220, 18);
-        View prev = circleIcon("skip_previous", 52, 26, BTN);
-        View play = circleIcon("play_arrow", 64, 32, RED);
+        // botones más grandes (antes 52/64): se tocan mejor con el carro en marcha
+        View prev = circleIcon("skip_previous", 60, 30, BTN);
+        View play = circleIcon("play_arrow", 74, 36, RED);
         playIc = (ImageView) ((FrameLayout) play).getChildAt(0);
-        View next = circleIcon("skip_next", 52, 26, BTN);
-        place(card, prev, 30, 304, 52, 52);
-        place(card, play, 92, 298, 64, 64);
-        place(card, next, 166, 304, 52, 52);
-        prev.setOnClickListener(mediaClick(KeyEvent.KEYCODE_MEDIA_PREVIOUS));
+        View next = circleIcon("skip_next", 60, 30, BTN);
+        place(card, prev, 20, 300, 60, 60);
+        place(card, play, 87, 293, 74, 74);
+        place(card, next, 168, 300, 60, 60);
+        final View.OnClickListener goPrev = mediaClick(KeyEvent.KEYCODE_MEDIA_PREVIOUS), goNext = mediaClick(KeyEvent.KEYCODE_MEDIA_NEXT);
+        prev.setOnClickListener(goPrev);
         play.setOnClickListener(mediaClick(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
-        next.setOnClickListener(mediaClick(KeyEvent.KEYCODE_MEDIA_NEXT));
+        next.setOnClickListener(goNext);
+        // deslizar sobre la tarjeta: ← siguiente canción, → anterior (como pasar páginas)
+        card.setOnTouchListener(new View.OnTouchListener() {
+            float x0, y0;
+            public boolean onTouch(View v, MotionEvent e) {
+                if (e.getActionMasked() == MotionEvent.ACTION_DOWN) { x0 = e.getX(); y0 = e.getY(); return false; }
+                if (e.getActionMasked() != MotionEvent.ACTION_UP) return false;
+                float dx = e.getX() - x0, dy = e.getY() - y0;
+                if (Math.abs(dx) < 60 * s || Math.abs(dx) < 2 * Math.abs(dy)) return false;
+                MotionEvent c = MotionEvent.obtain(e);
+                c.setAction(MotionEvent.ACTION_CANCEL);
+                v.onTouchEvent(c);   // que no cuente como toque (abrir la app) ni como toque largo
+                c.recycle();
+                final boolean nextSong = dx < 0;
+                (nextSong ? goNext : goPrev).onClick(v);
+                playerArt.animate().translationX((nextSong ? -24 : 24) * s).setDuration(120).withEndAction(new Runnable() {
+                    public void run() { playerArt.animate().translationX(0).setDuration(160); }
+                });
+                return true;
+            }
+        });
         card.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View v) { showPlayerDiag(); return true; }
         });
@@ -1837,10 +1860,39 @@ public class Main extends Activity {
                 if (mediaWatcher != null && "ms".equals(curOrigin)) {
                     try { done = mediaWatcher.command(which); } catch (Throwable ignored) { }
                 }
+                if (!done && which == 0) done = startMusicApp();
                 if (!done && !sendBtCommand(code)) sendMediaKey(code);
                 h.postDelayed(new Runnable() { public void run() { updatePlayIcon(); } }, 600);
             }
         };
+    }
+
+    /**
+     * ▶ sin nada sonando ni ninguna app de música activa (Android 5+, issue #2): le pide reproducir a la app de música
+     * preferida con su receptor de teclas multimedia y, si en 2,5 s no suena nada, la abre. En Android 4 no se usa:
+     * ahí ▶ es lo que pasa el sonido de la radio al Bluetooth.
+     */
+    private boolean startMusicApp() {
+        if (SDK < 21 || "Bluetooth".equals(curSource) || "Android Auto".equals(curSource)) return false;
+        if (mediaWatcher != null && mediaWatcher.hasSession()) return false;
+        final AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (am.isMusicActive()) return false;
+        String saved = prefs.getString("music_app", null);
+        ComponentName cn = saved != null ? ComponentName.unflattenFromString(saved) : null;
+        final String pkg = cn != null ? cn.getPackageName() : firstInstalled(MUSIC_PKGS);
+        if (pkg == null) return false;
+        long t = SystemClock.uptimeMillis();
+        for (int a : new int[]{KeyEvent.ACTION_DOWN, KeyEvent.ACTION_UP}) {
+            Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+            i.setPackage(pkg);
+            i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(t, t, a, KeyEvent.KEYCODE_MEDIA_PLAY, 0));
+            try { sendBroadcast(i); } catch (Throwable ignored) { }
+        }
+        h.postDelayed(new Runnable() { public void run() {
+            if (am.isMusicActive()) return;
+            if (!launchSaved("music_app")) launchPkg(pkg);
+        }}, 2500);
+        return true;
     }
 
     /** Si suena Bluetooth, controla directamente la app Bluetooth de fábrica (com.clw.btmusic). */
@@ -4055,7 +4107,7 @@ public class Main extends Activity {
                 final ResolveInfo r = shown.get(p);
                 new TB(Main.this, dlg())
                     .setTitle(String.valueOf(r.loadLabel(pm)))
-                    .setItems(new String[]{"Ocultar del cajón", "Información de la app"}, new DialogInterface.OnClickListener() {
+                    .setItems(new String[]{"Ocultar del cajón", "Desinstalar", "Información de la app"}, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface d, int w) {
                             if (w == 0) {
                                 java.util.HashSet<String> h = hiddenApps();
@@ -4064,6 +4116,13 @@ public class Main extends Activity {
                                 toast("Oculta. Para volver a verla: Ajustes → Accesos y apps → Apps ocultas");
                                 closeDrawer();
                                 openDrawer();
+                            } else if (w == 1) {
+                                // Android pide confirmar; las apps del sistema no se pueden quitar (Android lo avisa)
+                                try {
+                                    startActivity(new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + r.activityInfo.packageName))
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    closeDrawer();
+                                } catch (Throwable e) { toast("No se pudo abrir el ajuste"); }
                             } else {
                                 try {
                                     startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
