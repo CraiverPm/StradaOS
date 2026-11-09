@@ -1513,6 +1513,7 @@ public class Main extends Activity {
         sourceTv = tv("", 11, RED, true);
         sourceTv.setGravity(Gravity.RIGHT);
         sourceTv.setSingleLine(true);
+        sourceTv.setPadding(0, 0, (int) (4 * s), 0);   // la última letra en negrita se recortaba en Android 11
         place(card, sourceTv, 70, 14, audW - 88, 18);   // ancho de sobra: en Android 11 «BLUETOOTH» salía cortado
         playerArt = new PlayerArt(this, s, asset("ic/music_note.png"));
         // Tarjeta alta (barra lateral): diseño vertical que llena el alto en vez de dejar espacio vacío (Andrés, Picanto)
