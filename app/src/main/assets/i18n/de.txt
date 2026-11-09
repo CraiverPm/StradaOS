@@ -507,3 +507,6 @@ Lateral: los botones van al costado y todo se ve más grande en pantallas bajas 
 Normal	Normal
 Compacta	Kompakt
 Lateral	Seitlich
+Aceite: configurar	Öl: einrichten
+¡Cambiar aceite!	Ölwechsel fällig!
+Aceite: {}	Öl: {}

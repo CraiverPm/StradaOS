@@ -73,6 +73,10 @@ go diseno:sinauto 6;  shot 44-diseno-sin-vehiculo
 go diseno:compacta 6; shot 45-diseno-compacta
 go diseno:plegar 6;   shot 46-diseno-aa-plegado
 go diseno:lateral 6;  shot 47-diseno-lateral
+go ajustes:2 5;      shot 51-lateral-ajustes
+back
+go cajon 6;          shot 52-lateral-cajon
+back
 go sim:5 6;           shot 48-sim-1280x480-lateral
 go diseno:base 6;     shot 49-sim-1280x480-normal
 go diseno:lateral 6;  shot 50-sim-1280x480-lateral-completa

@@ -507,3 +507,6 @@ Lateral: los botones van al costado y todo se ve más grande en pantallas bajas 
 Normal	Biasa
 Compacta	Padat
 Lateral	Sisi
+Aceite: configurar	Minyak: tetapkan
+¡Cambiar aceite!	Tukar minyak!
+Aceite: {}	Minyak: {}

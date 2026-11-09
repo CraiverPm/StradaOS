@@ -111,7 +111,10 @@ public class Main extends Activity {
     private float ox, cardH = 380, dockTop = 456, boardH = 600;
     /** Columnas: x de la tarjeta del vehículo, del mapa y del reproductor, y anchos del mapa y del reproductor. */
     private float carX = 16, mapX = 328, mapW = 420, audX = 760, audW = 248;
-    private TextView topSpeedTv;
+    private TextView topSpeedTv, topOilTv;
+    /** Escala de 1024x600 para Ajustes, el cajón y sus ventanas: con la barra lateral el inicio se agranda, pero
+     *  esas pantallas deben conservar su tamaño (en un S23 con barra lateral Ajustes quedaba cortado arriba). */
+    private float uiS = 1f;
     static final int[] SIM_W = {0, 1024, 1280, 1920, 2000, 1280};
     static final int[] SIM_H = {0, 600, 720, 720, 1200, 480};
 
@@ -724,6 +727,7 @@ public class Main extends Activity {
         // con la barra lateral en pantallas que no son tan bajas (p. ej. 1024x600) las tarjetas crecen hasta llenar
         // el alto, en vez de dejar franjas vacías arriba y abajo
         if (sideDock && H / s > dh + 1) dh = H / s;
+        uiS = Math.min(W / 1024f, H / 600f);
         boardH = dh;
         ox = sideDock && playerLeft ? RAIL + 8 : 0;   // la barra lateral va del lado del reproductor (el del conductor)
         dockTop = sideDock ? dh : compactDock ? 500 : 456;
@@ -792,6 +796,22 @@ public class Main extends Activity {
             topSpeedTv.setPadding((int) (16 * s), 0, 0, 0);
             row.addView(topSpeedTv);
         }
+        topOilTv = null;
+        if (!showCar) {
+            // …y también el aceite (toca para abrir su menú), para que no se pierda al ocultar la tarjeta
+            topOilTv = tv("", 13, TEXT, true);
+            topOilTv.setBackground(round(CIRCLE, 12));
+            topOilTv.setPadding((int) (10 * s), (int) (4 * s), (int) (12 * s), (int) (4 * s));
+            android.graphics.drawable.BitmapDrawable di = new android.graphics.drawable.BitmapDrawable(getResources(), asset("ic/water_drop.png"));
+            di.setBounds(0, 0, (int) (14 * s), (int) (14 * s));
+            if (ICON != 0xFFFFFFFF) di.setColorFilter(ICON, android.graphics.PorterDuff.Mode.SRC_IN);
+            topOilTv.setCompoundDrawables(di, null, null, null);
+            topOilTv.setCompoundDrawablePadding((int) (6 * s));
+            LinearLayout.LayoutParams olp = new LinearLayout.LayoutParams(-2, -2);
+            olp.leftMargin = (int) (14 * s);
+            row.addView(topOilTv, olp);
+            topOilTv.setOnClickListener(new View.OnClickListener() { public void onClick(View v) { oilMenu(); } });
+        }
         placeWrap(board, row, ox + 24, 10);
 
         LinearLayout right = new LinearLayout(this);
@@ -809,11 +829,14 @@ public class Main extends Activity {
         View sep = new View(this);
         sep.setBackgroundColor(BTN);
         weatherBox.addView(sep, new LinearLayout.LayoutParams(Math.max(1, (int) s), (int) (18 * s)));
+        if (!showCar) sep.setVisibility(View.GONE);   // sin saludo, sin separador
         weatherBox.setVisibility(View.GONE);
         right.addView(weatherBox);
         greetTv = tv("", 15, SOFT, false);
         greetTv.setPadding((int) (14 * s), 0, 0, 0);
         right.addView(greetTv);
+        // sin la tarjeta del vehículo, la velocidad y el aceite ocupan la barra de arriba: el saludo se oculta
+        if (!showCar) greetTv.setVisibility(View.GONE);
         place(board, right, ox + 400 + ex, 14, 552, 32);
         View gear = circleIcon("settings", 40, 22, CIRCLE);
         place(board, gear, ox + 964 + ex, 12, 40, 40);
@@ -996,6 +1019,13 @@ public class Main extends Activity {
 
     private void updateOilBadge() {
         startOdo();
+        if (topOilTv != null) {
+            float l = oilNextKm() - odoKm();
+            float iv = Math.max(1, prefs.getFloat("oil_interval_km", 5000));
+            if (!oilOn()) { topOilTv.setText(I18n.t("Aceite: configurar")); topOilTv.setTextColor(MUTED); }
+            else if (Math.round(toUnit(l)) <= 0) { topOilTv.setText(I18n.t("¡Cambiar aceite!")); topOilTv.setTextColor(RED); }
+            else { topOilTv.setText(I18n.t("Aceite: " + fmtDist(l))); topOilTv.setTextColor(l < iv * 0.1f ? RED : TEXT); }
+        }
         if (oilValTv == null) return;
         if (!oilOn()) {
             oilValTv.setText(I18n.t("Configurar"));
@@ -2916,6 +2946,12 @@ public class Main extends Activity {
     }
 
     private void showSettings(int cat) {
+        float keep = s;
+        s = uiS;
+        try { showSettings0(cat); } finally { s = keep; }
+    }
+
+    private void showSettings0(int cat) {
         if (cat == 0) { closeSettings(); return; }
         settingsCat = cat;
         if (settingsView != null) root.removeView(settingsView);
@@ -4252,6 +4288,12 @@ public class Main extends Activity {
     // ───────────────────────── cajón de apps ─────────────────────────
 
     private void openDrawer() {
+        float keep = s;
+        s = uiS;
+        try { openDrawer0(); } finally { s = keep; }
+    }
+
+    private void openDrawer0() {
         if (drawer != null) return;
         loadApps();
         drawer = new FrameLayout(this);
@@ -4313,6 +4355,8 @@ public class Main extends Activity {
                 ImageView im;
                 TextView lb;
                 if (cv == null) {
+                    float keep = s;
+                    s = uiS;   // las celdas se crean después de abrir el cajón: mismo tamaño que el resto del cajón
                     cell = new LinearLayout(Main.this);
                     cell.setOrientation(LinearLayout.VERTICAL);
                     cell.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -4323,6 +4367,7 @@ public class Main extends Activity {
                     lb.setGravity(Gravity.CENTER);
                     lb.setPadding((int) (4 * s), (int) (8 * s), (int) (4 * s), 0);
                     cell.addView(lb, new LinearLayout.LayoutParams(-1, -2));
+                    s = keep;
                 } else {
                     cell = (LinearLayout) cv;
                     im = (ImageView) cell.getChildAt(0);
@@ -4403,6 +4448,12 @@ public class Main extends Activity {
 
     /** Lista de todas las apps con casillas y buscador para elegir cuáles se ocultan del cajón. */
     private void manageHidden(final Runnable after) {
+        float keep = s;
+        s = uiS;
+        try { manageHidden0(after); } finally { s = keep; }
+    }
+
+    private void manageHidden0(final Runnable after) {
         loadApps();
         final PackageManager pm = getPackageManager();
         final java.util.HashSet<String> sel = hiddenApps();
@@ -4421,6 +4472,11 @@ public class Main extends Activity {
             public Object getItem(int p) { return view.get(p); }
             public long getItemId(int p) { return p; }
             public View getView(int p, View cv, ViewGroup parent) {
+                float keep = s;
+                s = uiS;
+                try { return row(p); } finally { s = keep; }
+            }
+            private View row(int p) {
                 ResolveInfo r = view.get(p);
                 String k = compKey(r);
                 LinearLayout row = new LinearLayout(Main.this);
