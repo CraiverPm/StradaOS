@@ -12,50 +12,31 @@ adb install -r -g prueba.apk | tail -1
 adb shell am start -n $ACT --es prueba saltar >/dev/null; sleep 20
 go() { adb shell am start -n $ACT --es prueba "$1" >/dev/null; sleep "${2:-5}"; }
 go idioma:es 6; go tema:oscuro 6
-# centro de un texto en pantalla (uiautomator): «x y»
-pos() {
-  adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1; adb pull /sdcard/ui.xml /tmp/ui.xml >/dev/null 2>&1
-  python3 - "$1" <<'P'
-import re, sys
-x = open('/tmp/ui.xml', encoding='utf-8').read()
-best = None
-for m in re.finditer(r'text="([^"]*)"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', x):
-    if m.group(1) == sys.argv[1]:
-        a, b, c, d = map(int, m.groups()[1:])
-        if b > 40 and d < 590: best = ((a + c) // 2, (b + d) // 2)   # el último visible (el de más abajo)
-print("%d %d" % best if best else "")
-P
-}
-tap() { p=$(pos "$1"); if [ -n "$p" ]; then echo "toca «$1» en $p"; adb shell input tap $p; else echo "NO ENCONTRADO: $1"; fi; sleep 2; }
-# interruptor de la fila cuyo título es $1 (está a la derecha de la fila)
-sw() { p=$(pos "$1"); if [ -n "$p" ]; then y=${p#* }; echo "interruptor «$1» en y=$y"; adb shell input tap 957 $y; else echo "NO ENCONTRADO: $1"; fi; sleep 2; }
+# Las páginas se desplazan hasta el final, así que las posiciones son fijas (pantalla 1024x600).
+tap() { echo "toca $1 ($2,$3)"; adb shell input tap $2 $3; sleep 2; }
 rec() { adb shell screenrecord --time-limit "$2" --bit-rate 6000000 /sdcard/$1.mp4 & RP=$!; sleep 2; }
 fin() { wait $RP; adb pull /sdcard/$1.mp4 $OUT/$1.mp4 >/dev/null; echo "video $1"; }
 down() { adb shell input swipe 640 480 640 ${1:-180} 500; sleep 2; }
 
-go ajustes:2 6; down
+go ajustes:2 6; down; down
 rec apariencia 24
-tap "24 h"; tap "12 h"; tap "mph"; tap "km/h"; tap "Compacta"; tap "Normal"; sw "Tarjeta del vehículo"; sw "Tarjeta del vehículo"
+tap "24 h" 955 517; tap "12 h" 902 517; tap "mph" 955 409; tap "km/h" 898 409; tap "Compacta" 870 185; tap "Normal" 792 185
+tap "Tarjeta del vehículo" 958 118; tap "Tarjeta del vehículo" 958 118
 fin apariencia
 
-go ajustes:5 6; down; down 300
-rec mapa 22
-tap "Alto"; tap "Bajo"; tap "Medio"; sw "Mapa en vivo"; sw "Mapa en vivo"; tap "Según tu dirección"; tap "Norte arriba"
+go ajustes:5 6; down; down
+rec mapa 14
+tap "Brillo Alto" 958 154; tap "Brillo Bajo" 844 154; tap "Brillo Medio" 901 154
 fin mapa
 
-go ajustes:6 6; down
-rec musica 14
-sw "Volver al Bluetooth al desconectar Android Auto"; sw "Volver al Bluetooth al desconectar Android Auto"; sw "Abrir la app de música Bluetooth al conectar el celular"; sw "Abrir la app de música Bluetooth al conectar el celular"
+go ajustes:6 6; down; down
+rec musica 18
+tap "Volver al Bluetooth" 957 168; tap "Volver al Bluetooth" 957 168; tap "Abrir la app" 957 228; tap "Abrir la app" 957 228; tap "4 s" 957 348; tap "2,5 s" 906 348
 fin musica
 
-go ajustes:1 6; down 330
+go ajustes:1 6
 rec vehiculo 10
-sw "Recordatorio de cambio de aceite"; sw "Recordatorio de cambio de aceite"
+tap "Recordatorio de aceite" 957 449; tap "Recordatorio de aceite" 957 449
 fin vehiculo
-
-go ajustes:7 6; down 300
-rec sistema 10
-sw "Abrir StradaOS al encender"; sw "Abrir StradaOS al encender"
-fin sistema
 adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime: (java|Caused|\tat com.stradaos)" | tail -30 > $OUT/logcat.txt
 ls -l $OUT
