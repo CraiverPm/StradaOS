@@ -3038,8 +3038,12 @@ public class Main extends Activity {
     static final String[] CAT_NAMES = {"Volver al inicio", "Tu vehículo", "Apariencia", "Conexión", "Accesos y apps", "Mapa y clima", "Música", "Sistema", "Acerca de"};
     static final String[] CAT_ICONS = {"arrow_back", "directions_car", "palette", "usb", "apps", "map", "music_note", "tune", "info"};
 
+    private android.widget.ScrollView settingsScroll;
+    private int settingsScrollCat = -1;
+
     private void closeSettings() {
         settingsCat = -1;
+        settingsScroll = null; settingsScrollCat = -1;
         if (settingsView != null) { root.removeView(settingsView); settingsView = null; }
     }
 
@@ -3051,6 +3055,8 @@ public class Main extends Activity {
 
     private void showSettings0(int cat) {
         if (cat == 0) { closeSettings(); return; }
+        // al cambiar un ajuste se redibuja la página: que se quede donde estaba, no que vuelva arriba
+        final int keepY = settingsScroll != null && settingsScrollCat == cat ? settingsScroll.getScrollY() : 0;
         settingsCat = cat;
         if (settingsView != null) root.removeView(settingsView);
         settingsView = new FrameLayout(this);
@@ -3110,9 +3116,11 @@ public class Main extends Activity {
         }
 
         // contenido
-        android.widget.ScrollView sc = new android.widget.ScrollView(this);
+        final android.widget.ScrollView sc = new android.widget.ScrollView(this);
         sc.setVerticalScrollBarEnabled(false);
         place(panel, sc, 272, 16, 736, 568);
+        settingsScroll = sc; settingsScrollCat = cat;
+        if (keepY > 0) sc.post(new Runnable() { public void run() { sc.scrollTo(0, keepY); } });
         LinearLayout body = new LinearLayout(this);
         body.setOrientation(LinearLayout.VERTICAL);
         body.setPadding((int) (8 * s), (int) (6 * s), (int) (8 * s), (int) (24 * s));
@@ -3452,8 +3460,14 @@ public class Main extends Activity {
     }
 
     /** Lista de continentes / países del servidor de mapas. */
+    private boolean askedWrite;
+
     private void chooseMapToDownload(final String folder) {
-        if (folder.length() == 0 && SDK >= 23 && checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+        // Android 6–9: permiso para guardar en Download/StradaOS (se pide una sola vez). Android 10+ no lo tiene para
+        // StradaOS: el mapa va a la carpeta propia de la app, sin pedir nada.
+        if (folder.length() == 0 && SDK >= 23 && SDK <= 28 && !askedWrite
+                && checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            askedWrite = true;
             requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_STORAGE_W);
             return;
         }
