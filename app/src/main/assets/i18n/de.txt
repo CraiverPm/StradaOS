@@ -510,3 +510,27 @@ Lateral	Seitlich
 Aceite: configurar	Öl: einrichten
 ¡Cambiar aceite!	Ölwechsel fällig!
 Aceite: {}	Öl: {}
+Mapa sin conexión	Offline-Karte
+Archivo del mapa	Kartendatei
+Un archivo .map (p. ej. colombia.map) en la memoria de la pantalla o en una USB: el mapa se ve sin internet	Eine .map-Datei (z. B. colombia.map) im Speicher des Bildschirms oder auf einem USB-Stick: die Karte funktioniert ohne Internet
+Error	Fehler
+No se pudo abrir: {}	Konnte nicht geöffnet werden: {}
+Toca para dejar de usarlo	Tippen, um sie nicht mehr zu verwenden
+Mapa sin conexión quitado	Offline-Karte entfernt
+¿Dónde consigo el mapa?	Woher bekomme ich die Karte?
+Mapas gratis de OpenStreetMap por país	Kostenlose OpenStreetMap-Karten nach Land
+Buscando mapas…	Karten werden gesucht…
+No se encontró ningún mapa	Keine Karte gefunden
+No hay archivos .map en la memoria de la pantalla ni en las USB conectadas. Toca «Cómo conseguirlo» para ver de dónde bajarlo.	Weder im Speicher des Bildschirms noch auf angeschlossenen USB-Sticks gibt es .map-Dateien. Tippe auf „So bekommst du sie“, um zu sehen, wo du eine herunterladen kannst.
+Cómo conseguirlo	So bekommst du sie
+Elige el mapa	Karte auswählen
+No se pudo usar este archivo	Diese Datei kann nicht verwendet werden
+Debe ser un mapa de mapsforge (.map) copiado completo.	Es muss eine vollständig kopierte mapsforge-Karte (.map) sein.
+Mapa sin conexión listo: {}	Offline-Karte bereit: {}
+Sin permiso de almacenamiento no se pueden buscar mapas	Ohne Speicherberechtigung können keine Karten gesucht werden
+Última posición · mapa sin conexión	Letzte Position · Offline-Karte
+no se encuentra el archivo	Datei nicht gefunden
+sin permiso para leer el archivo	keine Berechtigung, die Datei zu lesen
+no es un mapa de mapsforge (.map)	keine mapsforge-Karte (.map)
+el archivo está incompleto (¿se copió entero?)	die Datei ist unvollständig (wurde sie ganz kopiert?)
+1. En un computador o celular, descarga el mapa de tu país (formato mapsforge, gratis):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Cópialo a una memoria USB o a la carpeta Download de la pantalla.\n\n3. En Ajustes → Mapa y clima → Mapa sin conexión, toca «Archivo del mapa» y elígelo.\n\nEl mapa se usa en el inicio incluso con internet. Para actualizarlo, descarga uno nuevo y reemplaza el archivo.	1. Lade am Computer oder Handy die Karte deines Landes herunter (mapsforge-Format, kostenlos):\ndownload.mapsforge.org/maps/v5\n\nKolumbien:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Kopiere sie auf einen USB-Stick oder in den Ordner Download des Bildschirms.\n\n3. Tippe unter Einstellungen → Karte & Wetter → Offline-Karte auf „Kartendatei“ und wähle sie aus.\n\nDie Karte wird auf dem Startbildschirm auch mit Internet verwendet. Zum Aktualisieren eine neue herunterladen und die Datei ersetzen.

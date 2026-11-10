@@ -129,6 +129,16 @@ public class OfflineMap {
         return lon1 >= minLon && lon0 <= maxLon && lat1 >= minLat && lat0 <= maxLat;
     }
 
+    private final long[][] range = new long[23][];   // por zoom: {x0, x1, y0, y1} de las teselas del archivo
+
+    /** Como covers(), pero con los límites ya calculados (se llama en cada cuadro). */
+    boolean coversFast(int z, int x, int y) {
+        if (z < 0 || z > 22) return false;
+        long[] r = range[z];
+        if (r == null) { r = new long[]{tileX(minLon, z), tileX(maxLon, z), tileY(maxLat, z), tileY(minLat, z)}; range[z] = r; }
+        return x >= r[0] && x <= r[1] && y >= r[2] && y <= r[3];
+    }
+
     /** ¿El punto está dentro del área del archivo? */
     boolean contains(double lat, double lon) {
         return lat >= minLat && lat <= maxLat && lon >= minLon && lon <= maxLon;

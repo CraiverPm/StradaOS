@@ -510,3 +510,27 @@ Lateral	Sisi
 Aceite: configurar	Minyak: tetapkan
 ¡Cambiar aceite!	Tukar minyak!
 Aceite: {}	Minyak: {}
+Mapa sin conexión	Peta luar talian
+Archivo del mapa	Fail peta
+Un archivo .map (p. ej. colombia.map) en la memoria de la pantalla o en una USB: el mapa se ve sin internet	Fail .map (cth. colombia.map) dalam storan skrin atau pada pemacu USB: peta berfungsi tanpa internet
+Error	Ralat
+No se pudo abrir: {}	Tidak dapat dibuka: {}
+Toca para dejar de usarlo	Ketik untuk berhenti menggunakannya
+Mapa sin conexión quitado	Peta luar talian dibuang
+¿Dónde consigo el mapa?	Di mana saya boleh dapatkan peta?
+Mapas gratis de OpenStreetMap por país	Peta OpenStreetMap percuma mengikut negara
+Buscando mapas…	Mencari peta…
+No se encontró ningún mapa	Tiada peta ditemui
+No hay archivos .map en la memoria de la pantalla ni en las USB conectadas. Toca «Cómo conseguirlo» para ver de dónde bajarlo.	Tiada fail .map dalam storan skrin atau pada pemacu USB yang disambungkan. Ketik «Cara mendapatkannya» untuk melihat tempat memuat turun.
+Cómo conseguirlo	Cara mendapatkannya
+Elige el mapa	Pilih peta
+No se pudo usar este archivo	Fail ini tidak boleh digunakan
+Debe ser un mapa de mapsforge (.map) copiado completo.	Ia mesti peta mapsforge (.map) yang disalin sepenuhnya.
+Mapa sin conexión listo: {}	Peta luar talian sedia: {}
+Sin permiso de almacenamiento no se pueden buscar mapas	Tanpa kebenaran storan, peta tidak boleh dicari
+Última posición · mapa sin conexión	Kedudukan terakhir · peta luar talian
+no se encuentra el archivo	fail tidak ditemui
+sin permiso para leer el archivo	tiada kebenaran untuk membaca fail
+no es un mapa de mapsforge (.map)	bukan peta mapsforge (.map)
+el archivo está incompleto (¿se copió entero?)	fail tidak lengkap (adakah ia disalin sepenuhnya?)
+1. En un computador o celular, descarga el mapa de tu país (formato mapsforge, gratis):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Cópialo a una memoria USB o a la carpeta Download de la pantalla.\n\n3. En Ajustes → Mapa y clima → Mapa sin conexión, toca «Archivo del mapa» y elígelo.\n\nEl mapa se usa en el inicio incluso con internet. Para actualizarlo, descarga uno nuevo y reemplaza el archivo.	1. Di komputer atau telefon, muat turun peta negara anda (format mapsforge, percuma):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Salin ke pemacu USB atau ke folder Download skrin.\n\n3. Dalam Tetapan → Peta & cuaca → Peta luar talian, ketik «Fail peta» dan pilihnya.\n\nPeta digunakan pada skrin utama walaupun ada internet. Untuk mengemas kini, muat turun yang baharu dan gantikan fail.

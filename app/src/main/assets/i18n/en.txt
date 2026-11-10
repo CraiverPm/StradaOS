@@ -510,3 +510,27 @@ Lateral	Side
 Aceite: configurar	Oil: set up
 ¡Cambiar aceite!	Change the oil!
 Aceite: {}	Oil: {}
+Mapa sin conexión	Offline map
+Archivo del mapa	Map file
+Un archivo .map (p. ej. colombia.map) en la memoria de la pantalla o en una USB: el mapa se ve sin internet	A .map file (e.g. colombia.map) in the screen's storage or on a USB drive: the map works without internet
+Error	Error
+No se pudo abrir: {}	Couldn't open: {}
+Toca para dejar de usarlo	Tap to stop using it
+Mapa sin conexión quitado	Offline map removed
+¿Dónde consigo el mapa?	Where do I get the map?
+Mapas gratis de OpenStreetMap por país	Free OpenStreetMap maps by country
+Buscando mapas…	Looking for maps…
+No se encontró ningún mapa	No map found
+No hay archivos .map en la memoria de la pantalla ni en las USB conectadas. Toca «Cómo conseguirlo» para ver de dónde bajarlo.	There are no .map files in the screen's storage or on connected USB drives. Tap “How to get it” to see where to download one.
+Cómo conseguirlo	How to get it
+Elige el mapa	Choose the map
+No se pudo usar este archivo	This file can't be used
+Debe ser un mapa de mapsforge (.map) copiado completo.	It must be a mapsforge map (.map), copied completely.
+Mapa sin conexión listo: {}	Offline map ready: {}
+Sin permiso de almacenamiento no se pueden buscar mapas	Without storage permission, maps can't be searched
+Última posición · mapa sin conexión	Last position · offline map
+no se encuentra el archivo	file not found
+sin permiso para leer el archivo	no permission to read the file
+no es un mapa de mapsforge (.map)	not a mapsforge map (.map)
+el archivo está incompleto (¿se copió entero?)	the file is incomplete (was it copied completely?)
+1. En un computador o celular, descarga el mapa de tu país (formato mapsforge, gratis):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Cópialo a una memoria USB o a la carpeta Download de la pantalla.\n\n3. En Ajustes → Mapa y clima → Mapa sin conexión, toca «Archivo del mapa» y elígelo.\n\nEl mapa se usa en el inicio incluso con internet. Para actualizarlo, descarga uno nuevo y reemplaza el archivo.	1. On a computer or phone, download your country's map (mapsforge format, free):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Copy it to a USB drive or to the screen's Download folder.\n\n3. In Settings → Map & weather → Offline map, tap “Map file” and choose it.\n\nThe map is used on the home screen even with internet. To update it, download a new one and replace the file.

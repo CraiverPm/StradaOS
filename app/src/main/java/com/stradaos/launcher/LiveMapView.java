@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.util.LruCache;
 import android.view.View;
 
@@ -19,8 +20,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
- * Mapa en vivo: teselas oscuras de OpenStreetMap (estilo CARTO Dark Matter) centradas en tu posición GPS.
- * Guarda las teselas en el equipo para verlas sin internet por donde ya pasaste.
+ * Mapa en vivo: teselas de OpenStreetMap centradas en tu posición GPS (en modo oscuro se oscurecen).
+ * Guarda las teselas en el equipo para verlas sin internet por donde ya pasaste, y si hay un mapa sin conexión
+ * (archivo .map, ver OfflineMap) lo dibuja desde el archivo.
+ *
+ * Movimiento: el GPS da una posición por segundo; entre una y otra la posición y el rumbo se interpolan y el mapa
+ * se redibuja a ~30 cuadros por segundo, para que la flecha avance suave y no a saltos.
  */
 public class LiveMapView extends View {
     // proveedores en orden: si uno falla en esta pantalla (TLS antiguo, bloqueo), se prueba el siguiente
@@ -48,19 +53,54 @@ public class LiveMapView extends View {
     static String lastError = "—";
     static int okCount;
 
+    // capas de una tesela: 0 mapa, 1 nombres (Esri), 2 mapa sin conexión (archivo)
+    private static final int L_BASE = 0, L_LABELS = 1, L_FILE = 2;
+    private static final int FRAME_MS = 33;   // ~30 cuadros por segundo mientras se mueve
+
+    // ── mapa sin conexión (archivo .map), compartido entre vistas ──
+    static OfflineMap fileMap;
+    static String fileErr;
+
+    /** Abre (o cierra) el mapa sin conexión según el ajuste «map_file». */
+    static void loadFile(Context c) {
+        String p = c.getSharedPreferences("launcher", 0).getString("map_file", "");
+        if (p.length() == 0) {
+            if (fileMap != null) { fileMap.close(); mem.evictAll(); }
+            fileMap = null; fileErr = null;
+            return;
+        }
+        if (fileMap != null && fileMap.file.getAbsolutePath().equals(p)) return;
+        if (fileMap != null) fileMap.close();
+        mem.evictAll();   // otro archivo: lo ya dibujado no sirve
+        fileMap = null;
+        try {
+            fileMap = OfflineMap.open(new File(p));
+            fileErr = null;
+        } catch (Throwable e) {
+            fileErr = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+        }
+    }
+
     private final float s;
     private final float radius;
-    private final boolean hi;                   // teselas @2x en pantallas densas
+    private final int fileTile;                 // tamaño en px de las teselas dibujadas desde el archivo
     private final File dir;
     private final Handler ui = new Handler(Looper.getMainLooper());
-    private final LruCache<String, Bitmap> mem = new LruCache<String, Bitmap>(48);
-    private final HashSet<String> pending = new HashSet<String>();
-    private final HashSet<String> failed = new HashSet<String>();
-    private final LinkedList<String> queue = new LinkedList<String>();
+    // compartida entre vistas: al reconstruir el inicio (cambiar un ajuste) no se vuelve a dibujar todo
+    private static final LruCache<Long, Bitmap> mem = new LruCache<Long, Bitmap>(20 * 1024 * 1024) {   // ~20 MB
+        @Override protected int sizeOf(Long k, Bitmap b) { return b.getRowBytes() * b.getHeight(); }
+    };
+    private final HashSet<Long> pending = new HashSet<Long>();
+    private final HashSet<Long> failed = new HashSet<Long>();
+    private final LinkedList<Long> queue = new LinkedList<Long>();
     private int workers;
 
-    private double lat = Double.NaN, lon = Double.NaN;
-    private float bearing = Float.NaN;
+    // posición: destino (última lectura del GPS) y la que se está mostrando, que avanza hacia él
+    private double tLat = Double.NaN, tLon = Double.NaN;
+    private float tBr = Float.NaN;
+    private double aLat, aLon, dLat = Double.NaN, dLon = Double.NaN;
+    private float aBr, dBr = Float.NaN;
+    private long aStart, aDur = 1, lastFixAt;
     private int zoom = 16;
     private int netErrors;
 
@@ -69,14 +109,16 @@ public class LiveMapView extends View {
     private final Paint arrow = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint halo = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint text = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Path clip = new Path();
+    private final Paint corner = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Path corners = new Path();
     private final Path tri = new Path();
+    private final Rect dst = new Rect();
 
     public LiveMapView(Context c, float scale, float radiusPx) {
         super(c);
         s = scale;
         radius = radiusPx;
-        hi = scale >= 1.4f;
+        fileTile = Math.round(256 * Math.max(1f, Math.min(2f, scale)));   // nítidas también en pantallas densas
         dir = new File(c.getCacheDir(), "tiles_v3");   // v3: se guarda la tesela original; el estilo se aplica al mostrarla
         dir.mkdirs();
         deleteOld(new File(c.getCacheDir(), "tiles"));
@@ -86,7 +128,9 @@ public class LiveMapView extends View {
         grid.setStrokeWidth(Math.max(1, s));
         text.setColor(Main.LIGHT ? 0x99000000 : 0x99FFFFFF);
         text.setTextSize(10 * s);
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        corner.setColor(Main.BG);
+        // Sin capa por software: el mapa se dibuja con la GPU (mucho más fluido). Las esquinas redondeadas no se
+        // recortan (clipPath no funciona con GPU antes de Android 4.3): se tapan con el color del fondo.
         Net.init(c);
         sp = c.getSharedPreferences("launcher", 0);
         String custom = sp.getString("map_url", "").trim();
@@ -97,12 +141,28 @@ public class LiveMapView extends View {
             int saved = sp.getInt("map_provider", 0);
             if (saved > 0 && saved < URLS.length) provider = saved;
         }
+        loadFile(c);
     }
 
     private final android.content.SharedPreferences sp;
 
+    @Override
+    protected void onSizeChanged(int w, int h, int ow, int oh) {
+        super.onSizeChanged(w, h, ow, oh);
+        corners.reset();
+        corners.setFillType(Path.FillType.EVEN_ODD);
+        corners.addRect(-2, -2, w + 2, h + 2, Path.Direction.CW);
+        corners.addRoundRect(new RectF(0, 0, w, h), radius, radius, Path.Direction.CW);
+    }
+
     private File tileFile(int pv, int layer, int z, int x, int y) {
         return new File(dir, pv + "_" + layer + "_" + z + "_" + x + "_" + y + (Main.LIGHT && pv == 5 ? "L" : "") + ".png");
+    }
+
+    /** Clave de una tesela: capa, estilo (claro/oscuro y brillo), fuente, zoom, x, y. */
+    private long key(int layer, int pv, int z, int x, int y) {
+        int style = (Main.LIGHT ? 4 : 0) | (bright & 3);
+        return ((long) layer << 61) | ((long) style << 58) | ((long) pv << 55) | ((long) z << 48) | ((long) x << 24) | (long) y;
     }
 
     /** Tesela guardada de cualquier fuente (sin internet vale cualquiera). Devuelve {bitmap, fuente} o null. */
@@ -116,8 +176,14 @@ public class LiveMapView extends View {
         return null;
     }
 
-    public boolean hasFix() { return !Double.isNaN(lat); }
+    public boolean hasFix() { return !Double.isNaN(tLat); }
     private final int bright;
+
+    /** ¿La posición actual se dibuja desde el mapa sin conexión? */
+    public boolean usingFile() {
+        OfflineMap f = fileMap;
+        return f != null && !Double.isNaN(tLat) && f.contains(tLat, tLon);
+    }
 
     /** Mapa claro → estilo oscuro (invierte y gira el tono 180°, como el "modo noche" de muchos mapas). */
     /** Modo oscuro para mapas claros: invierte, gira el tono 180° (el agua sigue azul, los parques verdes,
@@ -154,8 +220,14 @@ public class LiveMapView extends View {
         int cached = 0;
         File[] fs = dir.listFiles();
         if (fs != null) cached = fs.length;
-        return "Posición: " + (Double.isNaN(lat) ? "sin GPS" : String.format(java.util.Locale.US, "%.5f, %.5f", lat, lon))
-                + "\nZoom: " + zoom + "\nProveedor: " + NAMES[provider]
+        OfflineMap f = fileMap;
+        String file = f != null
+                ? f.describe() + (usingFile() ? " · en uso" : " · fuera del área del archivo")
+                    + (f.rendered > 0 ? "\nTeselas dibujadas desde el archivo: " + f.rendered + " · " + (f.renderMs / f.rendered) + " ms cada una" : "")
+                : fileErr != null ? "error: " + fileErr : "ninguno";
+        return "Posición: " + (Double.isNaN(tLat) ? "sin GPS" : String.format(java.util.Locale.US, "%.5f, %.5f", tLat, tLon))
+                + "\nZoom: " + zoom + "\nMapa sin conexión: " + file
+                + "\nProveedor: " + NAMES[provider]
                 + (okCount == 0 && rounds > 0 ? " · ninguna fuente respondió (" + rounds + " vueltas)" : "")
                 + "\nTeselas descargadas: " + okCount + " · en caché: " + cached
                 + "\nErrores seguidos: " + netErrors + "\nÚltimo error: " + lastError
@@ -184,12 +256,40 @@ public class LiveMapView extends View {
     }
 
     public void setPosition(double la, double lo, float br, float speedKmh) {
-        lat = la;
-        lon = lo;
-        if (!Float.isNaN(br)) bearing = br;
+        long now = SystemClock.uptimeMillis();
+        step(now);
+        boolean snap = Double.isNaN(dLat) || now - lastFixAt > 5000
+                || Math.abs(la - dLat) > 0.003 || Math.abs(lo - dLon) > 0.003;   // ~300 m: salto, no movimiento
+        tLat = la;
+        tLon = lo;
+        if (!Float.isNaN(br)) tBr = br;
+        if (snap) {
+            dLat = aLat = la; dLon = aLon = lo; dBr = aBr = tBr;
+            aDur = 1;
+        } else {
+            aLat = dLat; aLon = dLon; aBr = Float.isNaN(dBr) ? tBr : dBr;
+            // la animación dura lo que tardó en llegar esta lectura: así la flecha llega justo cuando llega la siguiente
+            aDur = Math.max(300, Math.min(1500, now - lastFixAt));
+        }
+        aStart = now;
+        lastFixAt = now;
         if (!userZoom) zoom = speedKmh > 70 ? 15 : speedKmh > 35 ? 16 : 17;
         trimDisk();
         invalidate();
+    }
+
+    /** Calcula la posición que se muestra ahora. Devuelve true si todavía va en camino. */
+    private boolean step(long now) {
+        if (Double.isNaN(tLat)) return false;
+        float f = Math.min(1f, Math.max(0f, (now - aStart) / (float) aDur));
+        dLat = aLat + (tLat - aLat) * f;
+        dLon = aLon + (tLon - aLon) * f;
+        if (!Float.isNaN(tBr)) {
+            if (Float.isNaN(aBr)) aBr = tBr;
+            float d = ((tBr - aBr) % 360 + 540) % 360 - 180;     // giro más corto
+            dBr = aBr + d * f;
+        }
+        return f < 1f;
     }
 
     private boolean userZoom;
@@ -203,46 +303,51 @@ public class LiveMapView extends View {
         invalidate();
     }
 
+    /** Pruebas: fija el zoom (14–18). */
+    void setZoom(int z) { userZoom = true; zoom = Math.max(10, Math.min(18, z)); invalidate(); }
+
     @Override
     protected void onDraw(Canvas c) {
         float w = getWidth(), h = getHeight();
-        clip.reset();
-        clip.addRoundRect(new RectF(0, 0, w, h), radius, radius, Path.Direction.CW);
-        c.save();
-        c.clipPath(clip);
         c.drawColor(Main.LIGHT ? 0xFFE8EBF0 : 0xFF15171C);
+        boolean moving = step(SystemClock.uptimeMillis());
 
-        if (!Double.isNaN(lat)) {
-            if (zoom > MAXZ[provider]) zoom = MAXZ[provider];
-        int n = 1 << zoom;
-            double fx = (lon + 180.0) / 360.0 * n;
-            double latR = Math.toRadians(lat);
+        if (!Double.isNaN(dLat)) {
+            OfflineMap fm = fileMap;
+            boolean fileHere = fm != null && fm.contains(dLat, dLon);
+            if (!fileHere && zoom > MAXZ[provider]) zoom = MAXZ[provider];
+            int n = 1 << zoom;
+            double fx = (dLon + 180.0) / 360.0 * n;
+            double latR = Math.toRadians(dLat);
             double fy = (1.0 - Math.log(Math.tan(latR) + 1.0 / Math.cos(latR)) / Math.PI) / 2.0 * n;
             float ts = 256 * s;                                    // tamaño de tesela en pantalla
             float cx = w / 2f, cy = h * 0.42f;                     // la posición queda arriba del panel inferior
             int tx0 = (int) Math.floor(fx - cx / ts) - 1, tx1 = (int) Math.floor(fx + (w - cx) / ts) + 1;
             int ty0 = (int) Math.floor(fy - cy / ts) - 1, ty1 = (int) Math.floor(fy + (h - cy) / ts) + 1;
-            boolean rot = headingUp && !Float.isNaN(bearing);
+            boolean rot = headingUp && !Float.isNaN(dBr);
             if (rot) {
                 // al girar hacen falta teselas en un círculo alrededor de la posición (hasta la esquina más lejana)
                 float rr = (float) Math.sqrt(Math.max(cx, w - cx) * Math.max(cx, w - cx) + Math.max(cy, h - cy) * Math.max(cy, h - cy)) / ts;
                 tx0 = (int) Math.floor(fx - rr); tx1 = (int) Math.floor(fx + rr);
                 ty0 = (int) Math.floor(fy - rr); ty1 = (int) Math.floor(fy + rr);
                 c.save();
-                c.rotate(-bearing, cx, cy);
+                c.rotate(-dBr, cx, cy);
             }
-            Rect dst = new Rect();
+            boolean anyFile = false;
             for (int tx = tx0; tx <= tx1; tx++) {
                 for (int ty = ty0; ty <= ty1; ty++) {
                     if (ty < 0 || ty >= n) continue;
                     int wx = ((tx % n) + n) % n;
                     float left = cx + (float) ((tx - fx) * ts), top = cy + (float) ((ty - fy) * ts);
                     dst.set(Math.round(left), Math.round(top), Math.round(left + ts) + 1, Math.round(top + ts) + 1);
-                    Bitmap b = get(zoom, wx, ty, 0);
+                    boolean fromFile = fm != null && fm.coversFast(zoom, wx, ty);
+                    Bitmap b = get(zoom, wx, ty, fromFile ? L_FILE : L_BASE);
                     if (b != null) {
+                        tile.setFilterBitmap(rot || b.getWidth() != dst.width());
                         c.drawBitmap(b, null, dst, tile);
-                        if (LABELS[provider] != null) {
-                            Bitmap l = get(zoom, wx, ty, 1);
+                        if (fromFile) anyFile = true;
+                        else if (LABELS[provider] != null) {
+                            Bitmap l = get(zoom, wx, ty, L_LABELS);
                             if (l != null) c.drawBitmap(l, null, dst, tile);
                         }
                     } else {
@@ -253,17 +358,20 @@ public class LiveMapView extends View {
             }
             if (rot) c.restore();
             drawMarker(c, cx, cy, rot);
-            String attr = provider == 5 ? "© Esri, HERE, Garmin, © OpenStreetMap" : provider == 4 ? "© OpenStreetMap, SRTM · © OpenTopoMap" : I18n.t("© colaboradores de OpenStreetMap");
+            String attr = anyFile ? I18n.t("© colaboradores de OpenStreetMap") + " · mapsforge"
+                    : provider == 5 ? "© Esri, HERE, Garmin, © OpenStreetMap" : provider == 4 ? "© OpenStreetMap, SRTM · © OpenTopoMap" : I18n.t("© colaboradores de OpenStreetMap");
             c.drawText(attr, w - text.measureText(attr) - 10 * s, 14 * s, text);
         }
-        c.restore();
+        corner.setColor(Main.BG);
+        c.drawPath(corners, corner);
+        if (moving) postInvalidateDelayed(FRAME_MS);
     }
 
     private void drawMarker(Canvas c, float x, float y, boolean rotated) {
         halo.setColor((Main.RED & 0x00FFFFFF) | 0x40000000);
         c.drawCircle(x, y, 22 * s, halo);
         c.save();
-        c.rotate(rotated || Float.isNaN(bearing) ? 0 : bearing, x, y);
+        c.rotate(rotated || Float.isNaN(dBr) ? 0 : dBr, x, y);
         tri.reset();
         tri.moveTo(x, y - 14 * s);
         tri.lineTo(x + 10 * s, y + 11 * s);
@@ -283,7 +391,7 @@ public class LiveMapView extends View {
     // ── teselas ──
 
     private Bitmap get(int z, int x, int y, int layer) {
-        String k = provider + "_" + layer + "_" + z + "_" + x + "_" + y;
+        long k = key(layer, layer == L_FILE ? 0 : provider, z, x, y);
         Bitmap b = mem.get(k);
         if (b != null) return b;
         synchronized (queue) {
@@ -298,73 +406,79 @@ public class LiveMapView extends View {
 
     private final Runnable worker = new Runnable() {
         public void run() {
+            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
             while (true) {
-                String k;
+                long k;
                 synchronized (queue) {
                     if (queue.isEmpty()) { workers--; return; }
                     k = queue.removeFirst();
                 }
                 Bitmap b = null;
+                int layer = (int) (k >>> 61) & 3, pv = (int) (k >>> 55) & 7, z = (int) (k >>> 48) & 31;
+                int x = (int) (k >>> 24) & 0xFFFFFF, y = (int) k & 0xFFFFFF;
                 try {
-                    File f = new File(dir, k + (Main.LIGHT && Integer.parseInt(k.split("_")[0]) == 5 ? "L" : "") + ".png");
-                    String[] p = k.split("_");
-                    int pv = Integer.parseInt(p[0]), layer = Integer.parseInt(p[1]);
-                    int z = Integer.parseInt(p[2]), x = Integer.parseInt(p[3]), y = Integer.parseInt(p[4]);
-                    if (f.exists()) b = BitmapFactory.decodeFile(f.getAbsolutePath());
-                    // sin internet: no esperar a que falle la descarga si ya hay una tesela guardada de otra fuente
-                    if (b == null && layer == 0 && offline()) {
-                        Object[] any = cachedAny(z, x, y);
-                        if (any != null) { b = (Bitmap) any[0]; pv = (Integer) any[1]; }
-                    }
-                    if (b == null) {
-                        String tpl = layer == 1 ? LABELS[pv] : URLS[pv];
-                        if (Main.LIGHT) tpl = tpl.replace("Dark_Gray", "Light_Gray");
-                        String url = tpl.replace("{z}", String.valueOf(z)).replace("{x}", String.valueOf(x)).replace("{y}", String.valueOf(y));
-                        byte[] data;
-                        try {
-                            data = Net.get(url, 8000);
-                        } catch (Throwable ex) {
-                            lastError = "[" + NAMES[pv] + "] " + ex;
-                            if (layer == 0) ERR[pv] = shortErr(ex);
-                            // Sin internet (no resuelve el nombre) no es culpa de la fuente: no se cambia de fuente,
-                            // y si hay una tesela guardada de otra fuente se muestra esa.
-                            boolean noNet = ex instanceof java.net.UnknownHostException || ex instanceof java.net.ConnectException;
-                            if (layer == 0) {
-                                Object[] any = cachedAny(z, x, y);
-                                if (any != null) {
-                                    netErrors++;
-                                    final Bitmap ab = DARKEN[(Integer) any[1]] && !Main.LIGHT ? darken((Bitmap) any[0], bright) : (Bitmap) any[0];
-                                    final String fk0 = k;
-                                    ui.post(new Runnable() { public void run() {
-                                        synchronized (queue) { pending.remove(fk0); }
-                                        mem.put(fk0, ab); invalidate();
-                                    }});
-                                    continue;
+                    if (layer == L_FILE) {
+                        OfflineMap fm = fileMap;
+                        if (fm != null) b = fm.render(z, x, y, fileTile, Main.LIGHT, bright);
+                    } else {
+                        File f = tileFile(pv, layer, z, x, y);
+                        if (f.exists()) b = BitmapFactory.decodeFile(f.getAbsolutePath());
+                        // sin internet: no esperar a que falle la descarga si ya hay una tesela guardada de otra fuente
+                        if (b == null && layer == 0 && offline()) {
+                            Object[] any = cachedAny(z, x, y);
+                            if (any != null) { b = (Bitmap) any[0]; pv = (Integer) any[1]; }
+                        }
+                        if (b == null) {
+                            String tpl = layer == 1 ? LABELS[pv] : URLS[pv];
+                            if (Main.LIGHT) tpl = tpl.replace("Dark_Gray", "Light_Gray");
+                            String url = tpl.replace("{z}", String.valueOf(z)).replace("{x}", String.valueOf(x)).replace("{y}", String.valueOf(y));
+                            byte[] data;
+                            try {
+                                data = Net.get(url, 8000);
+                            } catch (Throwable ex) {
+                                lastError = "[" + NAMES[pv] + "] " + ex;
+                                if (layer == 0) ERR[pv] = shortErr(ex);
+                                // Sin internet (no resuelve el nombre) no es culpa de la fuente: no se cambia de fuente,
+                                // y si hay una tesela guardada de otra fuente se muestra esa.
+                                boolean noNet = ex instanceof java.net.UnknownHostException || ex instanceof java.net.ConnectException;
+                                if (layer == 0) {
+                                    Object[] any = cachedAny(z, x, y);
+                                    if (any != null) {
+                                        netErrors++;
+                                        final Bitmap ab = DARKEN[(Integer) any[1]] && !Main.LIGHT ? darken((Bitmap) any[0], bright) : (Bitmap) any[0];
+                                        final long fk0 = k;
+                                        ui.post(new Runnable() { public void run() {
+                                            synchronized (queue) { pending.remove(fk0); }
+                                            mem.put(fk0, ab); invalidate();
+                                        }});
+                                        continue;
+                                    }
                                 }
+                                if (!noNet && provider == pv && okCount == 0 && layer == 0) {
+                                    int nx = pv;
+                                    do { nx = (nx + 1) % URLS.length; if (nx == 1) rounds++; } while (URLS[nx].length() == 0);
+                                    provider = nx;
+                                }
+                                throw ex;
                             }
-                            if (!noNet && provider == pv && okCount == 0 && layer == 0) {
-                                int nx = pv;
-                                do { nx = (nx + 1) % URLS.length; if (nx == 1) rounds++; } while (URLS[nx].length() == 0);
-                                provider = nx;
+                            okCount++;
+                            if (layer == 0) ERR[pv] = "OK";
+                            if (layer == 0 && pv > 0 && sp.getInt("map_provider", 0) != pv) sp.edit().putInt("map_provider", pv).apply();
+                            b = BitmapFactory.decodeByteArray(data, 0, data.length);
+                            if (b != null) {
+                                FileOutputStream os = new FileOutputStream(f);
+                                os.write(data);
+                                os.close();
+                                netErrors = 0;
                             }
-                            throw ex;
                         }
-                        okCount++;
-                        if (layer == 0) ERR[pv] = "OK";
-                        if (layer == 0 && pv > 0 && sp.getInt("map_provider", 0) != pv) sp.edit().putInt("map_provider", pv).apply();
-                        b = BitmapFactory.decodeByteArray(data, 0, data.length);
-                        if (b != null) {
-                            FileOutputStream os = new FileOutputStream(f);
-                            os.write(data);
-                            os.close();
-                            netErrors = 0;
-                        }
+                        if (b != null && DARKEN[pv] && layer == 0 && !Main.LIGHT) b = darken(b, bright);
                     }
-                    if (b != null && DARKEN[pv] && layer == 0 && !Main.LIGHT) b = darken(b, bright);
                 } catch (Throwable e) {
-                    netErrors++;
+                    if (layer != L_FILE) netErrors++;
+                    else lastError = "[archivo] " + e;
                 }
-                final String fk = k;
+                final long fk = k;
                 final Bitmap fb = b;
                 ui.post(new Runnable() {
                     public void run() {
@@ -377,7 +491,7 @@ public class LiveMapView extends View {
         }
     };
 
-    private void retryLater(final String k) {
+    private void retryLater(final long k) {
         synchronized (queue) { failed.add(k); }
         ui.postDelayed(new Runnable() {
             public void run() { synchronized (queue) { failed.remove(k); } invalidate(); }
