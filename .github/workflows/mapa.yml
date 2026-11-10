@@ -1,0 +1,67 @@
+# Mapa sin conexión: baja un mapa de mapsforge y dibuja zonas de ejemplo con el mismo código del launcher
+# (OfflineMap.java), usando las imitaciones de android.graphics de .github/tools/mapa. Las imágenes quedan en la
+# rama "mapa-pruebas". Manual.
+name: Mapa sin conexión (escritorio)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dibujar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Mapa de Colombia (con caché)
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: colombia.map
+          key: mapsforge-colombia-${{ github.run_id }}
+          restore-keys: mapsforge-colombia-
+
+      - name: Descargar colombia.map
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          if [ ! -s colombia.map ]; then
+            curl -fL --retry 5 -o colombia.map https://download.mapsforge.org/maps/v5/south-america/colombia.map
+          fi
+          ls -l colombia.map
+
+      - name: Compilar y dibujar
+        run: |
+          set -e
+          T=.github/tools/mapa
+          mkdir -p cls salida
+          javac -encoding UTF-8 -d cls $T/android/graphics/*.java $T/stub/com/stradaos/launcher/*.java app/src/main/java/com/stradaos/launcher/OfflineMap.java
+          run() { java -Djava.awt.headless=true -cp cls com.stradaos.launcher.Probar colombia.map "$@" | tee -a salida/tiempos.txt; }
+          run
+          # Medellín (centro), Bogotá (centro), Cartagena (costa)
+          for z in 14 15 16 17; do
+            run salida/medellin-z$z-oscuro.png 6.2442 -75.5680 $z 3 oscuro
+            run salida/medellin-z$z-claro.png 6.2442 -75.5680 $z 3 claro
+          done
+          run salida/bogota-z16-oscuro.png 4.6097 -74.0817 16 3 oscuro
+          run salida/bogota-z15-claro.png 4.6097 -74.0817 15 3 claro
+          run salida/cartagena-z14-oscuro.png 10.4236 -75.5478 14 3 oscuro
+          run salida/cartagena-z15-claro.png 10.4236 -75.5478 15 3 claro
+          run salida/medellin-z16-oscuro-2x.png 6.2442 -75.5680 16 2 oscuro 384
+
+      - name: Publicar imágenes
+        run: |
+          cd salida
+          git init -q -b mapa-pruebas
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -qm "Mapa sin conexión: zonas de ejemplo"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mapa-pruebas
