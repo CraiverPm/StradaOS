@@ -1,0 +1,1 @@
+Offline map: download your country from the app and use it without internet. Smooth map and arrow movement, and Settings no longer jumps to the top when you change something.
