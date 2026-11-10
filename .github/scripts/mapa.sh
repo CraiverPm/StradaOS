@@ -17,7 +17,17 @@ t0=$(date +%s); adb push colombia.map /sdcard/Download/colombia.map | tail -1; e
 adb shell ls -l /sdcard/Download/
 ( while true; do adb emu geo fix -75.5680 6.2442 >/dev/null 2>&1; adb emu geo fix -75.5680 6.2442 1495 8 1 >/dev/null 2>&1; sleep 2; done ) &
 GEO=$!
-shot() { adb shell screencap -p /data/local/tmp/s.png && adb pull /data/local/tmp/s.png "$OUT/$1.png" >/dev/null; echo "captura $1"; }
+shot() {
+  # en emuladores de Android 4.1 screencap sale negro: entonces se usa la captura del propio emulador
+  rm -f /tmp/shot.png; rm -rf /tmp/emushot; mkdir -p /tmp/emushot
+  adb shell screencap -p /data/local/tmp/s.png >/dev/null 2>&1 && adb pull /data/local/tmp/s.png /tmp/shot.png >/dev/null 2>&1
+  if [ ! -s /tmp/shot.png ] || [ "$(stat -c %s /tmp/shot.png)" -lt 15000 ]; then
+    adb emu screenrecord screenshot /tmp/emushot >/dev/null 2>&1; sleep 2
+    f=$(ls -t /tmp/emushot/*.png 2>/dev/null | head -1)
+    [ -n "$f" ] && cp "$f" /tmp/shot.png
+  fi
+  [ -s /tmp/shot.png ] && cp /tmp/shot.png "$OUT/$1.png"; echo "captura $1"
+}
 go() { adb shell am start -n $ACT --es prueba "$1" >/dev/null; sleep "${2:-5}"; }
 adb shell am start -n $ACT --es prueba saltar >/dev/null; sleep 20
 go idioma:es 6; go unidad:kmh 4
