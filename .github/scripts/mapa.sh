@@ -46,9 +46,13 @@ for i in $(seq 1 60); do
 done
 echo "terminado:"; adb shell ls -l /sdcard/Download/StradaOS/ 2>&1
 adb shell input keyevent 4; sleep 2
+kill $GEO 2>/dev/null
 ( for i in $(seq 1 12); do adb emu geo fix -58.1551 6.8013 >/dev/null 2>&1; sleep 2; done ) &
+GY=$!
 sleep 8; go mapa-zoom:16 20; shot descarga-4-mapa-guyana
-wait
+wait $GY
+( while true; do adb emu geo fix -75.5680 6.2442 >/dev/null 2>&1; adb emu geo fix -75.5680 6.2442 1495 8 1 >/dev/null 2>&1; sleep 2; done ) &
+GEO=$!
 # sin internet: así se ve que el mapa sale del archivo
 adb shell svc wifi disable >/dev/null 2>&1; adb shell svc data disable >/dev/null 2>&1
 go tema:oscuro 6
