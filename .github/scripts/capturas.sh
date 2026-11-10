@@ -12,7 +12,7 @@ adb shell wm size 2048x1200; adb shell wm density 320; sleep 5
 adb install -r -g prueba.apk | tail -1
 adb shell pm grant $PKG android.permission.ACCESS_FINE_LOCATION >/dev/null 2>&1 || true
 # GPS fijo en Medellín (ciudad de ejemplo), repetido para que el mapa se vea «en vivo»
-( while true; do adb emu geo fix -75.5680 6.2442 >/dev/null 2>&1; sleep 3; done ) &
+( while true; do adb emu geo fix -75.5680 6.2442 >/dev/null 2>&1; adb emu geo fix -75.5680 6.2442 1495 8 26 >/dev/null 2>&1; sleep 2; done ) &
 GEO=$!
 shot() { adb shell screencap -p /data/local/tmp/s.png && adb pull /data/local/tmp/s.png "$OUT/$1.png" >/dev/null; echo "captura $1"; }
 go() { adb shell am start -n $ACT --es prueba "$1" >/dev/null; sleep "${2:-5}"; }
@@ -21,6 +21,7 @@ adb shell am start -n $ACT --es prueba saltar >/dev/null; sleep 15
 go demo-aceite 6
 for L in es en; do
   go idioma:$L 8
+  if [ $L = es ]; then go unidad:kmh 4; else go unidad:auto 4; fi
   go tema:oscuro 6; go diseno:base 6; prep; sleep 20; shot $L-oscuro-normal
   go diseno:izq 4; go diseno:sinauto 4; go diseno:lateral 6; prep; shot $L-oscuro-lateral-izq
   go diseno:der 6; prep; shot $L-oscuro-lateral-der
