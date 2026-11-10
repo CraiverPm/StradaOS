@@ -556,7 +556,7 @@ public class Main extends Activity {
                 }
                 else if (v.startsWith("mapa-archivo:")) {
                     prefs.edit().putString("map_file", v.substring(13)).apply();
-                    LiveMapView.loadFile(this); rebuild();
+                    LiveMapView.loadFile(Main.this); rebuild();
                 }
                 else if (v.startsWith("mapa-zoom:")) { if (liveMap != null) liveMap.setZoom(Integer.parseInt(v.substring(10))); }
                 else if ("mapa-buscar".equals(v)) pickMapFile();
