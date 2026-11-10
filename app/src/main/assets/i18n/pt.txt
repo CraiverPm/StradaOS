@@ -534,3 +534,47 @@ sin permiso para leer el archivo	sem permissão para ler o arquivo
 no es un mapa de mapsforge (.map)	não é um mapa do mapsforge (.map)
 el archivo está incompleto (¿se copió entero?)	o arquivo está incompleto (foi copiado inteiro?)
 1. En un computador o celular, descarga el mapa de tu país (formato mapsforge, gratis):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Cópialo a una memoria USB o a la carpeta Download de la pantalla.\n\n3. En Ajustes → Mapa y clima → Mapa sin conexión, toca «Archivo del mapa» y elígelo.\n\nEl mapa se usa en el inicio incluso con internet. Para actualizarlo, descarga uno nuevo y reemplaza el archivo.	1. Num computador ou celular, baixe o mapa do seu país (formato mapsforge, grátis):\ndownload.mapsforge.org/maps/v5\n\nColômbia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Copie-o para um pendrive ou para a pasta Download da tela.\n\n3. Em Ajustes → Mapa e clima → Mapa offline, toque em «Arquivo do mapa» e escolha-o.\n\nO mapa é usado na tela inicial mesmo com internet. Para atualizá-lo, baixe um novo e substitua o arquivo.
+Toca para dejar de usarlo o borrarlo	Toque para deixar de usar ou apagar
+Descargar un mapa	Baixar um mapa
+Elige tu país: se descarga gratis de OpenStreetMap (mapsforge) y se usa sin internet	Escolha seu país: é baixado grátis do OpenStreetMap (mapsforge) e funciona sem internet
+Cargando la lista de mapas…	Carregando a lista de mapas…
+No se pudo cargar la lista de mapas	Não foi possível carregar a lista de mapas
+Revisa la conexión a internet e inténtalo de nuevo.	Verifique a conexão com a internet e tente de novo.
+por regiones	por regiões
+Elige el continente	Escolha o continente
+Tamaño	Tamanho
+Se guarda en	Salvo em
+Espacio libre	Espaço livre
+memoria	memória
+Usa datos: mejor con WiFi o un plan amplio. Puedes seguir usando la pantalla; si se corta la señal o la apagas, la descarga continúa después.	Usa dados: melhor com WiFi ou um plano amplo. Você pode continuar usando a tela; se o sinal cair ou você desligá-la, o download continua depois.
+No hay espacio suficiente en la memoria.	Não há espaço suficiente na memória.
+Descargar	Baixar
+Descargando el mapa… puedes seguir usando la pantalla	Baixando o mapa… você pode continuar usando a tela
+Descarga en curso	Download em andamento
+Descarga en pausa	Download pausado
+Pausar	Pausar
+Continuar	Continuar
+Cancelar descarga	Cancelar download
+Descarga cancelada	Download cancelado
+Este mapa lo descargó StradaOS. Puedes dejar de usarlo o borrarlo para liberar espacio.	Este mapa foi baixado pelo StradaOS. Você pode deixar de usá-lo ou apagá-lo para liberar espaço.
+Puedes dejar de usar este mapa (el archivo no se borra).	Você pode deixar de usar este mapa (o arquivo não é apagado).
+Dejar de usarlo	Deixar de usar
+Borrar el archivo	Apagar o arquivo
+Mapa borrado	Mapa apagado
+Mapa descargado y listo: {}	Mapa baixado e pronto: {}
+Descargando	Baixando
+África	África
+Australia y Oceanía	Austrália e Oceania
+Centroamérica y el Caribe	América Central e Caribe
+Europa	Europa
+Norteamérica	América do Norte
+Rusia	Rússia
+Sudamérica	América do Sul
+sin conexión, reintentando…	sem conexão, tentando de novo…
+el archivo quedó incompleto	o arquivo ficou incompleto
+no se pudo guardar el archivo	não foi possível salvar o arquivo
+no hay espacio suficiente	não há espaço suficiente
+se cortó la descarga	o download foi interrompido
+Sin señal GPS · mapa sin conexión	Sem sinal de GPS · mapa offline
+Sin señal GPS ni internet	Sem sinal de GPS nem internet
+Sin señal GPS · última posición	Sem sinal de GPS · última posição

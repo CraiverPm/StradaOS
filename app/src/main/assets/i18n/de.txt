@@ -534,3 +534,47 @@ sin permiso para leer el archivo	keine Berechtigung, die Datei zu lesen
 no es un mapa de mapsforge (.map)	keine mapsforge-Karte (.map)
 el archivo está incompleto (¿se copió entero?)	die Datei ist unvollständig (wurde sie ganz kopiert?)
 1. En un computador o celular, descarga el mapa de tu país (formato mapsforge, gratis):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Cópialo a una memoria USB o a la carpeta Download de la pantalla.\n\n3. En Ajustes → Mapa y clima → Mapa sin conexión, toca «Archivo del mapa» y elígelo.\n\nEl mapa se usa en el inicio incluso con internet. Para actualizarlo, descarga uno nuevo y reemplaza el archivo.	1. Lade am Computer oder Handy die Karte deines Landes herunter (mapsforge-Format, kostenlos):\ndownload.mapsforge.org/maps/v5\n\nKolumbien:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Kopiere sie auf einen USB-Stick oder in den Ordner Download des Bildschirms.\n\n3. Tippe unter Einstellungen → Karte & Wetter → Offline-Karte auf „Kartendatei“ und wähle sie aus.\n\nDie Karte wird auf dem Startbildschirm auch mit Internet verwendet. Zum Aktualisieren eine neue herunterladen und die Datei ersetzen.
+Toca para dejar de usarlo o borrarlo	Tippen, um sie nicht mehr zu verwenden oder zu löschen
+Descargar un mapa	Karte herunterladen
+Elige tu país: se descarga gratis de OpenStreetMap (mapsforge) y se usa sin internet	Wähle dein Land: kostenloser Download von OpenStreetMap (mapsforge), funktioniert ohne Internet
+Cargando la lista de mapas…	Kartenliste wird geladen…
+No se pudo cargar la lista de mapas	Kartenliste konnte nicht geladen werden
+Revisa la conexión a internet e inténtalo de nuevo.	Prüfe die Internetverbindung und versuche es erneut.
+por regiones	nach Regionen
+Elige el continente	Kontinent auswählen
+Tamaño	Größe
+Se guarda en	Gespeichert in
+Espacio libre	Freier Speicher
+memoria	Speicher
+Usa datos: mejor con WiFi o un plan amplio. Puedes seguir usando la pantalla; si se corta la señal o la apagas, la descarga continúa después.	Verbraucht Daten: am besten mit WLAN oder großem Tarif. Du kannst den Bildschirm weiter benutzen; bricht das Signal ab oder schaltest du ihn aus, wird der Download später fortgesetzt.
+No hay espacio suficiente en la memoria.	Nicht genug freier Speicher.
+Descargar	Herunterladen
+Descargando el mapa… puedes seguir usando la pantalla	Karte wird heruntergeladen… du kannst den Bildschirm weiter benutzen
+Descarga en curso	Download läuft
+Descarga en pausa	Download pausiert
+Pausar	Pausieren
+Continuar	Fortsetzen
+Cancelar descarga	Download abbrechen
+Descarga cancelada	Download abgebrochen
+Este mapa lo descargó StradaOS. Puedes dejar de usarlo o borrarlo para liberar espacio.	Diese Karte hat StradaOS heruntergeladen. Du kannst sie nicht mehr verwenden oder löschen, um Speicher freizugeben.
+Puedes dejar de usar este mapa (el archivo no se borra).	Du kannst diese Karte nicht mehr verwenden (die Datei wird nicht gelöscht).
+Dejar de usarlo	Nicht mehr verwenden
+Borrar el archivo	Datei löschen
+Mapa borrado	Karte gelöscht
+Mapa descargado y listo: {}	Karte heruntergeladen und bereit: {}
+Descargando	Lade herunter:
+África	Afrika
+Australia y Oceanía	Australien & Ozeanien
+Centroamérica y el Caribe	Mittelamerika & Karibik
+Europa	Europa
+Norteamérica	Nordamerika
+Rusia	Russland
+Sudamérica	Südamerika
+sin conexión, reintentando…	keine Verbindung, neuer Versuch…
+el archivo quedó incompleto	die Datei ist unvollständig
+no se pudo guardar el archivo	Datei konnte nicht gespeichert werden
+no hay espacio suficiente	nicht genug Speicher
+se cortó la descarga	der Download wurde unterbrochen
+Sin señal GPS · mapa sin conexión	Kein GPS-Signal · Offline-Karte
+Sin señal GPS ni internet	Weder GPS-Signal noch Internet
+Sin señal GPS · última posición	Kein GPS-Signal · letzte Position

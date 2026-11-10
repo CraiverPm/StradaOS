@@ -534,3 +534,47 @@ sin permiso para leer el archivo	tiada kebenaran untuk membaca fail
 no es un mapa de mapsforge (.map)	bukan peta mapsforge (.map)
 el archivo está incompleto (¿se copió entero?)	fail tidak lengkap (adakah ia disalin sepenuhnya?)
 1. En un computador o celular, descarga el mapa de tu país (formato mapsforge, gratis):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Cópialo a una memoria USB o a la carpeta Download de la pantalla.\n\n3. En Ajustes → Mapa y clima → Mapa sin conexión, toca «Archivo del mapa» y elígelo.\n\nEl mapa se usa en el inicio incluso con internet. Para actualizarlo, descarga uno nuevo y reemplaza el archivo.	1. Di komputer atau telefon, muat turun peta negara anda (format mapsforge, percuma):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Salin ke pemacu USB atau ke folder Download skrin.\n\n3. Dalam Tetapan → Peta & cuaca → Peta luar talian, ketik «Fail peta» dan pilihnya.\n\nPeta digunakan pada skrin utama walaupun ada internet. Untuk mengemas kini, muat turun yang baharu dan gantikan fail.
+Toca para dejar de usarlo o borrarlo	Ketik untuk berhenti menggunakan atau memadamnya
+Descargar un mapa	Muat turun peta
+Elige tu país: se descarga gratis de OpenStreetMap (mapsforge) y se usa sin internet	Pilih negara anda: dimuat turun percuma dari OpenStreetMap (mapsforge) dan berfungsi tanpa internet
+Cargando la lista de mapas…	Memuatkan senarai peta…
+No se pudo cargar la lista de mapas	Senarai peta tidak dapat dimuatkan
+Revisa la conexión a internet e inténtalo de nuevo.	Semak sambungan internet dan cuba lagi.
+por regiones	mengikut wilayah
+Elige el continente	Pilih benua
+Tamaño	Saiz
+Se guarda en	Disimpan di
+Espacio libre	Ruang kosong
+memoria	storan
+Usa datos: mejor con WiFi o un plan amplio. Puedes seguir usando la pantalla; si se corta la señal o la apagas, la descarga continúa después.	Menggunakan data: terbaik dengan WiFi atau pelan yang besar. Anda boleh terus menggunakan skrin; jika isyarat terputus atau anda mematikannya, muat turun disambung kemudian.
+No hay espacio suficiente en la memoria.	Ruang storan tidak mencukupi.
+Descargar	Muat turun
+Descargando el mapa… puedes seguir usando la pantalla	Memuat turun peta… anda boleh terus menggunakan skrin
+Descarga en curso	Muat turun sedang berjalan
+Descarga en pausa	Muat turun dijeda
+Pausar	Jeda
+Continuar	Sambung
+Cancelar descarga	Batalkan muat turun
+Descarga cancelada	Muat turun dibatalkan
+Este mapa lo descargó StradaOS. Puedes dejar de usarlo o borrarlo para liberar espacio.	Peta ini dimuat turun oleh StradaOS. Anda boleh berhenti menggunakannya atau memadamnya untuk mengosongkan ruang.
+Puedes dejar de usar este mapa (el archivo no se borra).	Anda boleh berhenti menggunakan peta ini (fail tidak dipadam).
+Dejar de usarlo	Berhenti menggunakannya
+Borrar el archivo	Padam fail
+Mapa borrado	Peta dipadam
+Mapa descargado y listo: {}	Peta dimuat turun dan sedia: {}
+Descargando	Memuat turun
+África	Afrika
+Australia y Oceanía	Australia & Oceania
+Centroamérica y el Caribe	Amerika Tengah & Caribbean
+Europa	Eropah
+Norteamérica	Amerika Utara
+Rusia	Rusia
+Sudamérica	Amerika Selatan
+sin conexión, reintentando…	tiada sambungan, mencuba semula…
+el archivo quedó incompleto	fail tidak lengkap
+no se pudo guardar el archivo	fail tidak dapat disimpan
+no hay espacio suficiente	ruang tidak mencukupi
+se cortó la descarga	muat turun terputus
+Sin señal GPS · mapa sin conexión	Tiada isyarat GPS · peta luar talian
+Sin señal GPS ni internet	Tiada isyarat GPS atau internet
+Sin señal GPS · última posición	Tiada isyarat GPS · kedudukan terakhir

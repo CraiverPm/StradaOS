@@ -31,6 +31,24 @@ shot() {
 go() { adb shell am start -n $ACT --es prueba "$1" >/dev/null; sleep "${2:-5}"; }
 adb shell am start -n $ACT --es prueba saltar >/dev/null; sleep 20
 go idioma:es 6; go unidad:kmh 4
+adb shell pm grant $PKG android.permission.WRITE_EXTERNAL_STORAGE >/dev/null 2>&1 || true
+# ── descarga desde la app: lista de continentes y países, descarga con pausa y reanudación ──
+go mapa-lista 12; shot descarga-1-continentes; adb shell input keyevent 4; sleep 2
+go mapa-lista:south-america/ 12; shot descarga-2-paises; adb shell input keyevent 4; sleep 2
+go mapa-descargar:south-america/guyana.map 6
+adb shell am start -n $ACT --es prueba mapa-pausar >/dev/null; sleep 3
+echo "en pausa:"; adb shell ls -l /sdcard/Download/StradaOS/ 2>&1
+go mapa-continuar 2
+for i in $(seq 1 60); do
+  adb shell ls /sdcard/Download/StradaOS/guyana.map >/dev/null 2>&1 && ! adb shell ls /sdcard/Download/StradaOS/ | grep -q part && break
+  [ $i = 3 ] && { go ajustes:5 3; adb shell input swipe 600 500 600 100 400; sleep 1; adb shell input swipe 600 500 600 100 400; sleep 2; shot descarga-3-progreso; }
+  sleep 3
+done
+echo "terminado:"; adb shell ls -l /sdcard/Download/StradaOS/ 2>&1
+adb shell input keyevent 4; sleep 2
+( for i in $(seq 1 12); do adb emu geo fix -58.1551 6.8013 >/dev/null 2>&1; sleep 2; done ) &
+sleep 8; go mapa-zoom:16 20; shot descarga-4-mapa-guyana
+wait
 # sin internet: así se ve que el mapa sale del archivo
 adb shell svc wifi disable >/dev/null 2>&1; adb shell svc data disable >/dev/null 2>&1
 go tema:oscuro 6

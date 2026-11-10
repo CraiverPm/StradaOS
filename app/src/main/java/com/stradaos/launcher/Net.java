@@ -97,6 +97,17 @@ public class Net {
         }
     }
 
+    /** Conexión configurada (TLS 1.2 y raíces actuales en Android 4.x) para descargas grandes por partes. */
+    public static HttpURLConnection open(String url, int timeoutMs) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+        if (c instanceof HttpsURLConnection && factory != null) ((HttpsURLConnection) c).setSSLSocketFactory(factory);
+        c.setConnectTimeout(timeoutMs);
+        c.setReadTimeout(timeoutMs);
+        c.setRequestProperty("User-Agent", "StradaOS (Android head unit launcher; offline maps)");
+        c.setRequestProperty("Accept-Encoding", "identity");
+        return c;
+    }
+
     private static byte[] get(String url, int timeoutMs, SSLSocketFactory f) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
         if (c instanceof HttpsURLConnection && f != null) ((HttpsURLConnection) c).setSSLSocketFactory(f);

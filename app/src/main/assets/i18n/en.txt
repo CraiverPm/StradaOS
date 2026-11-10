@@ -534,3 +534,47 @@ sin permiso para leer el archivo	no permission to read the file
 no es un mapa de mapsforge (.map)	not a mapsforge map (.map)
 el archivo está incompleto (¿se copió entero?)	the file is incomplete (was it copied completely?)
 1. En un computador o celular, descarga el mapa de tu país (formato mapsforge, gratis):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Cópialo a una memoria USB o a la carpeta Download de la pantalla.\n\n3. En Ajustes → Mapa y clima → Mapa sin conexión, toca «Archivo del mapa» y elígelo.\n\nEl mapa se usa en el inicio incluso con internet. Para actualizarlo, descarga uno nuevo y reemplaza el archivo.	1. On a computer or phone, download your country's map (mapsforge format, free):\ndownload.mapsforge.org/maps/v5\n\nColombia:\ndownload.mapsforge.org/maps/v5/south-america/colombia.map\n\n2. Copy it to a USB drive or to the screen's Download folder.\n\n3. In Settings → Map & weather → Offline map, tap “Map file” and choose it.\n\nThe map is used on the home screen even with internet. To update it, download a new one and replace the file.
+Toca para dejar de usarlo o borrarlo	Tap to stop using or delete it
+Descargar un mapa	Download a map
+Elige tu país: se descarga gratis de OpenStreetMap (mapsforge) y se usa sin internet	Choose your country: it downloads free from OpenStreetMap (mapsforge) and works without internet
+Cargando la lista de mapas…	Loading the list of maps…
+No se pudo cargar la lista de mapas	Couldn't load the list of maps
+Revisa la conexión a internet e inténtalo de nuevo.	Check your internet connection and try again.
+por regiones	by region
+Elige el continente	Choose the continent
+Tamaño	Size
+Se guarda en	Saved to
+Espacio libre	Free space
+memoria	storage
+Usa datos: mejor con WiFi o un plan amplio. Puedes seguir usando la pantalla; si se corta la señal o la apagas, la descarga continúa después.	Uses data: best on WiFi or a generous plan. You can keep using the screen; if the signal drops or you turn it off, the download resumes later.
+No hay espacio suficiente en la memoria.	There isn't enough free storage.
+Descargar	Download
+Descargando el mapa… puedes seguir usando la pantalla	Downloading the map… you can keep using the screen
+Descarga en curso	Download in progress
+Descarga en pausa	Download paused
+Pausar	Pause
+Continuar	Resume
+Cancelar descarga	Cancel download
+Descarga cancelada	Download canceled
+Este mapa lo descargó StradaOS. Puedes dejar de usarlo o borrarlo para liberar espacio.	StradaOS downloaded this map. You can stop using it or delete it to free up space.
+Puedes dejar de usar este mapa (el archivo no se borra).	You can stop using this map (the file isn't deleted).
+Dejar de usarlo	Stop using it
+Borrar el archivo	Delete the file
+Mapa borrado	Map deleted
+Mapa descargado y listo: {}	Map downloaded and ready: {}
+Descargando	Downloading
+África	Africa
+Australia y Oceanía	Australia & Oceania
+Centroamérica y el Caribe	Central America & Caribbean
+Europa	Europe
+Norteamérica	North America
+Rusia	Russia
+Sudamérica	South America
+sin conexión, reintentando…	no connection, retrying…
+el archivo quedó incompleto	the file is incomplete
+no se pudo guardar el archivo	couldn't save the file
+no hay espacio suficiente	not enough space
+se cortó la descarga	the download was interrupted
+Sin señal GPS · mapa sin conexión	No GPS signal · offline map
+Sin señal GPS ni internet	No GPS signal or internet
+Sin señal GPS · última posición	No GPS signal · last position
