@@ -23,6 +23,9 @@ rec apariencia 24
 tap "24 h" 955 517; tap "12 h" 902 517; tap "mph" 955 409; tap "km/h" 898 409; tap "Compacta" 870 185; tap "Normal" 792 185
 tap "Tarjeta del vehículo" 958 118; tap "Tarjeta del vehículo" 958 118
 fin apariencia
+rec apariencia2 16
+tap "color azul" 857 300; tap "color rojo" 643 300; tap "Izquierda" 941 58; tap "Derecha" 860 58; tap "Auto (hora)" 849 517
+fin apariencia2
 
 go ajustes:5 6; down; down
 rec mapa 14
@@ -35,8 +38,11 @@ tap "Volver al Bluetooth" 957 168; tap "Volver al Bluetooth" 957 168; tap "Abrir
 fin musica
 
 go ajustes:1 6
-rec vehiculo 10
-tap "Recordatorio de aceite" 957 449; tap "Recordatorio de aceite" 957 449
-fin vehiculo
+go demo-aceite 5; go ajustes:1 6; down; down
+adb shell screencap -p /data/local/tmp/s.png && adb pull /data/local/tmp/s.png $OUT/vehiculo.png >/dev/null
+go ajustes:4 6; down; down
+adb shell screencap -p /data/local/tmp/s.png && adb pull /data/local/tmp/s.png $OUT/accesos.png >/dev/null
+go ajustes:3 6; down; down
+adb shell screencap -p /data/local/tmp/s.png && adb pull /data/local/tmp/s.png $OUT/conexion.png >/dev/null
 adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime: (java|Caused|\tat com.stradaos)" | tail -30 > $OUT/logcat.txt
 ls -l $OUT

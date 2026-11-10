@@ -3040,10 +3040,11 @@ public class Main extends Activity {
 
     private android.widget.ScrollView settingsScroll;
     private int settingsScrollCat = -1;
+    private int settingsPendingY = -1;   // posición por restaurar en una página que aún no se ha acomodado
 
     private void closeSettings() {
         settingsCat = -1;
-        settingsScroll = null; settingsScrollCat = -1;
+        settingsScroll = null; settingsScrollCat = -1; settingsPendingY = -1;
         if (settingsView != null) { root.removeView(settingsView); settingsView = null; }
     }
 
@@ -3056,7 +3057,11 @@ public class Main extends Activity {
     private void showSettings0(int cat) {
         if (cat == 0) { closeSettings(); return; }
         // al cambiar un ajuste se redibuja la página: que se quede donde estaba, no que vuelva arriba
-        final int keepY = settingsScroll != null && settingsScrollCat == cat ? settingsScroll.getScrollY() : 0;
+        // (algunos ajustes redibujan dos veces seguidas: la segunda vez la página anterior aún no se acomodó y su
+        // posición sigue pendiente; se usa esa y no un 0)
+        final int keepY = settingsScroll == null || settingsScrollCat != cat ? 0
+                : settingsPendingY >= 0 ? settingsPendingY : settingsScroll.getScrollY();
+        settingsPendingY = keepY > 0 ? keepY : -1;
         settingsCat = cat;
         if (settingsView != null) root.removeView(settingsView);
         settingsView = new FrameLayout(this);
@@ -3125,6 +3130,7 @@ public class Main extends Activity {
                 if (!restored && getChildCount() > 0 && getChildAt(0).getHeight() > 0) {
                     restored = true;
                     scrollTo(0, keepY);   // ScrollView lo limita solo si la página quedó más corta
+                    if (settingsScroll == this) settingsPendingY = -1;
                 }
             }
         };
