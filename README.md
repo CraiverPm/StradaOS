@@ -167,6 +167,7 @@ StradaOS es y seguirá siendo **gratis**. Si revivió tu pantalla, puedes apoyar
 StradaOS se publica bajo la [GNU GPL v3.0](LICENSE). Usa o se apoya en:
 - [Open Headunit](https://github.com/andreknieriem/headunit-revived) (GPL-3.0), app aparte para Android Auto.
 - Mapas © [colaboradores de OpenStreetMap](https://www.openstreetmap.org/copyright), OpenTopoMap y Esri.
+- Mapa sin conexión: lector de archivos .map adaptado de [mapsforge](https://github.com/mapsforge/mapsforge) (LGPL-3.0); mapas de [download.mapsforge.org](https://download.mapsforge.org/).
 - Clima: [Open-Meteo](https://open-meteo.com) (CC BY 4.0).
 - [QR Code generator](https://github.com/nayuki/QR-Code-generator) de Project Nayuki (MIT).
 - Íconos [Material Symbols](https://fonts.google.com/icons) (Apache 2.0) y certificados raíz de Mozilla (MPL-2.0).
