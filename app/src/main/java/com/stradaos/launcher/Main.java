@@ -3116,11 +3116,21 @@ public class Main extends Activity {
         }
 
         // contenido
-        final android.widget.ScrollView sc = new android.widget.ScrollView(this);
+        // La posición anterior se pone durante el acomodo (onLayout), antes del primer dibujo: si se pusiera después
+        // (con post), se vería un cuadro con la página arriba y luego el salto a su sitio (un parpadeo).
+        final android.widget.ScrollView sc = new android.widget.ScrollView(this) {
+            private boolean restored = keepY <= 0;
+            @Override protected void onLayout(boolean changed, int l, int t, int r, int b) {
+                super.onLayout(changed, l, t, r, b);
+                if (!restored && getChildCount() > 0 && getChildAt(0).getHeight() > 0) {
+                    restored = true;
+                    scrollTo(0, keepY);   // ScrollView lo limita solo si la página quedó más corta
+                }
+            }
+        };
         sc.setVerticalScrollBarEnabled(false);
         place(panel, sc, 272, 16, 736, 568);
         settingsScroll = sc; settingsScrollCat = cat;
-        if (keepY > 0) sc.post(new Runnable() { public void run() { sc.scrollTo(0, keepY); } });
         LinearLayout body = new LinearLayout(this);
         body.setOrientation(LinearLayout.VERTICAL);
         body.setPadding((int) (8 * s), (int) (6 * s), (int) (8 * s), (int) (24 * s));
