@@ -178,7 +178,8 @@ public class ArtFinder {
             q = cr.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ARTIST},
                     MediaStore.Audio.Media.TITLE + "=? COLLATE NOCASE", new String[]{title.trim()}, null);
-            if (q == null) return null;
+            if (q == null) { log("consulta por título: null"); return null; }
+            log("consulta por título «" + title + "»: " + q.getCount() + " filas");
             String na = artist == null ? null : norm(artist);
             int n = 0;
             while (q.moveToNext()) {
@@ -202,8 +203,10 @@ public class ArtFinder {
                         new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA},
                         MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{"%" + first + "%"}, null);
                 int hits = 0;
+                log("consulta por archivo «%" + first + "%»: " + (q == null ? "null" : q.getCount() + " filas"));
                 while (q != null && q.moveToNext() && hits < 2) {
                     String d = q.getString(2);
+                    log("  archivo: " + d);
                     if (d == null) continue;
                     String fn = new File(d).getName();
                     int dot = fn.lastIndexOf('.');
@@ -216,12 +219,15 @@ public class ArtFinder {
                 if (hits != 1) { libInfo = hits == 0 ? "no está en tu música" : "varias canciones con ese nombre"; return null; }
             }
         } catch (Throwable e) {
+            log("error en la consulta: " + e);
+            libInfo = "error al leer tu música";
             return null;
         } finally {
             if (q != null) q.close();
         }
         if (id < 0) { libInfo = "no está en tu música"; return null; }
         libInfo = "está en tu música, pero sin carátula";
+        log("canción encontrada: id " + id + " · " + path);
         Uri song = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
         // a) carátula incrustada en el archivo (MP3, M4A, FLAC…)
         android.media.MediaMetadataRetriever r = new android.media.MediaMetadataRetriever();
@@ -269,6 +275,8 @@ public class ArtFinder {
         } catch (Throwable ignored) { }
         return null;
     }
+
+    private static void log(String m) { android.util.Log.i("StradaOS-caratula", m); }
 
     // ── 3. internet ──
 

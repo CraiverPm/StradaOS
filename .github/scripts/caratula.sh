@@ -38,5 +38,6 @@ for s in "Beele|frente al mar" "Juanes|La Camisa Negra" "Karol G|Provenza" "Stra
 done
 go "caratula:Juanes|La Camisa Negra" 4; shot 6-repetida-cache
 go reproductor-diag 4; shot 7-diag
+adb logcat -d -s StradaOS-caratula > $OUT/caratula-log.txt
 adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime: (java|Caused|\tat com.stradaos)" | tail -30 > $OUT/logcat.txt
 ls -l $OUT
