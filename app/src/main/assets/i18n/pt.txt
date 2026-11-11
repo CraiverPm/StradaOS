@@ -586,3 +586,5 @@ Permite leer la música de la pantalla o de la USB para mostrar la carátula de 
 Borrar carátulas guardadas	Apagar capas salvas
 Si alguna salió equivocada: se vuelven a buscar	Se alguma saiu errada: elas são buscadas de novo
 Carátulas borradas	Capas apagadas
+En pantalla vertical la barra va siempre abajo	Em tela vertical a barra fica sempre embaixo
+Aplicaciones	Aplicativos

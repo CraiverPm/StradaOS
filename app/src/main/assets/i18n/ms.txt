@@ -586,3 +586,5 @@ Permite leer la música de la pantalla o de la USB para mostrar la carátula de 
 Borrar carátulas guardadas	Padam kulit album yang disimpan
 Si alguna salió equivocada: se vuelven a buscar	Jika ada yang salah: ia akan dicari semula
 Carátulas borradas	Kulit album dipadam
+En pantalla vertical la barra va siempre abajo	Pada skrin menegak, bar sentiasa di bawah
+Aplicaciones	Aplikasi

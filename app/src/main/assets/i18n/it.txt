@@ -586,3 +586,5 @@ Permite leer la música de la pantalla o de la USB para mostrar la carátula de 
 Borrar carátulas guardadas	Elimina le copertine salvate
 Si alguna salió equivocada: se vuelven a buscar	Se una è sbagliata: verranno cercate di nuovo
 Carátulas borradas	Copertine eliminate
+En pantalla vertical la barra va siempre abajo	Sullo schermo verticale la barra va sempre in basso
+Aplicaciones	App
