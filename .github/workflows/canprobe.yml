@@ -1,0 +1,57 @@
+name: CAN Probe
+
+# Compila la herramienta «CAN Probe» (com.craiver.canprobe) y la publica en el Release «canprobe».
+# Si la compilación falla, sube el registro al Release «canprobe-log» para poder revisarlo.
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'canprobe/**', '.github/workflows/canprobe.yml', 'settings.gradle' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Compilar CAN Probe
+        env:
+          CANPROBE: '1'
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon :canprobe:assembleDebug 2>&1 | tee build.log
+      - name: Publicar en el Release «canprobe»
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp canprobe/build/outputs/apk/debug/*.apk CanProbe.apk
+          SHORT=$(git rev-parse --short HEAD)
+          NOTES=$(printf 'CAN Probe: herramienta para ver qué datos del CAN bus expone la pantalla.\n\nCompilada del commit %s.\n\nEnlace fijo:\nhttps://github.com/%s/releases/download/canprobe/CanProbe.apk' "$SHORT" "$GITHUB_REPOSITORY")
+          git tag -f canprobe
+          git push -f origin refs/tags/canprobe
+          if gh release view canprobe >/dev/null 2>&1; then
+            gh release upload canprobe CanProbe.apk --clobber
+            gh release edit canprobe --title "CAN Probe · $SHORT" --notes "$NOTES" --prerelease --latest=false
+          else
+            gh release create canprobe CanProbe.apk --title "CAN Probe · $SHORT" --notes "$NOTES" --prerelease --latest=false
+          fi
+      - name: Subir el registro si falló
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          touch build.log
+          git tag -f canprobe-log
+          git push -f origin refs/tags/canprobe-log
+          if gh release view canprobe-log >/dev/null 2>&1; then
+            gh release upload canprobe-log build.log --clobber
+          else
+            gh release create canprobe-log build.log --title "CAN Probe · build log" --notes "Registro de la última compilación fallida" --prerelease --latest=false
+          fi

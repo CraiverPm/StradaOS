@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- solo se concede por adb; si la pantalla ya la da, el reporte incluye el logcat del sistema -->
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <application android:label="CAN Probe" android:icon="@android:drawable/ic_menu_search"
+        android:supportsRtl="true" android:requestLegacyExternalStorage="true">
+        <activity android:name=".Probe" android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <provider android:name=".Files" android:authorities="com.craiver.canprobe.files"
+            android:exported="false" android:grantUriPermissions="true"/>
+    </application>
+</manifest>
