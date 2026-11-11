@@ -19,6 +19,8 @@ adb push .github/tools/caratula/$F $EXT/Music/$F | tail -1
 if [ "$API" -ge 23 ]; then adb push .github/tools/caratula/cover.jpg $EXT/Music/cover.jpg | tail -1; fi
 adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://$EXT/Music/$F | tail -1
 sleep 15
+echo "permisos:"; adb shell dumpsys package $PKG | grep -E "READ_EXTERNAL|READ_MEDIA" | head -4
+adb shell appops get $PKG 2>/dev/null | grep -iE "READ_EXTERNAL|READ_MEDIA|AUDIO" | head -5
 echo "biblioteca:"; adb shell content query --uri content://media/external/audio/media --projection _id:title:artist:_data 2>&1 | head -5
 shot() {
   rm -f /tmp/shot.png; rm -rf /tmp/emushot; mkdir -p /tmp/emushot

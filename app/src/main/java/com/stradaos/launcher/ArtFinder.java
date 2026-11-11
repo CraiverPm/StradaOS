@@ -179,6 +179,15 @@ public class ArtFinder {
                     new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ARTIST},
                     MediaStore.Audio.Media.TITLE + "=? COLLATE NOCASE", new String[]{title.trim()}, null);
             if (q == null) { log("consulta por título: null"); return null; }
+            if (q.getCount() == 0) {
+                Cursor all = null;
+                try {
+                    all = cr.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA}, null, null, null);
+                    log("todas las canciones visibles: " + (all == null ? "null" : all.getCount()));
+                    if (all != null && all.moveToFirst()) log("  primera: " + all.getString(1) + " · " + all.getString(2));
+                } catch (Throwable e) { log("consulta general: " + e); }
+                finally { if (all != null) all.close(); }
+            }
             log("consulta por título «" + title + "»: " + q.getCount() + " filas");
             String na = artist == null ? null : norm(artist);
             int n = 0;
