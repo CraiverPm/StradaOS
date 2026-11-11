@@ -207,7 +207,7 @@ public class ArtFinder {
                 q.close();
                 String nt = norm(title);
                 String first = nt.split(" ")[0];
-                if (first.length() < 3) return null;
+                if (first.length() < 3) { File f = findFile(title); return f != null ? fromFile(f) : null; }
                 q = cr.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                         new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA},
                         MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{"%" + first + "%"}, null);
@@ -224,6 +224,10 @@ public class ArtFinder {
                         hits++;
                         id = q.getLong(0); albumId = q.getLong(1); path = d;
                     }
+                }
+                if (hits == 0) {
+                    File f = findFile(title);
+                    if (f != null) { log("encontrada recorriendo carpetas: " + f); return fromFile(f); }
                 }
                 if (hits != 1) { libInfo = hits == 0 ? "no está en tu música" : "varias canciones con ese nombre"; return null; }
             }
@@ -267,20 +271,98 @@ public class ArtFinder {
             }
         } catch (Throwable ignored) { }
         // c) imagen de la carpeta (cover.jpg, folder.jpg…)
-        try {
-            File dir = path != null ? new File(path).getParentFile() : null;
-            File[] fs = dir != null ? dir.listFiles() : null;
-            if (fs != null) {
-                String[] names = {"cover", "folder", "front", "albumart", "album", "albumartsmall"};
-                for (String want : names)
-                    for (File x : fs) {
-                        String n = x.getName().toLowerCase(Locale.US);
-                        if ((n.equals(want + ".jpg") || n.equals(want + ".jpeg") || n.equals(want + ".png")) && x.length() < 8 * 1024 * 1024) {
-                            Bitmap b = decode(readFile(x));
-                            if (b != null) return b;
-                        }
-                    }
+        Bitmap fa = path != null ? folderArt(new File(path).getParentFile()) : null;
+        if (fa != null) return fa;
+        return null;
+    }
+
+    // Índice de archivos de audio (si la biblioteca de Android no los ve o no los escaneó, p. ej. una USB).
+    private static java.util.ArrayList<File> audioIndex;
+    private static long audioIndexAt;
+
+    private static synchronized java.util.ArrayList<File> audioFiles() {
+        if (audioIndex != null && System.currentTimeMillis() - audioIndexAt < 10 * 60 * 1000L) return audioIndex;
+        java.util.ArrayList<File> out = new java.util.ArrayList<File>();
+        java.util.LinkedHashSet<String> roots = new java.util.LinkedHashSet<String>();
+        File ext = android.os.Environment.getExternalStorageDirectory();
+        for (String d : new String[]{"Music", "Download", "Musica", "Música", "Audio", "MP3", "Media"}) roots.add(new File(ext, d).getAbsolutePath());
+        String sec = System.getenv("SECONDARY_STORAGE");
+        if (sec != null) for (String r : sec.split(":")) if (r.length() > 0) roots.add(r);
+        roots.add("/storage");
+        roots.add("/mnt");
+        java.util.HashSet<String> seen = new java.util.HashSet<String>();
+        int[] budget = {6000};
+        for (String r : roots) scan(new File(r), 0, out, seen, budget);
+        log("índice de audio: " + out.size() + " archivos");
+        audioIndex = out;
+        audioIndexAt = System.currentTimeMillis();
+        return out;
+    }
+
+    private static void scan(File d, int depth, java.util.List<File> out, java.util.Set<String> seen, int[] budget) {
+        if (depth > 5 || budget[0]-- <= 0 || out.size() > 20000) return;
+        String canon;
+        try { canon = d.getCanonicalPath(); } catch (Throwable e) { return; }
+        if (!seen.add(canon)) return;
+        File[] fs;
+        try { fs = d.listFiles(); } catch (Throwable e) { return; }
+        if (fs == null) return;
+        for (File f : fs) {
+            String n = f.getName();
+            if (n.startsWith(".")) continue;
+            if (f.isDirectory()) {
+                if (n.equals("Android") || n.equals("obb") || n.equals("asec") || n.equals("secure") || n.equals("runtime") || n.equals("self")) continue;
+                scan(f, depth + 1, out, seen, budget);
+            } else {
+                String l = n.toLowerCase(Locale.US);
+                if (l.endsWith(".mp3") || l.endsWith(".m4a") || l.endsWith(".flac") || l.endsWith(".ogg") || l.endsWith(".wma") || l.endsWith(".aac") || l.endsWith(".wav"))
+                    out.add(f);
             }
+        }
+    }
+
+    /** Archivo cuyo nombre corresponde al título («01 - Juanes - La Camisa Negra.mp3» ~ «La camisa negra»). */
+    private static File findFile(String title) {
+        String nt = norm(title);
+        if (nt.length() < 3) return null;
+        File hit = null;
+        for (File f : audioFiles()) {
+            String fn = f.getName();
+            int dot = fn.lastIndexOf('.');
+            String nf = norm(dot > 0 ? fn.substring(0, dot) : fn);
+            if (nf.equals(nt) || nf.endsWith(" " + nt) || (nt.length() >= 8 && nf.contains(nt))) {
+                if (hit != null && !hit.getName().equals(f.getName())) return null;   // varias: no adivinar
+                hit = f;
+            }
+        }
+        return hit;
+    }
+
+    /** Carátula de un archivo: incrustada o imagen de la carpeta. */
+    private static Bitmap fromFile(File f) {
+        android.media.MediaMetadataRetriever r = new android.media.MediaMetadataRetriever();
+        try {
+            r.setDataSource(f.getAbsolutePath());
+            byte[] pic = r.getEmbeddedPicture();
+            if (pic != null) { Bitmap b = decode(pic); if (b != null) return b; }
+        } catch (Throwable e) { log("no se pudo leer " + f + ": " + e);
+        } finally { try { r.release(); } catch (Throwable ignored) { } }
+        return folderArt(f.getParentFile());
+    }
+
+    private static Bitmap folderArt(File dir) {
+        try {
+            File[] fs = dir != null ? dir.listFiles() : null;
+            if (fs == null) return null;
+            String[] names = {"cover", "folder", "front", "albumart", "album", "albumartsmall"};
+            for (String want : names)
+                for (File x : fs) {
+                    String n = x.getName().toLowerCase(Locale.US);
+                    if ((n.equals(want + ".jpg") || n.equals(want + ".jpeg") || n.equals(want + ".png")) && x.length() < 8 * 1024 * 1024) {
+                        Bitmap b = decode(readFile(x));
+                        if (b != null) return b;
+                    }
+                }
         } catch (Throwable ignored) { }
         return null;
     }
