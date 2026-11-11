@@ -50,6 +50,7 @@ public class ArtFinder {
     private static Callback pendingCb;
     private static boolean useHttp;                        // el cifrado no funcionó en esta pantalla
     static volatile String lastInfo = "—";
+    private static volatile String libInfo = "";
 
     /** Clave de una canción: artista + título normalizados. */
     static String key(String title, String artist) {
@@ -96,7 +97,7 @@ public class ArtFinder {
             catch (Throwable e) { lastInfo = "error: " + e; }
             if (b == null) {
                 synchronized (ArtFinder.class) { misses.put(k, System.currentTimeMillis()); }
-                if (!lastInfo.startsWith("error")) lastInfo = "no encontrada: " + job[2] + " — " + job[1];
+                if (!lastInfo.startsWith("error")) lastInfo = "no encontrada: " + job[2] + " — " + job[1] + (libInfo.length() > 0 ? " (" + libInfo + ")" : "");
                 continue;
             }
             mem.put(k, b);
@@ -166,7 +167,9 @@ public class ArtFinder {
     static boolean libraryAllowed(Context c) { return canRead(c); }
 
     private static Bitmap fromLibrary(Context c, String title, String artist) {
-        if (!canRead(c) || title == null) return null;
+        libInfo = "";
+        if (title == null) return null;
+        if (!canRead(c)) { libInfo = "sin permiso para la música guardada"; return null; }
         ContentResolver cr = c.getContentResolver();
         Cursor q = null;
         long id = -1, albumId = -1;
@@ -210,14 +213,15 @@ public class ArtFinder {
                         id = q.getLong(0); albumId = q.getLong(1); path = d;
                     }
                 }
-                if (hits != 1) return null;   // ninguno o varios: no adivinar
+                if (hits != 1) { libInfo = hits == 0 ? "no está en tu música" : "varias canciones con ese nombre"; return null; }
             }
         } catch (Throwable e) {
             return null;
         } finally {
             if (q != null) q.close();
         }
-        if (id < 0) return null;
+        if (id < 0) { libInfo = "no está en tu música"; return null; }
+        libInfo = "está en tu música, pero sin carátula";
         Uri song = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
         // a) carátula incrustada en el archivo (MP3, M4A, FLAC…)
         android.media.MediaMetadataRetriever r = new android.media.MediaMetadataRetriever();

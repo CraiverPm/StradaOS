@@ -16,6 +16,7 @@ EXT=$(adb shell 'echo $EXTERNAL_STORAGE' | tr -d '\r'); [ -z "$EXT" ] && EXT=/sd
 echo "memoria: $EXT"
 adb shell mkdir -p $EXT/Music
 adb push .github/tools/caratula/$F $EXT/Music/$F | tail -1
+if [ "$API" -ge 23 ]; then adb push .github/tools/caratula/cover.jpg $EXT/Music/cover.jpg | tail -1; fi
 adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://$EXT/Music/$F | tail -1
 sleep 15
 echo "biblioteca:"; adb shell content query --uri content://media/external/audio/media --projection _id:title:artist:_data 2>&1 | head -5
