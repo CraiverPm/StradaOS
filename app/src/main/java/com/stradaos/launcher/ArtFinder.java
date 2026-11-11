@@ -188,6 +188,14 @@ public class ArtFinder {
                 }
             }
             if (n > 1 && (artist == null || artist.trim().length() == 0)) return null;   // varias con ese título y sin artista: no adivinar
+            if (n == 0) {
+                // el escáner de Android no leyó las etiquetas (título = nombre del archivo): buscar por el nombre del archivo
+                q.close();
+                q = cr.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA},
+                        MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{"%" + title.trim().replace("%", "") + "%"}, null);
+                if (q != null && q.getCount() == 1 && q.moveToFirst()) { id = q.getLong(0); albumId = q.getLong(1); path = q.getString(2); }
+            }
         } catch (Throwable e) {
             return null;
         } finally {

@@ -11,10 +11,11 @@ adb shell input keyevent 82 || true
 if [ "$API" -ge 23 ]; then adb install -r -g prueba.apk | tail -1; else adb install -r prueba.apk | tail -1; fi
 adb shell pm grant $PKG android.permission.READ_EXTERNAL_STORAGE >/dev/null 2>&1 || true
 adb shell mkdir -p /sdcard/Music
-adb push .github/tools/caratula/prueba.mp3 /sdcard/Music/prueba.mp3 | tail -1
-adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Music/prueba.mp3 | tail -1
-sleep 10
-adb shell content query --uri content://media/external/audio/media --projection title:artist 2>/dev/null | head -3
+F=prueba-caratula-stradaos.mp3
+adb push .github/tools/caratula/$F /sdcard/Music/$F | tail -1
+adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Music/$F | tail -1
+sleep 15
+echo "biblioteca:"; adb shell content query --uri content://media/external/audio/media --projection _id:title:artist:_data 2>&1 | head -5
 shot() {
   rm -f /tmp/shot.png; rm -rf /tmp/emushot; mkdir -p /tmp/emushot
   adb shell screencap -p /data/local/tmp/s.png >/dev/null 2>&1 && adb pull /data/local/tmp/s.png /tmp/shot.png >/dev/null 2>&1
@@ -29,6 +30,7 @@ go saltar 20; go idioma:es 6; go tema:oscuro 6
 n=0
 for s in "Beele|frente al mar" "Juanes|La Camisa Negra" "Karol G|Provenza" "StradaOS Test|Prueba Caratula StradaOS" "Artista Inventado Xyz|Cancion Que No Existe"; do
   n=$((n+1)); go "caratula:$s" 14; shot "$n-$(echo ${s%%|*} | tr ' ' '_')"
+  if [ $n = 4 ]; then go reproductor-diag 4; shot 4b-diag-local; adb shell input keyevent 4; sleep 2; fi
 done
 go "caratula:Juanes|La Camisa Negra" 4; shot 6-repetida-cache
 go reproductor-diag 4; shot 7-diag
