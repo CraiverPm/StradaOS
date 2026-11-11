@@ -50,7 +50,28 @@ public class CarPhoto {
         int w = b.getWidth(), h = b.getHeight(), clear = 0, total = 0;
         for (int x = 0; x < w; x += 4) { total += 2; if (alpha(b.getPixel(x, 0)) < 40) clear++; if (alpha(b.getPixel(x, h - 1)) < 40) clear++; }
         for (int y = 0; y < h; y += 4) { total += 2; if (alpha(b.getPixel(0, y)) < 40) clear++; if (alpha(b.getPixel(w - 1, y)) < 40) clear++; }
-        return clear > total / 2;
+        if (clear > total / 2) return true;
+        // PNG recortado muy justo (el carro toca los bordes): basta con que una parte de la imagen sea transparente.
+        // Antes se le volvía a quitar el fondo y, como lo transparente suele ser negro, se comía las partes oscuras.
+        int[] row = new int[w];
+        int seen = 0, see = 0;
+        for (int y = 0; y < h; y += 3) {
+            b.getPixels(row, 0, w, 0, y, w, 1);
+            for (int x = 0; x < w; x += 3) { see++; if (alpha(row[x]) < 40) seen++; }
+        }
+        return seen > see * 0.03f;
+    }
+
+    /** true si la imagen tiene algún píxel transparente (PNG con canal alfa). */
+    public static boolean anyTransparency(Bitmap b) {
+        if (!b.hasAlpha()) return false;
+        int w = b.getWidth(), h = b.getHeight();
+        int[] row = new int[w];
+        for (int y = 0; y < h; y += 2) {
+            b.getPixels(row, 0, w, 0, y, w, 1);
+            for (int x = 0; x < w; x += 2) if (alpha(row[x]) < 40) return true;
+        }
+        return false;
     }
 
     private static int alpha(int c) { return (c >>> 24) & 0xFF; }

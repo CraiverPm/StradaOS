@@ -588,3 +588,14 @@ Si alguna salió equivocada: se vuelven a buscar	Jika ada yang salah: ia akan di
 Carátulas borradas	Kulit album dipadam
 En pantalla vertical la barra va siempre abajo	Pada skrin menegak, bar sentiasa di bawah
 Aplicaciones	Aplikasi
+¿Cómo es tu foto?	Bagaimana foto anda?
+Quitar el fondo automáticamente	Buang latar belakang secara automatik
+Ya viene sin fondo (PNG transparente)	Sudah tiada latar belakang (PNG lutsinar)
+Usarla tal cual, con su fondo	Guna seadanya, dengan latar belakang
+Elige un PNG con fondo transparente. Tamaño ideal: 660×400 (o el doble, 1320×800), con el carro apoyado abajo.	Pilih PNG dengan latar belakang lutsinar. Saiz ideal: 660×400 (atau dua kali ganda, 1320×800), dengan kereta di bahagian bawah.
+La foto se usa completa, sin quitarle nada. Tamaño ideal: 660×400 (o el doble, 1320×800).	Seluruh foto digunakan, tiada apa dibuang. Saiz ideal: 660×400 (atau dua kali ganda, 1320×800).
+Abriendo la foto…	Membuka foto…
+Esta foto no tiene fondo transparente: se verá con su fondo	Foto ini tiada latar belakang lutsinar: ia akan dipaparkan dengan latar belakangnya
+Foto sin fondo (sin cambios)	Foto tanpa latar belakang (tiada perubahan)
+Foto con su fondo (sin cambios)	Foto dengan latar belakang (tiada perubahan)
+Quita el fondo solo, o sube un PNG ya recortado (ideal 660×400)	Buang latar belakang sendiri, atau muat naik PNG yang sudah dipotong (ideal 660×400)

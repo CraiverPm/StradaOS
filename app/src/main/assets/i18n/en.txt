@@ -588,3 +588,14 @@ Si alguna salió equivocada: se vuelven a buscar	If one is wrong: they'll be loo
 Carátulas borradas	Album art cleared
 En pantalla vertical la barra va siempre abajo	On a portrait screen the bar always goes at the bottom
 Aplicaciones	Apps
+¿Cómo es tu foto?	What's your photo like?
+Quitar el fondo automáticamente	Remove the background automatically
+Ya viene sin fondo (PNG transparente)	Already has no background (transparent PNG)
+Usarla tal cual, con su fondo	Use it as is, with its background
+Elige un PNG con fondo transparente. Tamaño ideal: 660×400 (o el doble, 1320×800), con el carro apoyado abajo.	Choose a PNG with a transparent background. Ideal size: 660×400 (or double, 1320×800), with the car resting at the bottom.
+La foto se usa completa, sin quitarle nada. Tamaño ideal: 660×400 (o el doble, 1320×800).	The whole photo is used, nothing removed. Ideal size: 660×400 (or double, 1320×800).
+Abriendo la foto…	Opening the photo…
+Esta foto no tiene fondo transparente: se verá con su fondo	This photo has no transparent background: it will show with its background
+Foto sin fondo (sin cambios)	Photo without background (unchanged)
+Foto con su fondo (sin cambios)	Photo with its background (unchanged)
+Quita el fondo solo, o sube un PNG ya recortado (ideal 660×400)	Removes the background itself, or upload a pre-cut PNG (ideal 660×400)

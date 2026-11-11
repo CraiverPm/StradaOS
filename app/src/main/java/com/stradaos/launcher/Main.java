@@ -2886,10 +2886,30 @@ public class Main extends Activity {
             }).show();
     }
 
+    /** 0 = quitar el fondo automáticamente · 1 = la foto ya viene sin fondo (PNG) · 2 = usarla tal cual, con fondo. */
+    private int photoMode = 0;
+
     private void pickPhoto() {
         new TB(this, dlg())
+            .setTitle("¿Cómo es tu foto?")
+            .setItems(new String[]{
+                    "Quitar el fondo automáticamente",
+                    "Ya viene sin fondo (PNG transparente)",
+                    "Usarla tal cual, con su fondo"},
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface d, int w) { photoMode = w; pickPhotoSource(); }
+                })
+            .setNegativeButton("Cancelar", null)
+            .show();
+    }
+
+    private void pickPhotoSource() {
+        String tip = photoMode == 0 ? "Consejo: usa una foto del carro de lado o de frente con fondo liso (blanco, gris o cielo). El fondo se quita solo."
+                : photoMode == 1 ? "Elige un PNG con fondo transparente. Tamaño ideal: 660×400 (o el doble, 1320×800), con el carro apoyado abajo."
+                : "La foto se usa completa, sin quitarle nada. Tamaño ideal: 660×400 (o el doble, 1320×800).";
+        new TB(this, dlg())
             .setTitle("¿De dónde sacamos la foto?")
-            .setMessage("Consejo: usa una foto del carro de lado o de frente con fondo liso (blanco, gris o cielo). El fondo se quita solo.")
+            .setMessage(tip)
             .setPositiveButton("Memoria / USB", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface d, int w) { browseImages(); }
             })
@@ -2977,27 +2997,37 @@ public class Main extends Activity {
     }
 
     private void processPhoto(final CarPhoto.Opener opener) {
-        final ProgressDialogLite pd = new ProgressDialogLite("Quitando el fondo…");
+        final int mode = photoMode;
+        final ProgressDialogLite pd = new ProgressDialogLite(mode == 0 ? "Quitando el fondo…" : "Abriendo la foto…");
         new Thread(new Runnable() {
             public void run() {
                 Bitmap src = null, cut = null;
                 String err = null;
-                boolean already = false;
+                boolean already = false, noAlpha = false;
                 try {
                     src = CarPhoto.decode(opener);
-                    already = CarPhoto.hasTransparency(src);
-                    cut = already ? src : CarPhoto.removeBackground(src, 1);
+                    if (mode == 0) {
+                        already = CarPhoto.hasTransparency(src);
+                        cut = already ? src : CarPhoto.removeBackground(src, 1);
+                    } else {
+                        // sin quitar el fondo: la foto se usa como viene
+                        already = true;
+                        cut = src;
+                        noAlpha = mode == 1 && !CarPhoto.anyTransparency(src);
+                    }
                 } catch (Throwable e) {
                     err = e.getMessage();
                 }
                 final Bitmap fsrc = src, fcut = cut;
                 final String ferr = err;
-                final boolean falready = already;
+                final boolean falready = already, fnoAlpha = noAlpha;
                 runOnUiThread(new Runnable() {
                     public void run() {
                         pd.dismiss();
                         if (fsrc == null) { toast("No se pudo abrir la imagen" + (ferr != null ? ": " + ferr : "")); return; }
-                        previewPhoto(fsrc, fcut, 1, falready);
+                        previewPhoto(fsrc, fcut, 1, falready, mode == 0 ? null
+                            : fnoAlpha ? "Esta foto no tiene fondo transparente: se verá con su fondo"
+                            : mode == 1 ? "Foto sin fondo (sin cambios)" : "Foto con su fondo (sin cambios)");
                     }
                 });
             }
@@ -3005,6 +3035,10 @@ public class Main extends Activity {
     }
 
     private void previewPhoto(final Bitmap src, final Bitmap cut, final int strength, boolean already) {
+        previewPhoto(src, cut, strength, already, null);
+    }
+
+    private void previewPhoto(final Bitmap src, final Bitmap cut, final int strength, boolean already, String forcedTitle) {
         final Bitmap shown = CarPhoto.fitToCard(cut != null ? cut : src);
         FrameLayout box = new FrameLayout(this);
         box.setBackgroundColor(CARD);
@@ -3014,7 +3048,7 @@ public class Main extends Activity {
         iv.setImageBitmap(shown);
         iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
         box.addView(iv, new FrameLayout.LayoutParams((int) (396 * s), (int) (240 * s)));
-        String title = already ? "La foto ya trae fondo transparente"
+        String title = forcedTitle != null ? forcedTitle : already ? "La foto ya trae fondo transparente"
                 : cut == null ? "No se detectó un fondo liso (se usará tal cual)"
                 : "Vista previa · nivel " + (strength + 1) + " de 4" + (strength >= 2 ? " (también quita el reflejo del piso)" : "");
         AlertDialog.Builder b = new TB(this, dlg())
@@ -3429,7 +3463,7 @@ public class Main extends Activity {
         row(c, "Nombre del vehículo", null, prefs.getString("car_name", "Mi vehículo"), edit("car_name", "Nombre del vehículo", "Mi vehículo"));
         row(c, "Etiqueta", "Versión o placa. Déjala vacía para ocultarla", prefs.getString("car_tag", ""), edit("car_tag", "Etiqueta (vacío para ocultarla)", ""));
         LinearLayout f = section(body, "Foto");
-        row(f, "Foto del vehículo", "Se recorta y se le quita el fondo automáticamente", CarPhoto.load(this) != null ? "Configurada" : "Sin foto",
+        row(f, "Foto del vehículo", "Quita el fondo solo, o sube un PNG ya recortado (ideal 660×400)", CarPhoto.load(this) != null ? "Configurada" : "Sin foto",
             new Runnable() { public void run() { photoMenu(); } });
         LinearLayout o = section(body, "Cambio de aceite");
         toggle(o, "Recordatorio de cambio de aceite", "Se muestra al lado de la velocidad y avisa cuando toca", oilOn(), new IntCb() { public void on(int i) {

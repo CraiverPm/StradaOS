@@ -588,3 +588,14 @@ Si alguna salió equivocada: se vuelven a buscar	Se alguma saiu errada: elas sã
 Carátulas borradas	Capas apagadas
 En pantalla vertical la barra va siempre abajo	Em tela vertical a barra fica sempre embaixo
 Aplicaciones	Aplicativos
+¿Cómo es tu foto?	Como é a sua foto?
+Quitar el fondo automáticamente	Remover o fundo automaticamente
+Ya viene sin fondo (PNG transparente)	Já vem sem fundo (PNG transparente)
+Usarla tal cual, con su fondo	Usar como está, com o fundo
+Elige un PNG con fondo transparente. Tamaño ideal: 660×400 (o el doble, 1320×800), con el carro apoyado abajo.	Escolha um PNG com fundo transparente. Tamanho ideal: 660×400 (ou o dobro, 1320×800), com o carro apoiado embaixo.
+La foto se usa completa, sin quitarle nada. Tamaño ideal: 660×400 (o el doble, 1320×800).	A foto é usada inteira, sem remover nada. Tamanho ideal: 660×400 (ou o dobro, 1320×800).
+Abriendo la foto…	Abrindo a foto…
+Esta foto no tiene fondo transparente: se verá con su fondo	Esta foto não tem fundo transparente: vai aparecer com o fundo
+Foto sin fondo (sin cambios)	Foto sem fundo (sem alterações)
+Foto con su fondo (sin cambios)	Foto com o fundo (sem alterações)
+Quita el fondo solo, o sube un PNG ya recortado (ideal 660×400)	Remove o fundo sozinho, ou envie um PNG já recortado (ideal 660×400)
