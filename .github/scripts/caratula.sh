@@ -12,8 +12,11 @@ if [ "$API" -ge 23 ]; then adb install -r -g prueba.apk | tail -1; else adb inst
 adb shell pm grant $PKG android.permission.READ_EXTERNAL_STORAGE >/dev/null 2>&1 || true
 adb shell mkdir -p /sdcard/Music
 F=prueba-caratula-stradaos.mp3
-adb push .github/tools/caratula/$F /sdcard/Music/$F | tail -1
-adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Music/$F | tail -1
+EXT=$(adb shell 'echo $EXTERNAL_STORAGE' | tr -d '\r'); [ -z "$EXT" ] && EXT=/sdcard
+echo "memoria: $EXT"
+adb shell mkdir -p $EXT/Music
+adb push .github/tools/caratula/$F $EXT/Music/$F | tail -1
+adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://$EXT/Music/$F | tail -1
 sleep 15
 echo "biblioteca:"; adb shell content query --uri content://media/external/audio/media --projection _id:title:artist:_data 2>&1 | head -5
 shot() {

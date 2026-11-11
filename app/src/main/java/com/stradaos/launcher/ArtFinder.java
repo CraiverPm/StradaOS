@@ -189,12 +189,28 @@ public class ArtFinder {
             }
             if (n > 1 && (artist == null || artist.trim().length() == 0)) return null;   // varias con ese título y sin artista: no adivinar
             if (n == 0) {
-                // el escáner de Android no leyó las etiquetas (título = nombre del archivo): buscar por el nombre del archivo
+                // El escáner de Android no leyó las etiquetas (título = nombre del archivo): se compara el título con el
+                // nombre del archivo, sin tildes ni signos («prueba-caratula» = «Prueba Carátula»).
                 q.close();
+                String nt = norm(title);
+                String first = nt.split(" ")[0];
+                if (first.length() < 3) return null;
                 q = cr.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                         new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA},
-                        MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{"%" + title.trim().replace("%", "") + "%"}, null);
-                if (q != null && q.getCount() == 1 && q.moveToFirst()) { id = q.getLong(0); albumId = q.getLong(1); path = q.getString(2); }
+                        MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{"%" + first + "%"}, null);
+                int hits = 0;
+                while (q != null && q.moveToNext() && hits < 2) {
+                    String d = q.getString(2);
+                    if (d == null) continue;
+                    String fn = new File(d).getName();
+                    int dot = fn.lastIndexOf('.');
+                    String nf = norm(dot > 0 ? fn.substring(0, dot) : fn);
+                    if (nf.equals(nt) || nf.endsWith(" " + nt) || (nt.length() >= 8 && nf.contains(nt))) {
+                        hits++;
+                        id = q.getLong(0); albumId = q.getLong(1); path = d;
+                    }
+                }
+                if (hits != 1) return null;   // ninguno o varios: no adivinar
             }
         } catch (Throwable e) {
             return null;
