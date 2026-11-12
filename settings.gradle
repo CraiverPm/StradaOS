@@ -14,5 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = 'StradaOS'
 include ':app'
-// CAN Probe (herramienta aparte): solo se compila si se pide, así nunca afecta al APK de StradaOS
-if (System.getenv('CANPROBE') != null) include ':canprobe'
